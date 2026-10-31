@@ -770,7 +770,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
    window.RC_CONFIG = { googleClientId: "YOUR_ID.apps.googleusercontent.com", googleVerifyUrl: "/api/auth/google" }
    googleVerifyUrl must be a server endpoint that verifies the Google ID token signature and returns {sub,email,email_verified,name}. */
 /* >>> GOOGLE LOGIN: paste your OAuth Web client ID below (or put it in <meta name="google-client-id" content="...">). Create it in Google Cloud Console > APIs & Services > Credentials, and add this site's URL under "Authorized JavaScript origins". Google blocks file:// pages and unlisted origins. <<< */
-const GOOGLE_CLIENT_ID="";
+const GOOGLE_CLIENT_ID="680277727986-633abodqkvsahq4bfmgj7vgbk2k9b0sp.apps.googleusercontent.com";
 /* >>> SUPABASE: the publishable key is safe to ship in the browser (protect data with Row Level Security). Never put a secret key (sb_secret_...) or service_role key here. Paste your Project URL (Supabase > Project Settings > API), e.g. https://abcdxyz.supabase.co <<< */
 const SUPABASE_URL="";
 const SUPABASE_KEY="sb_publishable_D2dwzLCS8YaDbAgqDnkJGw_Jm60zQLO";
@@ -916,14 +916,14 @@ function doLogin(e){e.preventDefault();const em=le.value.trim().toLowerCase(),pw
  if(u.status==="banned")return setErr("This account has been banned."+(u.reason?" Reason: "+u.reason:"")+" Contact support if you think this is a mistake.");
  if(u.status==="blocked")return setErr("This account is blocked."+(u.reason?" Reason: "+u.reason:"")+" Contact support to appeal.");enter(u)}
 /* ---------- Google sign-in (Google Identity Services) ---------- */
-let gisP=null,gNonce="";
+let gisP=null,gNonces=[];
 const gerr=m=>{const e=document.getElementById("gerr");if(e)e.textContent=m||""};
 const gblock=()=>`<div class="gwrap"><div id="gbtn" class="gslot">${CFG.googleClientId&&!SB_ON?`<div class="gload">Loading Google…</div>`:`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`}</div><div class="err" id="gerr" role="alert"></div></div>`;
 const loadGIS=()=>gisP||(gisP=new Promise((ok,no)=>{if(window.google&&google.accounts&&google.accounts.id)return ok();const sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.async=true;sc.defer=true;sc.onload=ok;sc.onerror=()=>{gisP=null;no(new Error("load"))};document.head.appendChild(sc)}));
 async function initGoogle(){const slot=document.getElementById("gbtn");if(!slot||!CFG.googleClientId||SB_ON)return;
  try{await loadGIS()}catch(e){if(document.getElementById("gbtn")===slot){slot.innerHTML=`<button type="button" class="gbtn" onclick="initGoogle()">${GG}Retry Google sign-in</button>`;gerr("Couldn’t reach Google. Check your connection and try again.")}return}
  if(document.getElementById("gbtn")!==slot)return;
- const a=new Uint8Array(16);crypto.getRandomValues(a);gNonce=[...a].map(x=>x.toString(16).padStart(2,"0")).join("");
+ const a=new Uint8Array(16);crypto.getRandomValues(a);const gNonce=[...a].map(x=>x.toString(16).padStart(2,"0")).join("");gNonces.push(gNonce);if(gNonces.length>8)gNonces.shift();
  const dark=S.theme==="dark"||(S.theme!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);
  google.accounts.id.initialize({client_id:CFG.googleClientId,callback:onGoogleCred,nonce:gNonce,ux_mode:"popup",auto_select:false,cancel_on_tap_outside:true,use_fedcm_for_prompt:true});
  slot.innerHTML="";google.accounts.id.renderButton(slot,{type:"standard",theme:dark?"filled_black":"outline",size:"large",text:"continue_with",shape:"pill",logo_alignment:"left",width:Math.min(400,Math.max(200,Math.floor(slot.clientWidth||320)))})}
@@ -931,14 +931,14 @@ async function googleLogin(){if(SB_ON){gerr("");try{const c=await sbClient();con
 function decodeJwt(t){const q=String(t).split(".");if(q.length!==3)throw new Error("Invalid Google response.");const b=q[1].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b+"=".repeat((4-b.length%4)%4)),c=>c.charCodeAt(0))))}
 function checkGoogleClaims(c,server){if(!c||!c.sub||!c.email)return"Google didn’t return an email for this account.";
  if(c.email_verified!==true&&c.email_verified!=="true")return"Your Google email isn’t verified.";if(!EMAIL_RE.test(c.email))return"Google returned an invalid email.";
- if(!server){if(c.iss!=="https://accounts.google.com"&&c.iss!=="accounts.google.com")return"Untrusted sign-in token.";if(c.aud!==CFG.googleClientId)return"This token was issued for a different app.";if(!(c.exp*1000>Date.now()))return"Sign-in expired. Please try again.";if(!gNonce||c.nonce!==gNonce)return"Sign-in couldn’t be verified. Please try again."}return""}
+ if(!server){if(c.iss!=="https://accounts.google.com"&&c.iss!=="accounts.google.com")return"Untrusted sign-in token.";if(c.aud!==CFG.googleClientId)return"This token was issued for a different app.";if(!(c.exp*1000>Date.now()))return"Sign-in expired. Please try again.";if(!c.nonce||!gNonces.includes(c.nonce))return"Sign-in couldn’t be verified. Please try again."}return""}
 async function onGoogleCred(resp){try{if(!resp||!resp.credential)throw new Error("Google sign-in was cancelled.");let c,server=false;
- if(CFG.googleVerifyUrl){const rs=await fetch(CFG.googleVerifyUrl,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({credential:resp.credential,nonce:gNonce})});if(!rs.ok)throw new Error("Google sign-in couldn’t be verified. Try again.");c=await rs.json();server=true}
+ if(CFG.googleVerifyUrl){const rs=await fetch(CFG.googleVerifyUrl,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({credential:resp.credential,nonce:(()=>{try{return decodeJwt(resp.credential).nonce}catch(e){return""}})()})});if(!rs.ok)throw new Error("Google sign-in couldn’t be verified. Try again.");c=await rs.json();server=true}
  else{c=decodeJwt(resp.credential);try{console.warn("RoyalCub: Google ID token checked in the browser only. Set RC_CONFIG.googleVerifyUrl to verify the signature on your server before production use.")}catch(e){}}
- const bad=checkGoogleClaims(c,server);if(bad)throw new Error(bad);googleSignIn(c)}catch(e){gerr(e.message||"Google sign-in failed. Please try again.")}finally{gNonce=""}}
+ const bad=checkGoogleClaims(c,server);if(bad)throw new Error(bad);googleSignIn(c)}catch(e){gerr(e.message||"Google sign-in failed. Please try again.")}finally{try{const n=decodeJwt(resp.credential).nonce;gNonces=gNonces.filter(x=>x!==n)}catch(e){}}}
 function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.gid&&x.gid===c.sub),linked=false,fresh=false;
  if(!u){u=S.users.find(x=>x.email.toLowerCase()===em);if(u){if(u.gid&&u.gid!==c.sub)return gerr("This email is already linked to a different Google account.");u.gid=c.sub;linked=true}}
- if(u&&u.email.toLowerCase()!==em&&!linked){u.email=em}
+ if(u&&u.email.toLowerCase()!==em&&!linked){if(S.users.some(x=>x!==u&&x.email.toLowerCase()===em))return gerr("That Google email is already used by another account.");u.email=em}
  if(!u){u={email:em,pw:"",name:(c.name||em.split("@")[0]).slice(0,40),phone:"",age:"",cat:"Client",role:"client",title:"",gid:c.sub,status:"active",joined:Date.now()};S.users.push(u);fresh=true}
  if(u.status==="banned")return gerr("This account has been banned."+(u.reason?" Reason: "+u.reason:""));
  if(u.status==="blocked")return gerr("This account is blocked."+(u.reason?" Reason: "+u.reason:""));
