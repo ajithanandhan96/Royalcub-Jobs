@@ -824,7 +824,6 @@ async function fetchJobs() {
     render();
   }
 }
-
 fetchJobs();
 S.jobs.forEach(j=>{if(!j.per){const d=PER0[j.id];if(d){j.b=d[0];j.per=d[1]}else j.per=/week|mo/i.test(j.b)?"week":"day"}});
 const per=j=>`<small class="per">per ${j.per==="week"?"week":"day"}</small>`;
