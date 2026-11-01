@@ -772,10 +772,11 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 /* >>> GOOGLE LOGIN: paste your OAuth Web client ID below (or put it in <meta name="google-client-id" content="...">). Create it in Google Cloud Console > APIs & Services > Credentials, and add this site's URL under "Authorized JavaScript origins". Google blocks file:// pages and unlisted origins. <<< */
 const GOOGLE_CLIENT_ID="680277727986-633abodqkvsahq4bfmgj7vgbk2k9b0sp.apps.googleusercontent.com";
 /* >>> SUPABASE: the publishable key is safe to ship in the browser (protect data with Row Level Security). Never put a secret key (sb_secret_...) or service_role key here. Paste your Project URL (Supabase > Project Settings > API), e.g. https://abcdxyz.supabase.co <<< */
-const SUPABASE_URL="";
+const SUPABASE_URL="https://qrwcbshtafkgbeooohyq.supabase.co";
 const SUPABASE_KEY="sb_publishable_D2dwzLCS8YaDbAgqDnkJGw_Jm60zQLO";
 const SB_ON=/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(SUPABASE_URL.trim())&&SUPABASE_KEY.startsWith("sb_publishable_");
-let sb=null,sbP=null;
+let sb=null,sbP=null,sbBusy=false,sbSet=null;
+const sbGoogleOn=()=>sbSet||(sbSet=SB_ON?fetch(SUPABASE_URL.trim().replace(/\/$/,"")+"/auth/v1/settings",{headers:{apikey:SUPABASE_KEY}}).then(r=>r.ok?r.json():null).then(j=>!!(j&&j.external&&j.external.google)).catch(()=>false):Promise.resolve(false));
 const loadSB=()=>sbP||(sbP=new Promise((ok,no)=>{if(window.supabase&&supabase.createClient)return ok();const sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js";sc.async=true;sc.onload=ok;sc.onerror=()=>{sbP=null;no(new Error("load"))};document.head.appendChild(sc)}));
 async function sbClient(){if(sb)return sb;await loadSB();sb=supabase.createClient(SUPABASE_URL.trim().replace(/\/$/,""),SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return sb}
 const sbOut=()=>{try{if(sb)sb.auth.signOut()}catch(e){}};
@@ -916,14 +917,14 @@ function doLogin(e){e.preventDefault();const em=le.value.trim().toLowerCase(),pw
  if(u.status==="banned")return setErr("This account has been banned."+(u.reason?" Reason: "+u.reason:"")+" Contact support if you think this is a mistake.");
  if(u.status==="blocked")return setErr("This account is blocked."+(u.reason?" Reason: "+u.reason:"")+" Contact support to appeal.");enter(u)}
 /* ---------- Google sign-in (Google Identity Services) ---------- */
-let gisP=null,gNonces=[];
+let gisP=null,gNonces=[],gRaw={};
 const gerr=m=>{const e=document.getElementById("gerr");if(e)e.textContent=m||""};
-const gblock=()=>`<div class="gwrap"><div id="gbtn" class="gslot">${CFG.googleClientId&&!SB_ON?`<div class="gload">Loading Google…</div>`:`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`}</div><div class="err" id="gerr" role="alert"></div></div>`;
+const gblock=()=>`<div class="gwrap"><div id="gbtn" class="gslot">${CFG.googleClientId?`<div class="gload">Loading Google…</div>`:`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`}</div><div class="err" id="gerr" role="alert"></div></div>`;
 const loadGIS=()=>gisP||(gisP=new Promise((ok,no)=>{if(window.google&&google.accounts&&google.accounts.id)return ok();const sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.async=true;sc.defer=true;sc.onload=ok;sc.onerror=()=>{gisP=null;no(new Error("load"))};document.head.appendChild(sc)}));
-async function initGoogle(){const slot=document.getElementById("gbtn");if(!slot||!CFG.googleClientId||SB_ON)return;
+async function initGoogle(){const slot=document.getElementById("gbtn");if(!slot||!CFG.googleClientId)return;
  try{await loadGIS()}catch(e){if(document.getElementById("gbtn")===slot){slot.innerHTML=`<button type="button" class="gbtn" onclick="initGoogle()">${GG}Retry Google sign-in</button>`;gerr("Couldn’t reach Google. Check your connection and try again.")}return}
  if(document.getElementById("gbtn")!==slot)return;
- const a=new Uint8Array(16);crypto.getRandomValues(a);const gNonce=[...a].map(x=>x.toString(16).padStart(2,"0")).join("");gNonces.push(gNonce);if(gNonces.length>8)gNonces.shift();
+ const a=new Uint8Array(16);crypto.getRandomValues(a);const raw=[...a].map(x=>x.toString(16).padStart(2,"0")).join("");let gNonce=raw;try{gNonce=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw)))].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){}if(document.getElementById("gbtn")!==slot)return;gRaw[gNonce]=raw;gNonces.push(gNonce);if(gNonces.length>8)delete gRaw[gNonces.shift()];
  const dark=S.theme==="dark"||(S.theme!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);
  google.accounts.id.initialize({client_id:CFG.googleClientId,callback:onGoogleCred,nonce:gNonce,ux_mode:"popup",auto_select:false,cancel_on_tap_outside:true,use_fedcm_for_prompt:true});
  slot.innerHTML="";google.accounts.id.renderButton(slot,{type:"standard",theme:dark?"filled_black":"outline",size:"large",text:"continue_with",shape:"pill",logo_alignment:"left",width:Math.min(400,Math.max(200,Math.floor(slot.clientWidth||320)))})}
@@ -934,8 +935,8 @@ function checkGoogleClaims(c,server){if(!c||!c.sub||!c.email)return"Google didn�
  if(!server){if(c.iss!=="https://accounts.google.com"&&c.iss!=="accounts.google.com")return"Untrusted sign-in token.";if(c.aud!==CFG.googleClientId)return"This token was issued for a different app.";if(!(c.exp*1000>Date.now()))return"Sign-in expired. Please try again.";if(!c.nonce||!gNonces.includes(c.nonce))return"Sign-in couldn’t be verified. Please try again."}return""}
 async function onGoogleCred(resp){try{if(!resp||!resp.credential)throw new Error("Google sign-in was cancelled.");let c,server=false;
  if(CFG.googleVerifyUrl){const rs=await fetch(CFG.googleVerifyUrl,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({credential:resp.credential,nonce:(()=>{try{return decodeJwt(resp.credential).nonce}catch(e){return""}})()})});if(!rs.ok)throw new Error("Google sign-in couldn’t be verified. Try again.");c=await rs.json();server=true}
- else{c=decodeJwt(resp.credential);try{console.warn("RoyalCub: Google ID token checked in the browser only. Set RC_CONFIG.googleVerifyUrl to verify the signature on your server before production use.")}catch(e){}}
- const bad=checkGoogleClaims(c,server);if(bad)throw new Error(bad);googleSignIn(c)}catch(e){gerr(e.message||"Google sign-in failed. Please try again.")}finally{try{const n=decodeJwt(resp.credential).nonce;gNonces=gNonces.filter(x=>x!==n)}catch(e){}}}
+ else{c=decodeJwt(resp.credential);{const b0=checkGoogleClaims(c,false);if(b0)throw new Error(b0)}if(await sbGoogleOn()){sbBusy=true;try{const cl=await sbClient();const {error}=await cl.auth.signInWithIdToken({provider:"google",token:resp.credential,nonce:gRaw[c.nonce]});if(error)throw new Error("Supabase couldn’t verify this Google sign-in: "+error.message)}finally{}server=false}else try{console.warn("RoyalCub: Google ID token checked in the browser only. Set RC_CONFIG.googleVerifyUrl to verify the signature on your server before production use.")}catch(e){}}
+ const bad=checkGoogleClaims(c,server);if(bad)throw new Error(bad);googleSignIn(c);if(S.out)sbOut()}catch(e){gerr(e.message||"Google sign-in failed. Please try again.")}finally{setTimeout(()=>{sbBusy=false},600);try{const n=decodeJwt(resp.credential).nonce;gNonces=gNonces.filter(x=>x!==n);delete gRaw[n]}catch(e){}}}
 function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.gid&&x.gid===c.sub),linked=false,fresh=false;
  if(!u){u=S.users.find(x=>x.email.toLowerCase()===em);if(u){if(u.gid&&u.gid!==c.sub)return gerr("This email is already linked to a different Google account.");u.gid=c.sub;linked=true}}
  if(u&&u.email.toLowerCase()!==em&&!linked){if(S.users.some(x=>x!==u&&x.email.toLowerCase()===em))return gerr("That Google email is already used by another account.");u.email=em}
@@ -943,8 +944,8 @@ function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.
  if(u.status==="banned")return gerr("This account has been banned."+(u.reason?" Reason: "+u.reason:""));
  if(u.status==="blocked")return gerr("This account is blocked."+(u.reason?" Reason: "+u.reason:""));
  enter(u,fresh?"Account created with Google. Welcome, "+u.name.split(" ")[0]+"!":linked?"Google account linked. Welcome back!":"Signed in with Google")}
-function sbUserSignIn(u){if(!u||!S.out)return;const m=u.user_metadata||{};googleSignIn({sub:String(m.sub||m.provider_id||u.id),email:u.email||m.email||"",email_verified:true,name:m.full_name||m.name||""})}
-async function sbInit(){if(!SB_ON)return;try{const c=await sbClient();c.auth.onAuthStateChange((ev,ss)=>{if(ev==="SIGNED_IN"&&ss&&ss.user)sbUserSignIn(ss.user)});const {data}=await c.auth.getSession();if(data&&data.session)sbUserSignIn(data.session.user);if(location.hash.includes("access_token")||location.search.includes("code="))history.replaceState(null,"",location.pathname)}catch(e){console.warn("Supabase init failed",e)}}
+function sbUserSignIn(u){if(!u||!S.out||sbBusy)return;const m=u.user_metadata||{};googleSignIn({sub:String(m.sub||m.provider_id||u.id),email:u.email||m.email||"",email_verified:true,name:m.full_name||m.name||""})}
+async function sbInit(){if(!SB_ON)return;sbGoogleOn();try{const c=await sbClient();c.auth.onAuthStateChange((ev,ss)=>{if(ev==="SIGNED_IN"&&ss&&ss.user)sbUserSignIn(ss.user)});const {data}=await c.auth.getSession();if(data&&data.session)sbUserSignIn(data.session.user);if(location.hash.includes("access_token")||location.search.includes("code="))history.replaceState(null,"",location.pathname)}catch(e){console.warn("Supabase init failed",e)}}
 function fillDemo(){le.value="arjun.rao@example.com";lp.value="Arjun@123";setErr("");lp.focus()}
 function doRegister(e){e.preventDefault();const nm=rn.value.trim(),em=re.value.trim().toLowerCase(),ph=rph.value.trim(),ag=+ra.value,ct=rc.value;
  if(nm.length<2)return setErr("Enter your full name.","rn");
@@ -1057,7 +1058,7 @@ function toast(t){const e=document.createElement("div");e.className="toast";e.se
 const isAdmin=()=>{const u=S.users.find(x=>x.email===S.me);return !!u&&u.role==="admin"};
 function render(){if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);nav();
  if(S.out){view.innerHTML=authView();initGoogle();return}
- ({home,add,chat,settings,profile,history,support,admin,notifications:notifView})[S.view]();save()}
+ const VIEWS={home,add,chat,settings,profile,history,support,admin,notifications:notifView};(VIEWS[S.view]||home)();save()}
 
 function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u.title;if(u.role==="worker"&&ROLE[u.cat])return ROLE[u.cat]}
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
