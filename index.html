@@ -5,7 +5,7 @@
 <link rel="icon" id="fav" type="image/png">
 <link rel="apple-touch-icon" id="fav2">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#050d45">
 <meta name="description" content="RoyalCub Jobs (Royal Cub, royalcubjobs) is a hyper-local job portal. Find work, post vacancies and hire trusted plumbers and electricians near you.">
 <meta name="keywords" content="Royal Cub, RoyalCub Jobs, royalcub jobs, royalcubjobs, Royalcub Jobs, Royal Cub Jobs, Royal, local jobs, hire plumber, hire electrician, find work near me">
@@ -215,7 +215,7 @@ dialog h3{margin:0 0 4px;font-size:20px}
 .clk{color:#2a8fb8}.tabs2{margin-bottom:14px}.tabs2 button small{font-weight:600;opacity:.85;margin-left:4px}
 .cbar{background:#fde9c9;color:#8a5200;border-radius:12px;padding:8px 14px;font-weight:600;font-size:14px;margin:0 0 8px}
 .m .mt{display:block;font-size:11px;opacity:.7;margin-top:2px;text-align:right}.m .rt{color:#c0261c;font-weight:700;text-decoration:underline;padding:0 0 0 6px}
-.addv .hero,.addv .nav,.addv .side{display:none}.addv .app{grid-template-columns:minmax(0,1fr)}.addv .sheet{margin:0 auto;border-radius:0;min-height:100vh;min-height:100dvh;width:100%;max-width:760px;padding:0 20px calc(40px + env(safe-area-inset-bottom,0px))}.addbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;margin:0 -20px 16px;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));background:var(--bg);border-bottom:1px solid var(--line)}.addbar h2{margin:0;font-size:20px;flex:1}.addx{width:44px;height:44px;border-radius:12px;background:var(--soft);font-size:20px;line-height:1;display:grid;place-items:center}
+.addv .hero{display:none}.addv .sheet{margin:0 auto;border-radius:0;min-height:100vh;min-height:100dvh;width:100%;max-width:760px;padding:0 20px calc(40px + env(safe-area-inset-bottom,0px))}.addbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;margin:0 -20px 16px;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));background:var(--bg);border-bottom:1px solid var(--line)}.addbar h2{margin:0;font-size:20px;flex:1}.addx{width:44px;height:44px;border-radius:12px;background:var(--soft);font-size:20px;line-height:1;display:grid;place-items:center}
 .adm .hero,.adm .nav,.adm .side{display:none}.adm .app{grid-template-columns:1fr}.adm .sheet{margin:0;border-radius:0;min-height:100vh}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px}.kpi{background:var(--card);border-radius:18px;padding:14px}.kpi b{display:block;font-size:26px;color:var(--plum)}.kpi span{font-weight:600}.kpi small{display:block;color:var(--mute)}
 .cm{background:var(--card);border-radius:14px;padding:10px 14px;margin-bottom:8px;display:grid;gap:4px}.cm.int{outline:2px dashed var(--mute)}.cm small{color:var(--mute)}
@@ -494,6 +494,30 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 #planD .plans{margin:14px 0 8px}
 @media (min-width:960px){.pane{height:clamp(360px,calc(100vh - 300px),700px);height:clamp(360px,calc(100dvh - 300px),700px)}}
 .sup .row{margin:0 0 12px}.sup section .row{margin-top:0}
+/* ---- v5 UI fixes ---- */
+.sbar{position:sticky;top:0;z-index:15;display:grid;gap:8px;margin:0 -4px 14px;padding:8px 4px 10px;background:var(--bg)}
+.sf{display:flex;align-items:center;gap:8px;min-height:50px;padding:0 12px 0 14px;background:var(--soft);border:1.5px solid transparent;border-radius:16px;transition:border-color .15s,box-shadow .15s}
+.sf:focus-within{border-color:var(--plum);box-shadow:0 0 0 3px color-mix(in srgb,var(--plum) 18%,transparent)}
+.sf .sfi{flex:none;display:grid;place-items:center;width:22px;font-size:16px}.sf .sfi svg{width:20px;height:20px;fill:var(--mute);position:static;transform:none}
+.sf input{flex:1;min-width:0;width:auto;padding:12px 0;border:0;background:transparent;border-radius:0;box-shadow:none;font-size:16px;font-weight:500}
+.sf input:focus{outline:none}.sf .clr{flex:none;position:static;width:30px;height:30px;border-radius:99px;background:var(--bg);color:var(--mute)}
+.sf.sfl{min-height:46px;background:transparent;border-color:var(--line)}.sf.sfl:focus-within{background:var(--soft)}
+.nearb{flex:none;padding:7px 12px;border-radius:99px;background:var(--plum);color:#fff;font-weight:700;font-size:13px}
+[aria-invalid=true]{border-color:#c0261c!important;box-shadow:0 0 0 3px rgba(192,38,28,.14)}
+.meav{width:36px;height:36px;margin:0;border-radius:12px;font-size:13px}
+.sidepro{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;margin-bottom:10px;border-radius:14px;background:rgba(255,255,255,.08);color:#fff;text-align:left}
+.sidepro .av{width:38px;height:38px;margin:0;border-radius:12px;font-size:13px;flex:none}.sidepro b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sidepro small{opacity:.7}
+@media (max-width:699px){
+ body.chatopen .hero,body.chatopen .sheet>.row{display:none}
+ body.chatopen .sheet{padding:0}
+ body.chatopen .pane{position:fixed;left:0;right:0;top:var(--vvt,0px);height:calc(var(--vvh,100dvh) - var(--nbh,0px));border-radius:0;z-index:30;padding-top:env(safe-area-inset-top,0px)}
+ body.chatopen .nav{z-index:31}
+ body.kb .nav{display:none}
+ body.chatopen .send{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+ body.kb.chatopen .send{padding-bottom:12px}
+}
+.addv .sheet{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+@media (min-width:960px){.addv .sheet{padding-bottom:40px}}
 </style>
 
 
@@ -760,7 +784,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 <dialog id="admD" aria-label="User profile"></dialog>
 <dialog id="pitchD"><form method="dialog" id="pitchF" onsubmit="return false">
  <h3>Pitch for this job</h3><p id="pitchT" style="margin:0 0 6px;color:var(--mute)"></p>
- <div class="two"><label>Your price (₹)<input id="pp" type="number" min="1" required></label><label>Can start<select id="ps"><option>Today</option><option>This week</option><option>Next week</option></select></label></div>
+ <div class="two"><label>Your price (₹)<input id="pp" type="number" inputmode="numeric" min="1" required></label><label>Can start<select id="ps"><option>Today</option><option>This week</option><option>Next week</option></select></label></div>
  <label>Why you’re a good fit<textarea id="pm" required placeholder="Years of experience, tools, certificates…"></textarea></label>
  <div class="acts"><button class="btn" onclick="sendPitch()">Request</button><button class="btn alt" onclick="pitchD.close()">Cancel</button></div>
 </form></dialog>
@@ -929,7 +953,20 @@ async function cFollow(){if(cOff||S.out||!S.me)return false;let ch=false;try{
   else if(JSON.stringify(folOf(row.id))!==JSON.stringify(to)){S.fol[row.id]=to;ch=true}}
  const mine=JSON.stringify(folOf(me));if(cHash[k]!==mine){await cFetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify([{kind:"follow",id:me,owner:me,data:{to:folOf(me)},updated_at:new Date().toISOString()}])});cHash[k]=mine}
  }catch(e){if(!cFW){cFW=true;console.warn("RoyalCub: follow sync skipped ("+e.message+"). Re-run supabase_setup.sql to enable it.")}}return ch}
-async function cSync(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||cBusy||S.out||!S.me)return;cBusy=true;try{await cPush();let ch=await cPull();if(await cFollow())ch=true;if(!cOff)cState="ok";if(ch){save();if(S.view==="home"&&!document.querySelector("dialog[open]"))render()}}catch(e){if(!cOff)cState="err";console.warn("RoyalCub sync:",e.message)}finally{cBusy=false;syncUI()}}
+let cPLast="1970-01-01T00:00:00Z";
+async function cProfiles(){if(cOff||S.out||!S.me)return false;let ch=false;try{
+ const me=S.name,mu=S.users.find(u=>u.name===me);S.users.forEach(()=>0);
+ const mine=mu?JSON.stringify({photo:mu.photo||"",loc:mu.loc||(S.profile||{}).loc||"",title:mu.title||"",role:mu.role||"",cat:mu.cat||""}):null;
+ if(mine&&cHash["prof"+me]!==mine){await cFetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify([{kind:"profile",id:me,owner:me,data:JSON.parse(mine),updated_at:new Date().toISOString()}])});cHash["prof"+me]=mine}
+ const r=await cFetch(cBase()+"?kind=eq.profile&updated_at=gt."+encodeURIComponent(cPLast)+"&select=id,data,updated_at&order=updated_at.asc&limit=500",{headers:cHead()}),rows=await r.json();if(!Array.isArray(rows))return false;
+ for(const row of rows){if(row.updated_at&&row.updated_at>cPLast)cPLast=row.updated_at;const d=row.data;if(!d||typeof d!=="object"||row.id===me)continue;
+  let u=S.users.find(x=>x.name===row.id);if(!u){stubUser(row.id);u=S.users.find(x=>x.name===row.id);if(!u)continue;if(d.role)u.role=d.role==="worker"?"worker":"client";if(d.cat)u.cat=String(d.cat).slice(0,40)}
+  const photo=typeof d.photo==="string"&&(d.photo===""||/^data:image\/(jpeg|png|webp|gif);base64,/.test(d.photo))&&d.photo.length<200000?d.photo:null;
+  if(photo!==null&&(u.photo||"")!==photo){u.photo=photo;ch=true}
+  if(typeof d.loc==="string"&&d.loc&&u.loc!==d.loc.slice(0,40)){u.loc=d.loc.slice(0,40);ch=true}
+  if(typeof d.title==="string"&&u.title!==d.title.slice(0,40)){u.title=d.title.slice(0,40);ch=true}}
+ }catch(e){if(!cFW){cFW=true;console.warn("RoyalCub: profile sync skipped ("+e.message+"). Re-run supabase_setup.sql to enable it.")}}return ch}
+async function cSync(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||cBusy||S.out||!S.me)return;cBusy=true;try{await cPush();let ch=await cPull();if(await cFollow())ch=true;if(await cProfiles())ch=true;if(!cOff)cState="ok";if(ch){save();if(S.view==="home"&&!document.querySelector("dialog[open]"))render()}}catch(e){if(!cOff)cState="err";console.warn("RoyalCub sync:",e.message)}finally{cBusy=false;syncUI()}}
 function cSched(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||S.out)return;clearTimeout(cT);cT=setTimeout(()=>{cT=null;cSync()},900)}
 setInterval(()=>{if(!document.hidden)cSync()},20000);addEventListener("focus",cSync);
 const save=()=>{try{localStorage.setItem("rcj",JSON.stringify(S))}catch(e){}cSched()};
@@ -952,7 +989,7 @@ const PRC=`<svg class="mi prc" viewBox="0 0 24 24" aria-hidden="true"><circle cx
 const CLK=IC.clock.replace("<svg ",'<svg class="mi clk" ');
 const NAV=[["home",IC.home,"Home"],["add",IC.add,"Add"],["chat",IC.chat,"Chat"],["settings",IC.settings,"Settings"]];
 function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot">${unread()}</span>`:""}</button>`).join("");
- botNav.innerHTML=h;sideNav.innerHTML=h;{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.parentElement.style.visibility=un?"visible":"hidden"}
+ botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;{const mb=document.querySelector(".top .menu");if(mb){if(MENU_HTML==null)MENU_HTML=mb.innerHTML;mb.innerHTML=S.out?MENU_HTML:`<span class="av meav" style="${abg(S.name)}">${ait(S.name)}</span>`}}{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.parentElement.style.visibility=un?"visible":"hidden"}
 const BASE_T=document.title;
 const unread=()=>S.threads.reduce((a,t)=>a+(+t.u||0),0);
 const stubUser=n=>{if(n&&!S.users.some(u=>u.name===n))S.users.push({email:n.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:n,phone:"",age:"",cat:"Client",role:"client",title:"",status:"active",joined:Date.now()})};
@@ -966,7 +1003,7 @@ function showAuth(k){au=k;if(k==="forgot")fp={step:1,email:"",code:"",tries:0};r
 function setErr(m,id){document.getElementById("aerr").textContent=m;const f=id&&document.getElementById(id);if(f)f.focus();return false}
 function pwErr(p,c){if(p.length<8)return["Password must be at least 8 characters.",0];if(!/[A-Za-z]/.test(p)||!/\d/.test(p))return["Use at least one letter and one number.",0];if(p!==c)return["Passwords don’t match.",1];return null}
 function swapBoxes(n){S.box=S.box||{};if(S.boxFor===n)return;if(S.boxFor)S.box[S.boxFor]={t:S.threads,n:S.notifs};const b=S.box[n];S.threads=b?b.t:(S.boxFor?[]:S.threads);S.notifs=b?b.n:(S.boxFor?[]:S.notifs);S.boxFor=n;S.thread=null}
-function enter(u,msg){swapBoxes(u.name);S.me=u.email;u.last=Date.now();S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false;S.view=u.role==="admin"?"admin":"home";S.cat="All";S.q="";S.thread=null;log("login");save();render();scrollTo(0,0);resumeNeg();scheduleNewPro();RT.start();toast(msg||"Welcome back, "+u.name.split(" ")[0])}
+function enter(u,msg){navJump=true;swapBoxes(u.name);S.me=u.email;u.last=Date.now();S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false;S.view=u.role==="admin"?"admin":"home";S.cat="All";S.q="";S.thread=null;log("login");save();render();scrollTo(0,0);resumeNeg();scheduleNewPro();RT.start();toast(msg||"Welcome back, "+u.name.split(" ")[0])}
 function doLogin(e){e.preventDefault();const em=le.value.trim().toLowerCase(),pw=lp.value;
  if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","le");if(!pw)return setErr("Enter your password.","lp");
  const u=S.users.find(x=>x.email.toLowerCase()===em&&x.pw===pw);if(!u)return setErr("Incorrect email or password.","lp");
@@ -1108,13 +1145,15 @@ function admTickets(){const x=adm.tix&&S.tix.find(t=>t.id===adm.tix);
 function tixReply(id){const x=S.tix.find(t=>t.id===id),v=ar2.value.trim();if(!v)return;const int=ai.checked;x.thread.push({by:S.name,role:"admin",t:v,ts:Date.now(),internal:int});if(!int){x.unread=1;if(x.status==="open")x.status="in-progress"}log(int?"internal note":"ticket reply",id);save();admin()}
 function tixStatus(id,st){const x=S.tix.find(t=>t.id===id);x.status=st;log("ticket "+st,id);save();admin()}
 
-function go(v){shut("postD","profD","storyD","addD","pitchD");S.view=v;if(v!=="profile")editP=false;if(v!=="chat")S.thread=null;render();scrollTo(0,0)}
+function go(v){navJump=true;shut("postD","profD","storyD","addD","pitchD");S.view=v;if(v!=="profile")editP=false;if(v!=="chat")S.thread=null;render();scrollTo(0,0)}
 function readNotes(){S.notes=0;nav();toast("You’re all caught up")}
 function toast(t){const e=document.createElement("div");e.className="toast";e.setAttribute("role","status");e.textContent=t;const ds=[...document.querySelectorAll("dialog[open]")];(ds[ds.length-1]||document.body).append(e);setTimeout(()=>e.remove(),2400)}
 const isAdmin=()=>{const u=S.users.find(x=>x.email===S.me);return !!u&&u.role==="admin"};
-function render(){if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);nav();
- if(S.out){view.innerHTML=authView();initGoogle();return}
- const VIEWS={home,add,chat,settings,profile,history,support,admin,notifications:notifView};(VIEWS[S.view]||home)();save()}
+let lastV="",navJump=false,MENU_HTML=null;
+function fillLocs(){const d=document.getElementById("locdl2");if(d)d.innerHTML=allLocs().map(l=>`<option value="${esc(l)}">`).join("")}
+function render(){if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;navJump=false;nav();vv();
+ if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
+ const VIEWS={home,add,chat,settings,profile,history,support,admin,notifications:notifView};(VIEWS[S.view]||home)();fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
 
 function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u.title;if(u.role==="worker"&&ROLE[u.cat])return ROLE[u.cat]}
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
@@ -1182,8 +1221,10 @@ function catEdges(){const c=document.getElementById("cats"),l=document.getElemen
 function home(){
  const prevC=document.getElementById("cats"),keep=prevC?prevC.scrollLeft:0;
  const jobs=shown(),svcs=shownS(),aus=authors(),isS=S.tab==="services",src=isS?S.services:S.jobs;
- view.innerHTML=`<div class="search" role="search">${IC.search}<input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value)" placeholder="Search people, plumber, driver, electrician…" aria-label="Search people, jobs or trades" autocomplete="off" enterkeyhint="search"><button class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear search">✕</button></div>
- <div class="locrow" role="group" aria-label="Filter search by location"><label class="lbl" for="qloc">📍 Location</label><input id="qloc" list="locdl" value="${esc(S.qloc||"")}" oninput="setQL(this.value)" placeholder="Any location" autocomplete="off" aria-label="Filter results by location"><datalist id="locdl">${allLocs().map(l=>`<option value="${esc(l)}">`).join("")}</datalist><button type="button" class="chip" onclick="setQL(myLoc())">Near me</button>${S.qloc?`<button type="button" class="chip" onclick="setQL('')">Clear</button>`:""}</div>
+ view.innerHTML=`<div class="sbar" role="search">
+ <label class="sf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value)" placeholder="Search people, plumber, driver…" aria-label="Search people, jobs or trades" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear search">✕</button></label>
+ <div class="sf sfl"><label class="sfi" for="qloc" aria-label="Location">📍</label><input id="qloc" list="locdl" value="${esc(S.qloc||"")}" oninput="setQL(this.value)" placeholder="Any location" autocomplete="off" enterkeyhint="search" aria-label="Filter results by location"><datalist id="locdl">${allLocs().map(l=>`<option value="${esc(l)}">`).join("")}</datalist><button type="button" class="nearb" onclick="setQL(myLoc())">Near me</button>${S.qloc?`<button type="button" class="clr" onclick="setQL('')" aria-label="Clear location">✕</button>`:""}</div>
+</div>
  <div id="sres">${results()}</div>
  <div class="row"><h2>Status</h2><span>${String(aus.length).padStart(2,"0")}</span></div>
  <div class="status"><button class="st" onclick="openAdd()" aria-label="Add status poster"><div class="av addt">＋</div><b>Add</b></button>${aus.map(n=>{const me=n===S.name,l=S.stories.filter(x=>x.by===n),seen=me||l.every(x=>x.v.includes(S.name)),tot=l.reduce((a,x)=>a+x.v.length,0);
@@ -1243,7 +1284,7 @@ function book(id,bid){bj=S.services.find(z=>z.id===id);if(!bj)return;bedit=bid?b
  bookD.innerHTML=`<form method="dialog" onsubmit="return false" class="bkf">
  <div class="dh"><h3 style="margin:0">Book this professional</h3><button type="button" class="x" aria-label="Close" onclick="bookD.close()">✕</button></div>
  <div class="bkpro"><div class="av sm" style="${abg(bj.by)}" aria-hidden="true">${ait(bj.by)}</div><div><b>${esc(bj.by)}</b><small>${esc(bj.t)}</small></div><span class="pill Completed">${rateTx(bj)}/${uS(bj)}</span></div>
- <div class="two"><label>Date<input id="bd" type="date" required></label><label>${bj.rt==="day"?"Days needed":"Hours needed"}<input id="bh" type="number" min="${qMin(bj)}" max="${qMax(bj)}" value="${bedit?bedit.hours:(bj.rt==="day"?1:Math.max(2,qMin(bj)))}" oninput="bookEst()"></label></div>
+ <div class="two"><label>Date<input id="bd" type="date" required></label><label>${bj.rt==="day"?"Days needed":"Hours needed"}<input id="bh" type="number" inputmode="numeric" min="${qMin(bj)}" max="${qMax(bj)}" value="${bedit?bedit.hours:(bj.rt==="day"?1:Math.max(2,qMin(bj)))}" oninput="bookEst()"></label></div>
  <div class="neg"><b>Price</b>
   <div class="seg" role="group" aria-label="Pricing option"><button type="button" aria-pressed="${bmode==="listed"}" onclick="setBM('listed')">Listed rate</button><button type="button" aria-pressed="${bmode==="offer"}" onclick="setBM('offer')">Negotiate</button></div>
   <div id="offBox" class="${bmode==="offer"?"":"hide"}"><label>Your offer per ${uOf(bj)} (₹)<input id="bo" type="number" min="1" max="99999" inputmode="numeric" value="${bedit&&bedit.offer?bedit.offer:mid5(bj)}" oninput="bookEst()"></label>
@@ -1357,9 +1398,9 @@ function add(){const k=at||(S.role==="worker"?"service":"job");
  <div class="seg" style="max-width:560px;margin-bottom:16px" role="group" aria-label="What do you want to post?"><button aria-pressed="${k==="job"}" onclick="setAdd('job')">Post a vacancy</button><button aria-pressed="${k==="service"}" onclick="setAdd('service')">Offer a service</button></div>
  ${k==="job"?jobForm():svcForm()}`;if(k==="service")setRT("hour")}
 const jobForm=o=>`<form onsubmit="${o?"saveEdit(event)":"postJob(event)"}"><label>Job title<input id="jt" required maxlength="70" placeholder="e.g. Install a new water heater" value="${o?esc(o.t):""}"></label>
- <div class="two"><label>Field<select id="jc">${CATS.slice(1).map(c=>`<option ${o&&o.c===c?"selected":""}>${c}</option>`).join("")}</select></label><label>Budget (₹)<input id="jb" required type="number" min="1" value="${o?o.b.replace(/\D/g,""):""}"></label></div>
+ <div class="two"><label>Field<select id="jc">${CATS.slice(1).map(c=>`<option ${o&&o.c===c?"selected":""}>${c}</option>`).join("")}</select></label><label>Budget (₹)<input id="jb" required type="number" inputmode="numeric" enterkeyhint="next" min="1" value="${o?o.b.replace(/\D/g,""):""}"></label></div>
  <label>Price is for<select id="jp"><option value="day" ${o&&o.per==="day"?"selected":""}>One day</option><option value="week" ${o&&o.per==="week"?"selected":""}>One week</option></select></label>
- <label>Location<input id="jl" required placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label>
+ <label>Location<input id="jl" required autocomplete="address-level2" list="locdl2" placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label>
  <label>What needs doing<textarea id="jd" required placeholder="Describe the work, timing and any tools or certificates needed.">${o?esc(o.d):""}</textarea></label>
  <button class="btn" style="justify-self:start">${o?"Save changes":"Publish vacancy"}</button></form>`;
 const svcForm=o=>{const rt=o&&o.rt==="day"?"day":"hour";return `<form onsubmit="${o?"saveEdit(event)":"postService(event)"}"><label>Service title<input id="svT" required maxlength="70" placeholder="e.g. Experienced plumber for home repairs" value="${o?esc(o.t):""}"></label>
@@ -1398,16 +1439,16 @@ function delPost(kind,id){const o=ownPost(kind,id);if(!o)return;shut("postD","ed
 function confirmDel(kind,id){const L=kind==="job"?S.jobs:S.services,i=L.findIndex(x=>x.id===id&&x.by===S.name);if(i<0){delD.close();return}const t=L[i].t;L.splice(i,1);
  S.notifs=S.notifs.filter(n=>!(kind==="service"&&n.act&&n.act.k==="service"&&n.act.id===id));log("deleted "+kind,t);save();delD.close();toast("Post deleted");render();nav()}
 
-function openChat(id){S.thread=id;S.view="chat";const t=S.threads.find(t=>t.id===id);t.u=0;if(typeof RT!=="undefined")RT.markRead(t.n);render()}
+function openChat(id){Chat.stick=true;S.thread=id;S.view="chat";const t=S.threads.find(t=>t.id===id);t.u=0;if(typeof RT!=="undefined")RT.markRead(t.n);render()}
 function chat(){const t=S.threads.find(x=>x.id===S.thread);
  const pres=on=>`<i class="pres ${on?"on":""}" aria-hidden="true"></i>`;
  view.innerHTML=`<div class="row"><h2>Messages${unread()?` <span class="nb" role="img" aria-label="${unread()} unread messages" style="vertical-align:middle">${unread()}</span>`:""}</h2>${SB_ON&&typeof RT!=="undefined"&&RT.ok===false?`<span class="cnt" role="status">Chat server not set up yet</span>`:""}</div><div class="chat ${t?"open":""}">
  <div class="threads">${S.threads.length?S.threads.map(x=>{const l=x.m[x.m.length-1];return `<button class="th" ${t&&t.id===x.id?'aria-current="true"':""} onclick="openChat('${x.id}')"><span class="avw"><div class="av" style="${abg(x.n)}">${ait(x.n)}</div>${pres(x.on)}</span><span class="thm"><span class="thr"><b>${esc(x.n)}</b>${l?`<em>${tShort(l.ts)}</em>`:""}</span><span class="thr"><small>${l?(l.me?"You: ":"")+esc(l.t):"Say hello"}</small>${x.u?`<span class="nb" role="img" aria-label="${x.u} unread message${x.u===1?"":"s"}">${x.u>99?"99+":x.u}</span>`:""}</span></span></button>`}).join(""):`<div class="empty">No conversations yet.</div>`}</div>
- <section class="pane" aria-label="Conversation">${t?`${!Net.on?`<div class="cbar" role="status">You’re offline. Messages will send automatically when you reconnect.</div>`:""}<div class="ph"><button class="back" aria-label="Back to conversations" onclick="S.thread=null;render()">‹</button><span class="avw"><div class="av" style="${abg(t.n)}">${ait(t.n)}</div>${pres(t.on)}</span><div class="phn"><b>${esc(t.n)}</b><small class="${t.typing||t.on?"on":""}">${t.typing?"typing…":t.on?"Online":SB_ON?"Offline":""}</small></div><button class="btn alt rep" data-n="${esc(t.n)}" onclick="reportUser(this.dataset.n)" aria-label="Report ${esc(t.n)}">Report</button></div>
+ <section class="pane" aria-label="Conversation">${t?`${!Net.on?`<div class="cbar" role="status">You’re offline. Messages will send automatically when you reconnect.</div>`:""}<div class="ph"><button class="back" aria-label="Back to conversations" onclick="S.thread=null;Chat.stick=true;render()">‹</button><span class="avw"><div class="av" style="${abg(t.n)}">${ait(t.n)}</div>${pres(t.on)}</span><div class="phn"><b>${esc(t.n)}</b><small class="${t.typing||t.on?"on":""}">${t.typing?"typing…":t.on?"Online":SB_ON?"Offline":""}</small></div><button class="btn alt rep" data-n="${esc(t.n)}" onclick="reportUser(this.dataset.n)" aria-label="Report ${esc(t.n)}">Report</button></div>
  <div class="msgs" id="ms" aria-live="polite">${t.m.map(m=>`<div class="m ${m.me?"me":""}">${esc(m.t)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]:""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span><button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}</span></div>`).join("")}</div>
- <form class="send" style="max-width:none" onsubmit="sendMsg(event)"><input id="mi" autocomplete="off" aria-label="Message" placeholder="Write a message"><button class="btn">Send</button></form>`:`<div class="empty" style="margin:auto">Pick a conversation to start chatting.</div>`}</section></div>`;
- const m=document.getElementById("ms");if(m)m.scrollTop=m.scrollHeight}
-function sendMsg(e){e.preventDefault();const i=document.getElementById("mi");if(Chat.send(S.thread,i.value)){i.value=""}ui()}
+ <form class="send" style="max-width:none" onsubmit="sendMsg(event)"><input id="mi" autocomplete="off" autocapitalize="sentences" enterkeyhint="send" maxlength="1000" aria-label="Message" placeholder="Write a message"><button class="btn" onpointerdown="event.preventDefault()">Send</button></form>`:`<div class="empty" style="margin:auto">Pick a conversation to start chatting.</div>`}</section></div>`;
+ const m=document.getElementById("ms");if(m){if(Chat.stick!==false||Chat.pos==null)m.scrollTop=m.scrollHeight;else m.scrollTop=Math.min(Chat.pos,m.scrollHeight)}}
+function sendMsg(e){e.preventDefault();const i=document.getElementById("mi");if(!i)return;Chat.stick=true;if(Chat.send(S.thread,i.value)){i.value=""}ui();const n=document.getElementById("mi");if(n)n.focus({preventScroll:true})}
 const rank={sending:0,sent:1,delivered:2,read:3};
 const Net={on:navigator.onLine!==false,send(e){return Net.on?RT.send(e):Promise.reject("offline")},
  set(on){if(Net.on===on)return;Net.on=on;if(on){S.threads.forEach(t=>t.m.forEach(m=>{if(m.st==="sending")m.next=0}));Chat.flush();if(typeof RT!=="undefined")RT.poll()}ui()}};
@@ -1463,8 +1504,26 @@ const RT={ok:null,err:undefined,at:0,me:"",since:0,first:true,timer:null,ch:null
    RT.pch=c.channel("rc-presence",{config:{presence:{key:me}}});RT.pch.on("presence",{event:"sync"},()=>{const st=RT.pch.presenceState();let ch=false;S.threads.forEach(t=>{const on=t.n in st?1:0;if(t.on!==on){t.on=on;ch=true}});if(ch&&S.view==="chat")ui()}).subscribe(x=>{if(x==="SUBSCRIBED")RT.pch.track({at:Date.now()})})}
   catch(e){console.warn("RoyalCub: realtime unavailable, using polling",e&&e.message)}},
  stop(){clearInterval(RT.timer);RT.timer=null;RT.me="";try{if(RT.bc){RT.bc.close();RT.bc=null}}catch(e){}try{if(sb){if(RT.ch)sb.removeChannel(RT.ch);if(RT.pch)sb.removeChannel(RT.pch)}}catch(e){}RT.ch=RT.pch=null}};
-addEventListener("storage",ev=>{if(ev.key==="rc_mbox")RT.poll()});addEventListener("online",()=>{RT.ok=null;RT.poll()});document.addEventListener("visibilitychange",()=>{if(!document.hidden)RT.poll()});
-function ui(){const i=document.getElementById("mi"),v=i?i.value:"",f=i&&document.activeElement===i;render();const n=document.getElementById("mi");if(n){n.value=v;if(f)n.focus()}}
+addEventListener("storage",ev=>{if(ev.key==="rc_mbox")RT.poll()});
+/* ---------- Keyboard-aware layout (mobile chat) and form behaviour ---------- */
+function vv(){const v=window.visualViewport,h=v?v.height:innerHeight,t=v?v.offsetTop:0,a=document.activeElement,typing=!!a&&/^(INPUT|TEXTAREA)$/.test(a.tagName)&&matchMedia("(pointer:coarse)").matches,kb=(innerHeight-h>140)||(typing&&S.view==="chat"&&!!S.thread);
+ const r=document.documentElement.style;r.setProperty("--vvh",h+"px");r.setProperty("--vvt",t+"px");document.body.classList.toggle("kb",kb);
+ const nb=document.getElementById("botNav");r.setProperty("--nbh",kb||!nb||getComputedStyle(nb).display==="none"?"0px":nb.offsetHeight+"px");
+ const m=document.getElementById("ms");if(m&&kb&&Chat.stick!==false)m.scrollTop=m.scrollHeight}
+if(window.visualViewport){visualViewport.addEventListener("resize",vv);visualViewport.addEventListener("scroll",vv)}addEventListener("resize",vv);
+document.addEventListener("focusin",e=>{const t=e.target;if(!t.matches||!t.matches("input,textarea,select"))return;vv();
+ if(t.id==="q"||t.id==="qloc"){const sr=document.getElementById("sres"),sb=document.querySelector(".sbar");if(sr&&sb){const top=sr.getBoundingClientRect().top+scrollY-sb.offsetHeight-8;if(scrollY>top+4)scrollTo({top:Math.max(0,top),behavior:"smooth"})}return}
+ if(t.id==="mi"){setTimeout(()=>{vv();const m=document.getElementById("ms");if(m&&Chat.stick!==false)m.scrollTop=m.scrollHeight},250);return}
+ if(t.closest("form,dialog")&&matchMedia("(pointer:coarse)").matches)setTimeout(()=>{try{t.scrollIntoView({block:"center",behavior:"smooth"})}catch(x){}},300)});
+document.addEventListener("focusout",()=>setTimeout(vv,120));
+document.addEventListener("keydown",e=>{if(e.key!=="Enter"||e.isComposing||e.shiftKey)return;const t=e.target;
+ if(!t.matches||!t.matches("input:not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=search]):not([type=file])")||!t.form||t.form.classList.contains("send"))return;
+ const els=[...t.form.querySelectorAll("input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=file]):not([disabled]),select,textarea")].filter(x=>x.offsetParent!==null),i=els.indexOf(t);
+ if(i>=0&&i<els.length-1){e.preventDefault();els[i+1].focus()}});
+document.addEventListener("invalid",e=>{e.target.setAttribute("aria-invalid","true")},true);
+document.addEventListener("input",e=>{if(e.target.getAttribute&&e.target.getAttribute("aria-invalid")==="true"&&e.target.checkValidity())e.target.removeAttribute("aria-invalid")},true);
+addEventListener("online",()=>{RT.ok=null;RT.poll()});document.addEventListener("visibilitychange",()=>{if(!document.hidden)RT.poll()});
+function ui(){const i=document.getElementById("mi"),v=i?i.value:"",f=i&&document.activeElement===i,m=document.getElementById("ms");if(m){Chat.pos=m.scrollTop;Chat.stick=Chat.stick===true||m.scrollHeight-m.scrollTop-m.clientHeight<80}render();const n=document.getElementById("mi");if(n){n.value=v;if(f)n.focus({preventScroll:true})}}
 addEventListener("online",()=>Net.set(true));addEventListener("offline",()=>Net.set(false));
 setTimeout(()=>Chat.flush(),0)
 
@@ -1501,10 +1560,10 @@ function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...
  <div class="pst" aria-label="Your activity"><div><b>${mj.length}</b><span>Posts</span></div><div><b>${reqs}</b><span>Requests</span></div><div><b>${views}</b><span>Views</span></div></div></div>
  <div class="pright">${editP?`<form class="pform pcard" style="padding:16px" onsubmit="saveProfile(event)">
  <div class="two"><label>Full name<input id="pn" required maxlength="40" value="${esc(p.name)}" autocomplete="name"></label>
- <label>Age<input id="pa" type="number" min="16" max="99" required value="${esc(p.age)}"></label></div>
+ <label>Age<input id="pa" type="number" inputmode="numeric" min="16" max="99" required value="${esc(p.age)}"></label></div>
  <div class="two"><label>Email ID<input id="pe" type="email" required value="${esc(p.email)}" autocomplete="email"></label>
  <label>Phone number<input id="pph" type="tel" required pattern="[0-9+\\s\\-]{7,16}" title="Use digits, spaces, + or -" value="${esc(p.phone)}" autocomplete="tel"></label></div>
- <label>Your location (town or district)<input id="ploc" maxlength="40" value="${esc(p.loc||"Palakkad")}" placeholder="Palakkad" autocomplete="address-level2"></label>
+ <label>Your location (town or district)<input id="ploc" maxlength="40" list="locdl2" value="${esc(p.loc||"Palakkad")}" placeholder="Palakkad" autocomplete="address-level2"></label>
  <label>Company name or service role (optional)<input id="pt" maxlength="40" value="${esc(p.title||"")}" placeholder="e.g. Plumber or Sharma Constructions"></label>
  <div class="acts"><button class="btn">Save changes</button><button type="button" class="btn alt" onclick="editP=false;render()">Cancel</button></div></form>`
  :`<div class="pcard"><h4>Personal details</h4>${item(IC.person,"Name",v(p.name))}${item(IC.person,"Company / role",esc(roleOf(S.name)))}${item(IC.person,"Age",v(p.age))}${item(IC.mail,"Email ID",v(p.email))}${item(IC.phone,"Phone number",v(p.phone))}</div>
@@ -1514,8 +1573,8 @@ function onPhoto(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
  if(!/^image\/(png|jpe?g|webp|gif)$/.test(f.type)){toast("Choose a PNG, JPG, WebP or GIF image");return}
  if(f.size>10*1024*1024){toast("That image is too large (max 10 MB)");return}
  const img=new Image(),url=URL.createObjectURL(f);
- img.onload=()=>{URL.revokeObjectURL(url);try{const N=256,c=document.createElement("canvas");c.width=c.height=N;const g=c.getContext("2d"),m=Math.min(img.width,img.height);g.fillStyle="#fff";g.fillRect(0,0,N,N);g.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,N,N);
-  const u=S.users.find(q=>q.email===S.me);if(!u){toast("Log in to change your picture");return}u.photo=c.toDataURL("image/jpeg",.85);save();toast("Profile picture updated");render();nav()}catch(e){toast("Couldn’t use that image")}};
+ img.onload=()=>{URL.revokeObjectURL(url);try{const N=192,c=document.createElement("canvas");c.width=c.height=N;const g=c.getContext("2d"),m=Math.min(img.width,img.height);g.fillStyle="#fff";g.fillRect(0,0,N,N);g.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,N,N);
+  const u=S.users.find(q=>q.email===S.me);if(!u){toast("Log in to change your picture");return}u.photo=c.toDataURL("image/jpeg",.78);save();toast("Profile picture updated");render();nav()}catch(e){toast("Couldn’t use that image")}};
  img.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t read that image")};img.src=url}
 function removePhoto(){const u=S.users.find(q=>q.email===S.me);if(u){delete u.photo;save();toast("Profile picture removed");render()}}
 function myPosts(mj){const row=o=>{const isS=!!o.min,kind=isS?"service":"job";return `<div class="mp"><button class="mpt" onclick="${isS?"openService":"openPost"}(${o.id})"><b>${esc(o.t)}</b><small>${isS?"Service":"Vacancy"} · ${esc(o.c)} · ${isS?rateTx(o)+" per "+uOf(o):esc(o.b)+per(o)}</small></button><div class="mpa"><button class="btn alt" aria-label="Edit ${esc(o.t)}" onclick="editPost('${kind}',${o.id})">Edit</button><button class="btn alt dng" aria-label="Delete ${esc(o.t)}" onclick="delPost('${kind}',${o.id})">Delete</button></div></div>`};
@@ -1533,5 +1592,6 @@ setTimeout(hideSplash,reduce?700:2700);
 render();
 resumeNeg();scheduleNewPro();sbInit();RT.start();
 </script>
+<datalist id="locdl2"></datalist>
 </body>
 </html>
