@@ -812,19 +812,23 @@ const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 let au="login",fp={step:1,email:"",code:"",tries:0};
 let editP=false,cp=null,ck="job",sv={n:null,i:0};
 let S={services:SERV0,tab:"jobs",role:"client",name:"Arjun Rao",theme:"auto",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[{email:"arjun.rao@example.com",pw:"Arjun@123",name:"Arjun Rao",phone:"+91 98765 43210",age:"28",cat:"Client",role:"client",title:"Rao Home Projects"}],hist:[{id:"h1",t:"Fix leaking kitchen pipe",who:"Anna Reed",d:"12 Oct 2026",a:"₹800",s:"Completed"},{id:"h2",t:"Deep clean 2BHK flat",who:"Meera Nair",d:"28 Sep 2026",a:"₹1,800",s:"Completed"},{id:"h3",t:"Rewire hall switchboard",who:"Victor King",d:"15 Sep 2026",a:"₹1,200",s:"Cancelled"}],cat:"All",view:"home",notes:2,thread:null
-async function fetchJobs() {
-  const { data, error } = await supabase
-    .from('jobs')
-    .select('*');
 
-  if (error) {
-    console.error('Error fetching jobs:', error);
-  } else {
-    jobs = data;
-    render();
-  }
-}
-fetchJobs();
+ {id:1,t:"Fix leaking kitchen pipe",c:"Plumbing",loc:"Downtown",b:"₹800",per:"day",by:"Anna Reed",d:"Pipe under the sink drips constantly. Need someone to replace the joint and check the seals today or tomorrow.",p:[],v:VW.slice(0,5)},
+ {id:2,t:"Rewire garage sockets",c:"Electrical",loc:"Northside",b:"₹2,500",per:"week",by:"Victor King",d:"Four sockets and a new breaker panel in a detached garage. Certified electrician only.",p:[],v:VW.slice(1,4)},
+ {id:3,t:"Night nurse for elderly parent",c:"Nursing",loc:"Riverside",b:"₹2,400",per:"day",by:"Hana Kim",d:"Care for my father 3 nights a week. Experience with mobility support and medication reminders needed.",p:[],v:VW.slice(0,7)},
+ {id:4,t:"Garden cleanup and hedge trim",c:"Gardening",loc:"Westfield",b:"₹1,500",per:"day",by:"Dev Bose",d:"Medium garden, overgrown hedges, leaves to bag. Tools are available on site.",p:[],v:VW.slice(2,4)}],
+ stories:[{id:"s1",by:"Anna Reed",text:"Plumber needed this week 🔧",bg:0,v:VW.slice(0,3)},{id:"s2",by:"Victor King",text:"Certified electrician wanted ⚡",bg:1,v:VW.slice(1,3)},{id:"s3",by:"Hana Kim",text:"Night nurse needed 🩺",bg:2,v:VW.slice(0,2)},{id:"s4",by:"Dev Bose",text:"Garden clean-up day this Saturday 🌿",bg:3,v:VW.slice(3,6)}],
+ threads:[
+ {id:"a",n:"Anna Reed",on:1,m:[{t:"Hi! Are you available to look at the pipe today?"}]},
+ {id:"b",n:"Sam Foster",on:1,m:[{t:"Thanks for the quick quote."}]},
+ {id:"c",n:"Dana Fox",on:0,m:[{t:"Can you start Monday?"}]}]};
+try{const x=JSON.parse(localStorage.getItem("rcj")||"null");if(x&&x.jobs)S=Object.assign(S,x,{view:"home",thread:null,out:false,sec:null,q:""})}catch(e){}
+const SEED2=[{id:5,t:"Driver needed for weekend trip",c:"Driving",loc:"Airport Road",b:"₹1,800",per:"day",by:"Rahul Menon",d:"Driver with own licence needed to take a family of four to Mysuru and back on Saturday.",p:[],v:VW.slice(0,4)},
+{id:6,t:"Paint a 2-bedroom flat",c:"Painting",loc:"Eastgate",b:"₹6,500",per:"week",by:"Sneha Pillai",d:"Two bedrooms and a hall, putty and two coats of emulsion. Paint will be provided.",p:[],v:VW.slice(1,3)},
+{id:7,t:"Home cook for a family of five",c:"Cooking",loc:"Lakeview",b:"₹3,000",per:"week",by:"Imran Khan",d:"Morning and evening meals, mostly vegetarian. Six days a week.",p:[],v:VW.slice(0,3)},
+{id:8,t:"Two-wheeler service and brake check",c:"Mechanic",loc:"Midtown",b:"₹900",per:"day",by:"Joseph Paul",d:"Full service and brake pad replacement for a 150cc scooter. Pickup preferred.",p:[],v:VW.slice(2,5)},
+{id:9,t:"Install new bathroom taps",c:"Plumbing",loc:"Northside",b:"₹1,100",per:"day",by:"Karan Mehta",d:"Replace two taps and a shower mixer. Fittings are already bought.",p:[],v:VW.slice(0,2)}];
+const PER0={1:["₹800","day"],2:["₹2,500","week"],3:["₹2,400","day"],4:["₹1,500","day"]};
 S.jobs.forEach(j=>{if(!j.per){const d=PER0[j.id];if(d){j.b=d[0];j.per=d[1]}else j.per=/week|mo/i.test(j.b)?"week":"day"}});
 const per=j=>`<small class="per">per ${j.per==="week"?"week":"day"}</small>`;
 const REV0=[["Sam Foster","Meera Nair",5,"Fixed our leak in under an hour. Tidy and on time."],["Sam Foster","Rohan Das",4,"Good work, fair price."],["Sam Foster","Isha Rao",5,"Very professional, will hire again."],
