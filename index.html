@@ -60,6 +60,7 @@ button{cursor:pointer;border:0;background:none}
 .av.ring.seen{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--line)}
 .addt{background:var(--soft);color:var(--plum);font-size:30px;border:2px dashed var(--plum)}
 .av.sm{width:40px;height:40px;border-radius:12px;font-size:14px;margin:0;flex:none}
+.prow{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:8px 10px;margin-bottom:8px}.prow .pbtn{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-align:left;background:none}.prow .pbtn span:last-child{display:grid;min-width:0}.prow .pbtn b,.prow .pbtn small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.prow .btn{padding:7px 16px;flex:none}.fpill{color:var(--plum);font-weight:700}
 .who{display:flex;align-items:center;gap:10px;text-align:left;min-width:0;border-radius:14px}
 .who b{display:block;font-size:15px}.who small{display:block;color:var(--mute);font-weight:500;font-size:12px}
 .jh,.dh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
@@ -774,7 +775,7 @@ const GOOGLE_CLIENT_ID="680277727986-633abodqkvsahq4bfmgj7vgbk2k9b0sp.apps.googl
 /* >>> SUPABASE: the publishable key is safe to ship in the browser (protect data with Row Level Security). Never put a secret key (sb_secret_...) or service_role key here. Paste your Project URL (Supabase > Project Settings > API), e.g. https://abcdxyz.supabase.co <<< */
 const SUPABASE_URL="https://qrwcbshtafkgbeooohyq.supabase.co";
 const SUPABASE_KEY="sb_publishable_D2dwzLCS8YaDbAgqDnkJGw_Jm60zQLO";
-const SB_ON=/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(SUPABASE_URL.trim())&&SUPABASE_KEY.startsWith("sb_publishable_");
+const SB_ON=/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(SUPABASE_URL.trim())&&(SUPABASE_KEY.startsWith("sb_publishable_")||/^eyJ[\w-]+\.[\w-]+\.[\w-]+$/.test(SUPABASE_KEY));
 let sb=null,sbP=null,sbBusy=false,sbSet=null;
 const sbGoogleOn=()=>sbSet||(sbSet=SB_ON?fetch(SUPABASE_URL.trim().replace(/\/$/,"")+"/auth/v1/settings",{headers:{apikey:SUPABASE_KEY}}).then(r=>r.ok?r.json():null).then(j=>!!(j&&j.external&&j.external.google)).catch(()=>false):Promise.resolve(false));
 const loadSB=()=>sbP||(sbP=new Promise((ok,no)=>{if(window.supabase&&supabase.createClient)return ok();const sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js";sc.async=true;sc.onload=ok;sc.onerror=()=>{sbP=null;no(new Error("load"))};document.head.appendChild(sc)}));
@@ -878,7 +879,7 @@ function scheduleNewPro(){clearTimeout(npT);if(S.out)return;npT=setTimeout(()=>{
  const ae=document.activeElement;if(S.view==="home"&&!document.querySelector("dialog[open]")&&!(ae&&/INPUT|TEXTAREA/.test(ae.tagName)))home();scheduleNewPro()},CFG.newProMs)}
 function resumeNeg(){S.services.forEach(x=>x.b.forEach(b=>{if(!b.id)b.id="b"+uid();if(!b.status)b.status="pending";if(!b.mode)b.mode="listed";if(b.status==="pending"&&b.by===S.name&&!S.out)setTimeout(()=>negRespond(x.id,b.id),2500)}))}
 S.notifs=S.notifs||seedNotifs();S.plan=S.plan||"free";S.nf=S.nf||"all";
-S.stories=S.stories||[];S.services=S.services||SERV0;S.tab=S.tab||"jobs";SEED2.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=j.v||(j.by===S.name?[]:VW.slice(0,2+j.id%4))});
+S.stories=S.stories||[];S.fol=S.fol||{};S.services=S.services||SERV0;S.tab=S.tab||"jobs";SEED2.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=j.v||(j.by===S.name?[]:VW.slice(0,2+j.id%4))});
 /* ---------- Shared content: posts, services and stories are visible to every logged-in user (Supabase table rc_content; run supabase_setup.sql once) ---------- */
 const CK=[["job","jobs"],["service","services"],["story","stories"]];
 let cT=null,cBusy=false,cOff=!SB_ON,cHash={};
@@ -904,7 +905,15 @@ async function cPull(){const r=await cFetch(cBase()+"?select=kind,id,owner,data&
   if(gone.size){const n=S[col].length;S[col]=S[col].filter(x=>!gone.has(String(x.id)));if(S[col].length!==n)ch=true}
   S.sy[k]=[...seen[k]]}
  return ch}
-async function cSync(){if(cOff||cBusy||S.out||!S.me)return;cBusy=true;try{await cPush();if(await cPull()){save();if(S.view==="home"&&!document.querySelector("dialog[open]"))render()}}catch(e){console.warn("RoyalCub sync:",e.message)}finally{cBusy=false}}
+let cFW=false;
+async function cFollow(){if(cOff||S.out||!S.me)return false;let ch=false;try{
+ const r=await cFetch(cBase()+"?kind=eq.follow&select=id,data&limit=2000",{headers:cHead()}),rows=await r.json();if(!Array.isArray(rows))return false;S.fol=S.fol||{};const me=S.name,k="fol"+me;
+ for(const row of rows){const to=row.data&&Array.isArray(row.data.to)?row.data.to.filter(x=>typeof x==="string").slice(0,500):null;if(!to)continue;
+  if(row.id===me){if(cHash[k]===undefined){const u=[...new Set([...folOf(me),...to])];if(JSON.stringify(u)!==JSON.stringify(folOf(me))){S.fol[me]=u;ch=true}}}
+  else if(JSON.stringify(folOf(row.id))!==JSON.stringify(to)){S.fol[row.id]=to;ch=true}}
+ const mine=JSON.stringify(folOf(me));if(cHash[k]!==mine){await cFetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify([{kind:"follow",id:me,owner:me,data:{to:folOf(me)},updated_at:new Date().toISOString()}])});cHash[k]=mine}
+ }catch(e){if(!cFW){cFW=true;console.warn("RoyalCub: follow sync skipped ("+e.message+"). Re-run supabase_setup.sql to enable it.")}}return ch}
+async function cSync(){if(cOff||cBusy||S.out||!S.me)return;cBusy=true;try{await cPush();let ch=await cPull();if(await cFollow())ch=true;if(ch){save();if(S.view==="home"&&!document.querySelector("dialog[open]"))render()}}catch(e){console.warn("RoyalCub sync:",e.message)}finally{cBusy=false}}
 function cSched(){if(cOff||S.out)return;clearTimeout(cT);cT=setTimeout(()=>{cT=null;cSync()},900)}
 setInterval(()=>{if(!document.hidden)cSync()},20000);addEventListener("focus",cSync);
 const save=()=>{try{localStorage.setItem("rcj",JSON.stringify(S))}catch(e){}cSched()};
@@ -1092,7 +1101,7 @@ function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
 const revOf=n=>S.reviews.filter(x=>x.to===n),avgR=n=>{const l=revOf(n);return l.length?l.reduce((a,x)=>a+x.r,0)/l.length:0};
 const starTx=r=>`<span class="stars" role="img" aria-label="${r} out of 5">${"★".repeat(r)}${"☆".repeat(5-r)}</span>`;
-const byLine=n=>esc(roleOf(n))+(n===S.name?" · You":"")+(revOf(n).length?` · <span class="stars">★</span> ${avgR(n).toFixed(1)}`:"");
+const byLine=n=>esc(roleOf(n))+(n===S.name?" · You":"")+(isFol(n)?' · <span class="fpill">Following</span>':"")+(revOf(n).length?` · <span class="stars">★</span> ${avgR(n).toFixed(1)}`:"");
 function reviewsHTML(n){const l=revOf(n).sort((a,b)=>b.ts-a.ts),me=n===S.name,mine=l.find(x=>x.by===S.name),a=avgR(n);
  return `<h4>Reviews of ${esc(n.split(" ")[0])}</h4>${l.length?`<p style="margin:0 0 8px"><span class="stars">★</span> <b>${a.toFixed(1)}</b> out of 5 · ${l.length} review${l.length===1?"":"s"}</p>`:`<p class="cnt" style="margin:0 0 8px">No reviews yet.</p>`}
  ${l.slice(0,5).map(x=>`<div class="cm"><div>${starTx(x.r)} <b>${esc(x.by)}</b></div>${esc(x.t)}<small>${fmtD(x.ts)}</small></div>`).join("")}${l.length>5?`<small class="cnt">+${l.length-5} more reviews</small>`:""}
@@ -1107,13 +1116,19 @@ const uOf=x=>x&&x.rt==="day"?"day":"hour",uS=x=>x&&x.rt==="day"?"d":"h",qtyTx=(x
 const rateTx=x=>x.min===x.max?`₹${x.min}`:`₹${x.min}–₹${x.max}`;
 const availTx=x=>`${daysText(x.days)} · ${fmtT(x.from)}–${fmtT(x.to)}`;
 const estTx=(x,h)=>x.min===x.max?`₹${x.min*h}`:`₹${x.min*h}–₹${x.max*h}`;
-const authors=()=>{const m=[...new Set(S.stories.map(x=>x.by))].filter(live);return m.sort((a,b)=>(b===S.name)-(a===S.name))};
+const folOf=n=>(S.fol&&Array.isArray(S.fol[n])?S.fol[n]:[]);
+const isFol=n=>!S.out&&n!==S.name&&folOf(S.name).includes(n);
+const nFollowers=n=>Object.keys(S.fol||{}).filter(k=>k!==n&&folOf(k).includes(n)).length;
+const fFirst=L=>{const f=new Set(folOf(S.name));if(S.out||!f.size)return L;return [...L.filter(x=>f.has(x.by)),...L.filter(x=>!f.has(x.by))]};
+const authors=()=>{const m=[...new Set(S.stories.map(x=>x.by))].filter(live);return m.sort((a,b)=>((b===S.name)-(a===S.name))||(isFol(b)-isFol(a)))};
+function toggleFollow(n){if(S.out||!n||n===S.name||!S.users.some(u=>u.name===n))return;S.fol=S.fol||{};const a=S.fol[S.name]=folOf(S.name).slice(),i=a.indexOf(n);if(i<0)a.push(n);else a.splice(i,1);save();toast(i<0?"Following "+n:"Unfollowed "+n);
+ if(profD.open&&pn===n)openProfile(n);const sr=document.getElementById("sres");if(sr&&S.view==="home")sr.innerHTML=results();if(S.view==="home")home()}
 const nv=o=>`${o.v.length} view${o.v.length===1?"":"s"}`;
 function addView(o){if(o.by!==S.name&&!o.v.includes(S.name))o.v.push(S.name)}
 function refresh(o){if(postD.open&&cp===o.id)(ck==="service"?openService:openPost)(o.id);else if(storyD.open&&sv.n===o.by)showStory();else if(S.view==="home"&&!S.out&&!document.querySelector("dialog[open]"))render()}
 function simView(o){VW.filter(n=>!o.v.includes(n)).sort(()=>Math.random()-.5).slice(0,3).forEach((n,i)=>setTimeout(()=>{if(!o.v.includes(n)){o.v.push(n);save();refresh(o)}},2500+i*2500))}
-const shown=()=>S.jobs.filter(j=>live(j.by)&&(S.cat==="All"||j.c===S.cat));
-const shownS=()=>S.services.filter(x=>live(x.by)&&(S.cat==="All"||x.c===S.cat));
+const shown=()=>fFirst(S.jobs.filter(j=>live(j.by)&&(S.cat==="All"||j.c===S.cat)));
+const shownS=()=>fFirst(S.services.filter(x=>live(x.by)&&(S.cat==="All"||x.c===S.cat)));
 const listHTML=jobs=>jobs.length?jobs.map(card).join(""):`<div class="empty">No work posted in this field yet. Post the first job from the Add tab.</div>`;
 const listS=l=>l.length?l.map(svcCard).join(""):`<div class="empty">No talent listed in this field yet. Offer your service from the Add tab.</div>`;
 function setTab(k){S.tab=k;render()}
@@ -1121,13 +1136,14 @@ const catsFor=q=>q.length<3?[]:CATS.slice(1).filter(c=>c.toLowerCase().startsWit
 const hitText=(j,q)=>[j.t,j.loc,j.by,j.d,j.c].some(x=>String(x).toLowerCase().includes(q));
 function results(){const raw=S.q.trim(),q=raw.toLowerCase();
  if(!q)return "";
- const cs=catsFor(q),ps=S.jobs.filter(j=>cs.includes(j.c)||hitText(j,q)),ss=S.services.filter(x=>cs.includes(x.c)||hitText(x,q)||(ROLE[x.c]||"").toLowerCase().includes(q)),tot=ps.length+ss.length;
+ const cs=catsFor(q),ps=S.jobs.filter(j=>cs.includes(j.c)||hitText(j,q)),ss=S.services.filter(x=>cs.includes(x.c)||hitText(x,q)||(ROLE[x.c]||"").toLowerCase().includes(q)),pe=S.users.filter(u=>u.name&&u.name!==S.name&&u.role!=="admin"&&live(u.name)&&u.name.toLowerCase().includes(q)).slice(0,20),tot=ps.length+ss.length+pe.length;
+ const pr=u=>{const f=isFol(u.name);return `<div class="prow"><button type="button" class="pbtn" data-n="${esc(u.name)}" onclick="openProfile(this.dataset.n)" aria-label="View profile of ${esc(u.name)}"><span class="av tiny" style="${abg(u.name)}" aria-hidden="true">${ait(u.name)}</span><span><b>${esc(u.name)}</b><small>${esc(roleOf(u.name))} · ${nFollowers(u.name)} follower${nFollowers(u.name)===1?"":"s"}</small></span></button><button type="button" class="btn ${f?"alt":""}" data-n="${esc(u.name)}" aria-pressed="${f}" onclick="toggleFollow(this.dataset.n)">${f?"Following":"Follow"}</button></div>`};
  const jr=j=>`<button class="mini" onclick="openPost(${j.id})"><span class="tag" style="justify-self:start">${j.c}</span><b>${esc(j.t)}</b><small>${LOC}${esc(j.loc)} · ${PRC}${esc(j.b)}${per(j)} · by ${esc(j.by)}</small></button>`;
  const sr=x=>`<button class="mini" onclick="openService(${x.id})"><span class="tag" style="justify-self:start">${x.c}</span><b>${esc(x.t)}</b><small>${LOC}${esc(x.loc)} · ${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small> · ${esc(x.by)}, ${esc(roleOf(x.by))}</small></button>`;
  const grp=(t,l,f)=>l.length?`<h4 style="margin:8px 0 2px">${t} (${l.length})</h4>${l.slice(0,5).map(f).join("")}${l.length>5?`<small class="cnt">+${l.length-5} more</small>`:""}`:"";
  return `<div class="sres" role="region" aria-label="Search results" aria-live="polite"><div class="sh"><b>${tot} result${tot===1?"":"s"}</b> for “${esc(raw)}”</div>
  ${cs.length?`<div class="chips wrap">${cs.map(c=>`<button class="chip" onclick="pickCat('${c}')">${CMETA[c].e} ${c} · ${S.jobs.filter(j=>j.c===c).length+S.services.filter(x=>x.c===c).length}</button>`).join("")}</div>`:""}
- ${tot?grp("Talent Post",ss,sr)+grp("Find Work",ps,jr):`<div class="empty" style="padding:18px">Nothing matched. Try a trade like plumber, driver or electrician.</div>`}</div>`}
+ ${tot?grp("People",pe,pr)+grp("Talent Post",ss,sr)+grp("Find Work",ps,jr):`<div class="empty" style="padding:18px">Nothing matched. Try a person’s name or a trade like plumber, driver or electrician.</div>`}</div>`}
 function setQ(v){S.q=v;sres.innerHTML=results();const c=document.getElementById("qclr");if(c)c.classList.toggle("hide",!v);save()}
 function clearQ(){S.q="";render();const i=document.getElementById("q");if(i)i.focus()}
 function toggleCat(c){S.cat=S.cat===c?"All":c;render()}
@@ -1138,7 +1154,7 @@ function catEdges(){const c=document.getElementById("cats"),l=document.getElemen
 function home(){
  const prevC=document.getElementById("cats"),keep=prevC?prevC.scrollLeft:0;
  const jobs=shown(),svcs=shownS(),aus=authors(),isS=S.tab==="services",src=isS?S.services:S.jobs;
- view.innerHTML=`<div class="search" role="search">${IC.search}<input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value)" placeholder="Search plumber, driver, electrician…" aria-label="Search jobs, trades or people" autocomplete="off" enterkeyhint="search"><button class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear search">✕</button></div>
+ view.innerHTML=`<div class="search" role="search">${IC.search}<input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value)" placeholder="Search people, plumber, driver, electrician…" aria-label="Search people, jobs or trades" autocomplete="off" enterkeyhint="search"><button class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear search">✕</button></div>
  <div id="sres">${results()}</div>
  <div class="row"><h2>Status</h2><span>${String(aus.length).padStart(2,"0")}</span></div>
  <div class="status"><button class="st" onclick="openAdd()" aria-label="Add status poster"><div class="av addt">＋</div><b>Add</b></button>${aus.map(n=>{const me=n===S.name,l=S.stories.filter(x=>x.by===n),seen=me||l.every(x=>x.v.includes(S.name)),tot=l.reduce((a,x)=>a+x.v.length,0);
@@ -1260,10 +1276,11 @@ function openPost(id){const j=S.jobs.find(x=>x.id===id);if(!j)return;cp=id;ck="j
   foot:mine?`<button class="btn pitchb" onclick="editPost('job',${j.id})">Edit</button><button class="btn alt dng" onclick="delPost('job',${j.id})">Delete</button><span class="hint">This is your job post. Pitches appear above.</span>`:`<button class="btn pitchb" ${pitched?"disabled":""} onclick="pitch(${j.id})">${pitched?"Pitch sent":"Pitch for Job"}</button><button class="btn alt ico" onclick="msgClient(${j.id})">${IC.chat}Message</button><span class="hint">Review and comment without leaving this page</span>`});
  if(S.view==="home"&&!S.out)home()}
 
-function openProfile(n){shut("postD","storyD");const js=S.jobs.filter(j=>j.by===n),svs=S.services.filter(x=>x.by===n),me=n===S.name,hasS=S.stories.some(x=>x.by===n),np=js.length+svs.length,fn=esc(n.split(" ")[0]);
+let pn="";
+function openProfile(n){pn=n;shut("postD","storyD");const js=S.jobs.filter(j=>j.by===n),svs=S.services.filter(x=>x.by===n),me=n===S.name,hasS=S.stories.some(x=>x.by===n),np=js.length+svs.length,fn=esc(n.split(" ")[0]);
  profD.innerHTML=`<div class="dh"><h3 style="margin:0">${me?"Your profile":"Profile"}</h3><button class="x" aria-label="Close" onclick="profD.close()">✕</button></div>
- <div class="pc"><div class="av" style="${abg(n)}">${ait(n)}</div><h3>${esc(n)}</h3><span class="rolep">${esc(roleOf(n))}</span><span class="cnt">${np} post${np===1?"":"s"}</span></div>
- <div class="acts" style="justify-content:center;margin:10px 0">${me?"":`<button class="btn" data-n="${esc(n)}" onclick="msgTo(this.dataset.n)">Message</button><button class="btn alt" data-n="${esc(n)}" onclick="reportUser(this.dataset.n)">Report</button>`}${hasS?`<button class="btn alt" data-n="${esc(n)}" onclick="openStory(this.dataset.n)">View status</button>`:""}</div>
+ <div class="pc"><div class="av" style="${abg(n)}">${ait(n)}</div><h3>${esc(n)}</h3><span class="rolep">${esc(roleOf(n))}</span><span class="cnt">${np} post${np===1?"":"s"} · ${nFollowers(n)} follower${nFollowers(n)===1?"":"s"} · ${folOf(n).length} following</span></div>
+ <div class="acts" style="justify-content:center;margin:10px 0">${me?"":`<button class="btn ${isFol(n)?"alt":""}" data-n="${esc(n)}" aria-pressed="${isFol(n)}" onclick="toggleFollow(this.dataset.n)">${isFol(n)?"Unfollow":"Follow"}</button><button class="btn alt" data-n="${esc(n)}" onclick="msgTo(this.dataset.n)">Message</button><button class="btn alt" data-n="${esc(n)}" onclick="reportUser(this.dataset.n)">Report</button>`}${hasS?`<button class="btn alt" data-n="${esc(n)}" onclick="openStory(this.dataset.n)">View status</button>`:""}</div>
  ${svs.length?`<h4>${me?"Your services":"Services offered"}</h4>${svs.map(x=>`<button class="mini" onclick="openService(${x.id})"><span class="tag" style="justify-self:start">${x.c}</span><b>${esc(x.t)}</b><small>${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small> · ${CLK}${esc(daysText(x.days))}${me?` · 👁 ${x.v.length}`:""}</small></button>`).join("")}`:""}
  ${js.length||!svs.length?`<h4>${me?"Your vacancies":"Vacancies by "+fn}</h4>${js.length?js.map(j=>`<button class="mini" onclick="openPost(${j.id})"><span class="tag" style="justify-self:start">${j.c}</span><b>${esc(j.t)}</b><small>${LOC}${esc(j.loc)} · ${PRC}${esc(j.b)}${per(j)}${me?` · 👁 ${nv(j)}`:""}</small></button>`).join(""):`<div class="empty" style="padding:18px">No posts yet.</div>`}`:""}`;
  if(!profD.open)profD.showModal()}
@@ -1446,7 +1463,7 @@ function saveProfile(e){e.preventDefault();const o=S.profile.name,n=pn.value.tri
  const ne=pe.value.trim().toLowerCase(),ur=S.users.find(x=>x.email===S.me);
  if(S.users.some(x=>x!==ur&&x.email.toLowerCase()===ne)){toast("That email is already registered");return}
  if(ur){ur.name=n;ur.age=pa.value;ur.phone=pph.value.trim();ur.email=ne;ur.title=pt.value.trim()}S.services.forEach(x=>{if(x.by===o)x.by=n;x.v=x.v.map(y=>y===o?n:y);x.b.forEach(b=>{if(b.by===o)b.by=n})});S.me=ne;
- S.jobs.forEach(j=>{if(j.by===o)j.by=n;j.v=j.v.map(x=>x===o?n:x);j.p.forEach(q=>{if(q.by===o)q.by=n})});S.stories.forEach(x=>{if(x.by===o)x.by=n;x.v=x.v.map(y=>y===o?n:y)});
+ S.jobs.forEach(j=>{if(j.by===o)j.by=n;j.v=j.v.map(x=>x===o?n:x);j.p.forEach(q=>{if(q.by===o)q.by=n})});S.stories.forEach(x=>{if(x.by===o)x.by=n;x.v=x.v.map(y=>y===o?n:y)});{const F={};Object.keys(S.fol||{}).forEach(k=>{F[k===o?n:k]=S.fol[k].map(y=>y===o?n:y)});S.fol=F}
  S.profile={name:n,age:pa.value,email:pe.value.trim(),phone:pph.value.trim(),title:pt.value.trim()};S.name=n;editP=false;toast("Profile saved");render()}
 const reduce=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches);
 spl.src=LG.s;document.querySelector(".app").inert=true;
