@@ -811,7 +811,7 @@ hlL.src=LG.l;hlD.src=LG.d;slg.src=LG.d;fav.href=LG.i;fav2.href=LG.i;
 const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 let au="login",fp={step:1,email:"",code:"",tries:0};
 let editP=false,cp=null,ck="job",sv={n:null,i:0};
-let S={services:SERV0,tab:"jobs",role:"client",name:"Arjun Rao",theme:"auto",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[{email:"arjun.rao@example.com",pw:"Arjun@123",name:"Arjun Rao",phone:"+91 98765 43210",age:"28",cat:"Client",role:"client",title:"Rao Home Projects"}],hist:[{id:"h1",t:"Fix leaking kitchen pipe",who:"Anna Reed",d:"12 Oct 2026",a:"₹800",s:"Completed"},{id:"h2",t:"Deep clean 2BHK flat",who:"Meera Nair",d:"28 Sep 2026",a:"₹1,800",s:"Completed"},{id:"h3",t:"Rewire hall switchboard",who:"Victor King",d:"15 Sep 2026",a:"₹1,200",s:"Cancelled"}],cat:"All",view:"home",notes:2,thread:null}
+let S={services:SERV0,tab:"jobs",role:"client",name:"Arjun Rao",theme:"auto",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[{email:"arjun.rao@example.com",pw:"Arjun@123",name:"Arjun Rao",phone:"+91 98765 43210",age:"28",cat:"Client",role:"client",title:"Rao Home Projects"}],hist:[{id:"h1",t:"Fix leaking kitchen pipe",who:"Anna Reed",d:"12 Oct 2026",a:"₹800",s:"Completed"},{id:"h2",t:"Deep clean 2BHK flat",who:"Meera Nair",d:"28 Sep 2026",a:"₹1,800",s:"Completed"},{id:"h3",t:"Rewire hall switchboard",who:"Victor King",d:"15 Sep 2026",a:"₹1,200",s:"Cancelled"}],cat:"All",view:"home",notes:2,thread:null
 async function fetchJobs() {
   const { data, error } = await supabase
     .from('jobs')
