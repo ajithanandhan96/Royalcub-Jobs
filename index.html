@@ -879,7 +879,35 @@ function scheduleNewPro(){clearTimeout(npT);if(S.out)return;npT=setTimeout(()=>{
 function resumeNeg(){S.services.forEach(x=>x.b.forEach(b=>{if(!b.id)b.id="b"+uid();if(!b.status)b.status="pending";if(!b.mode)b.mode="listed";if(b.status==="pending"&&b.by===S.name&&!S.out)setTimeout(()=>negRespond(x.id,b.id),2500)}))}
 S.notifs=S.notifs||seedNotifs();S.plan=S.plan||"free";S.nf=S.nf||"all";
 S.stories=S.stories||[];S.services=S.services||SERV0;S.tab=S.tab||"jobs";SEED2.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=j.v||(j.by===S.name?[]:VW.slice(0,2+j.id%4))});
-const save=()=>{try{localStorage.setItem("rcj",JSON.stringify(S))}catch(e){}};
+/* ---------- Shared content: posts, services and stories are visible to every logged-in user (Supabase table rc_content; run supabase_setup.sql once) ---------- */
+const CK=[["job","jobs"],["service","services"],["story","stories"]];
+let cT=null,cBusy=false,cOff=!SB_ON,cHash={};
+const cBase=()=>SUPABASE_URL.trim().replace(/\/$/,"")+"/rest/v1/rc_content";
+const cHead=x=>Object.assign({apikey:SUPABASE_KEY,"Content-Type":"application/json"},x||{});
+const cData=o=>{const d=Object.assign({},o);delete d.v;delete d.p;delete d.b;return d};
+async function cFetch(url,opt){const r=await fetch(url,opt);if(!r.ok){if([401,403,404].includes(r.status)){cOff=true;console.warn("RoyalCub: shared content is off (HTTP "+r.status+"). Run supabase_setup.sql in your Supabase project.")}throw new Error("HTTP "+r.status)}return r}
+async function cPush(){S.sy=S.sy||{};const up=[],del=[];
+ for(const [k,col] of CK){const L=S[col]||[],have=new Set(L.map(x=>String(x.id)));
+  for(const id of (S.sy[k]||[]))if(!have.has(String(id)))del.push([k,String(id)]);
+  for(const o of L){if(o.by!==S.name)continue;const d=cData(o),h=JSON.stringify(d);if(cHash[k+o.id]!==h)up.push({row:{kind:k,id:String(o.id),owner:o.by,data:d,updated_at:new Date().toISOString()},h})}}
+ if(up.length){await cFetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify(up.map(x=>x.row))});
+  up.forEach(x=>{cHash[x.row.kind+x.row.id]=x.h;const a=S.sy[x.row.kind]=S.sy[x.row.kind]||[];if(!a.includes(x.row.id))a.push(x.row.id)})}
+ for(const [k,id] of del){await cFetch(cBase()+"?kind=eq."+k+"&id=eq."+encodeURIComponent(id),{method:"DELETE",headers:cHead()});S.sy[k]=(S.sy[k]||[]).filter(x=>String(x)!==id)}}
+async function cPull(){const r=await cFetch(cBase()+"?select=kind,id,owner,data&order=created_at.desc&limit=1000",{headers:cHead()});const rows=await r.json();
+ if(!Array.isArray(rows))return false;S.sy=S.sy||{};let ch=false;const seen={job:new Set(),service:new Set(),story:new Set()};
+ for(const row of rows.slice().reverse()){const k=row.kind,d=row.data;if(!seen[k]||!d||typeof d!=="object")continue;seen[k].add(String(row.id));
+  const L=S[CK.find(x=>x[0]===k)[1]],i=L.findIndex(x=>String(x.id)===String(row.id));cHash[k+row.id]=JSON.stringify(d);
+  if(i<0){const o=Object.assign({v:[]},d);if(k==="job")o.p=o.p||[];if(k==="service")o.b=o.b||[];L.unshift(o);ch=true;
+   if(o.by&&!S.users.some(u=>u.name===o.by))S.users.push({email:o.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:o.by,phone:"",age:"",cat:k==="job"?"Client":(o.c||"Client"),role:k==="job"?"client":"worker",title:"",status:"active",joined:Date.now()})}
+  else if(L[i].by!==S.name&&JSON.stringify(cData(L[i]))!==JSON.stringify(d)){Object.assign(L[i],d);ch=true}}
+ for(const [k,col] of CK){const gone=new Set((S.sy[k]||[]).map(String).filter(id=>!seen[k].has(id)));
+  if(gone.size){const n=S[col].length;S[col]=S[col].filter(x=>!gone.has(String(x.id)));if(S[col].length!==n)ch=true}
+  S.sy[k]=[...seen[k]]}
+ return ch}
+async function cSync(){if(cOff||cBusy||S.out||!S.me)return;cBusy=true;try{await cPush();if(await cPull()){save();if(S.view==="home"&&!document.querySelector("dialog[open]"))render()}}catch(e){console.warn("RoyalCub sync:",e.message)}finally{cBusy=false}}
+function cSched(){if(cOff||S.out)return;clearTimeout(cT);cT=setTimeout(()=>{cT=null;cSync()},900)}
+setInterval(()=>{if(!document.hidden)cSync()},20000);addEventListener("focus",cSync);
+const save=()=>{try{localStorage.setItem("rcj",JSON.stringify(S))}catch(e){}cSched()};
 S.profile=S.profile||{name:S.name,age:"28",email:"arjun.rao@example.com",phone:"+91 98765 43210"};
 function applyTheme(){S.theme==="light"||S.theme==="dark"?document.documentElement.dataset.theme=S.theme:delete document.documentElement.dataset.theme}applyTheme();
 const SV=d=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="${d}"/></svg>`;
@@ -920,14 +948,14 @@ function doLogin(e){e.preventDefault();const em=le.value.trim().toLowerCase(),pw
 let gisP=null,gNonces=[],gRaw={};
 const gerr=m=>{const e=document.getElementById("gerr");if(e)e.textContent=m||""};
 const gblock=()=>`<div class="gwrap"><div id="gbtn" class="gslot">${CFG.googleClientId?`<div class="gload">Loading Google…</div>`:`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`}</div><div class="err" id="gerr" role="alert"></div></div>`;
-const loadGIS=()=>gisP||(gisP=new Promise((ok,no)=>{if(window.google&&google.accounts&&google.accounts.id)return ok();const sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.async=true;sc.defer=true;sc.onload=ok;sc.onerror=()=>{gisP=null;no(new Error("load"))};document.head.appendChild(sc)}));
+const loadGIS=()=>gisP||(gisP=new Promise((ok,no)=>{if(window.google&&google.accounts&&google.accounts.id)return ok();const sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.async=true;sc.defer=true;let done=false;const tm=setTimeout(()=>{if(!done){done=true;gisP=null;sc.remove();no(new Error("timeout"))}},8000);sc.onload=()=>{if(!done){done=true;clearTimeout(tm);ok()}};sc.onerror=()=>{if(!done){done=true;clearTimeout(tm);gisP=null;no(new Error("load"))}};document.head.appendChild(sc)}));
 async function initGoogle(){const slot=document.getElementById("gbtn");if(!slot||!CFG.googleClientId)return;
- try{await loadGIS()}catch(e){if(document.getElementById("gbtn")===slot){slot.innerHTML=`<button type="button" class="gbtn" onclick="initGoogle()">${GG}Retry Google sign-in</button>`;gerr("Couldn’t reach Google. Check your connection and try again.")}return}
+ try{await loadGIS()}catch(e){if(document.getElementById("gbtn")===slot){const why=location.protocol==="file:"?"Google sign-in can’t run from a local file. Open the site from its https:// address (or http://localhost).":!navigator.onLine?"You appear to be offline. Reconnect and try again.":"Couldn’t reach Google. Check your connection, and turn off any ad-blocker or privacy shield that blocks accounts.google.com.";slot.innerHTML=(SB_ON?`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`:"")+`<button type="button" class="gbtn" style="margin-top:8px" onclick="gerr('');initGoogle()">Retry Google sign-in</button>`;gerr(why)}return}
  if(document.getElementById("gbtn")!==slot)return;
  const a=new Uint8Array(16);crypto.getRandomValues(a);const raw=[...a].map(x=>x.toString(16).padStart(2,"0")).join("");let gNonce=raw;try{gNonce=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw)))].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){}if(document.getElementById("gbtn")!==slot)return;gRaw[gNonce]=raw;gNonces.push(gNonce);if(gNonces.length>8)delete gRaw[gNonces.shift()];
  const dark=S.theme==="dark"||(S.theme!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);
  google.accounts.id.initialize({client_id:CFG.googleClientId,callback:onGoogleCred,nonce:gNonce,ux_mode:"popup",auto_select:false,cancel_on_tap_outside:true,use_fedcm_for_prompt:true});
- slot.innerHTML="";google.accounts.id.renderButton(slot,{type:"standard",theme:dark?"filled_black":"outline",size:"large",text:"continue_with",shape:"pill",logo_alignment:"left",width:Math.min(400,Math.max(200,Math.floor(slot.clientWidth||320)))})}
+ slot.innerHTML="";google.accounts.id.renderButton(slot,{type:"standard",theme:dark?"filled_black":"outline",size:"large",text:"continue_with",shape:"pill",logo_alignment:"left",width:Math.min(400,Math.max(200,Math.floor(slot.clientWidth||320)))});gerr("")}
 async function googleLogin(){if(SB_ON){gerr("");try{const c=await sbClient();const {error}=await c.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname}});if(error)throw error}catch(e){gerr("Couldn’t start Google sign-in. Check your connection and that Google is enabled in Supabase.")}return}gerr(CFG.googleClientId?"Google is still loading. Try again in a moment.":"Google sign-in needs a Google client ID. Set SUPABASE_URL (recommended) or GOOGLE_CLIENT_ID in the site script, or log in with email.")}
 function decodeJwt(t){const q=String(t).split(".");if(q.length!==3)throw new Error("Invalid Google response.");const b=q[1].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b+"=".repeat((4-b.length%4)%4)),c=>c.charCodeAt(0))))}
 function checkGoogleClaims(c,server){if(!c||!c.sub||!c.email)return"Google didn’t return an email for this account.";
