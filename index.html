@@ -142,7 +142,6 @@ dialog h3{margin:0 0 4px;font-size:20px}
 @media (min-width:700px){.chat{grid-template-columns:300px 1fr}.hero,.sheet{padding-left:36px;padding-right:36px}.list{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:699px){.chat.open .threads{display:none}.chat:not(.open) .pane{display:none}.back{display:inline-block;color:var(--plum);font-size:22px;padding:0 6px}.two{grid-template-columns:1fr}}
 @media (min-width:960px){
-.hl,.hl.lg-l,.hl.lg-d{display:none!important}
 .app{grid-template-columns:250px minmax(0,1fr)}
 .side{display:flex;flex-direction:column;gap:6px;background:var(--navy);color:#fff;padding:24px 16px;position:sticky;top:0;height:100vh}
 .side .brand{color:#fff;margin-bottom:24px;padding-left:8px;flex:none}
@@ -580,6 +579,43 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .locmenu hr{border:0;border-top:1px solid var(--line);margin:4px 6px}
 @media (max-width:959px){.sheet{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}.addv .sheet{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}}
 
+
+/* ===== v2: navigation lives in the hamburger drawer only ===== */
+.nav,.side{display:none!important}
+.app{grid-template-columns:minmax(0,1fr)!important}
+.main{max-width:none!important}
+.sheet,.addv .sheet{padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))!important}
+.addv .sheet{padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))!important}
+@media (min-width:1180px){.hero,.sheet{padding-left:calc((100vw - 1100px)/2);padding-right:calc((100vw - 1100px)/2)}}
+.top{gap:10px}
+.top .brand{flex:1;min-width:0;justify-content:flex-start}
+.top .chatb,.top .bell{flex:none;width:44px;height:44px}
+.bell b{font-size:12px;min-width:22px;height:22px;padding:0 4px}
+/* ===== v2: search = Name + Location + Search button ===== */
+.sbox{grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch}
+.sbox .namesf{grid-column:1/-1}
+@media (min-width:700px){.sbox{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto}.sbox .namesf{grid-column:auto}}
+.namesf,.locsf{position:relative}
+.sgo{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:16px;background:var(--plum);color:#fff;font-weight:700;font-size:15px;white-space:nowrap}
+.sgo:hover{background:var(--plum2)}.sgo svg{width:20px;height:20px;fill:currentColor;flex:none}
+@media (max-width:330px){.sgo{padding:0 14px}.sgo span{display:none}}
+.locdd{width:34px;min-height:34px;padding:0;justify-content:center;border-radius:99px}
+.locdd span{display:none}
+.nsug{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--bg);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 34px rgba(20,10,40,.24);padding:6px;z-index:42}
+.nsug[hidden]{display:none}
+.nsug button{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:12px;text-align:left;color:var(--ink)}
+.nsug button:hover{background:var(--soft)}.nsug b{display:block;font-size:14px}.nsug small{display:block;color:var(--mute);font-size:12px}
+.nsug .av.sm{width:36px;height:36px;font-size:13px}
+.nsn{padding:12px;color:var(--mute);font-weight:600;font-size:14px;text-align:center}
+.locmenu{left:0;right:0;width:auto;min-width:0}
+/* ===== v2: followers ===== */
+.fcard .fcount{font-size:24px;font-weight:800;display:block;line-height:1.1}
+.flist{display:grid;gap:8px;max-height:min(60vh,460px);overflow-y:auto;overscroll-behavior:contain}
+.frow{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:8px 10px}
+.fmain{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-align:left;border-radius:12px}
+.fmain>span:last-child{display:grid;min-width:0}.fmain b,.fmain small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fmain small{color:var(--mute)}
+.frow .btn{padding:7px 14px;flex:none}
+.sf input[type=search]{-webkit-appearance:none;appearance:none}.sf input::-webkit-search-cancel-button,.sf input::-webkit-search-decoration{display:none;-webkit-appearance:none}
 </style>
 
 
@@ -822,7 +858,8 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
    <button class="ic backb" id="backB" type="button" aria-label="Go back" onclick="goBack()" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg></button>
    <button class="ic menu" aria-label="Open menu" onclick="toggleMenu()" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawer" id="menuB"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v2.5H3zm0 5.75h18v2.5H3zM3 16.5h18V19H3z"/></svg></button>
    <div class="brand"><img class="hl lg-l" id="hlL" alt="RoyalCub Jobs" height="36"><img class="hl lg-d" id="hlD" alt="RoyalCub Jobs" height="36"></div>
-   <button class="bell" aria-label="Notifications" onclick="go('notifications')"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9a6 6 0 1 1 12 0c0 6 2 7 2 7H4s2-1 2-7zM10 20h4"/></svg><b id="bn">0</b></button>
+   <button class="bell chatb" id="chatB" type="button" aria-label="Chat" onclick="go('chat')"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><b id="cn">0</b></button>
+   <button class="bell" id="bellB" aria-label="Notifications" onclick="go('notifications')"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9a6 6 0 1 1 12 0c0 6 2 7 2 7H4s2-1 2-7zM10 20h4"/></svg><b id="bn">0</b></button>
   </div>
   <p>It’s a platform for,</p>
   <h1>Hire fast. Work smart. Get it done.</h1>
@@ -836,6 +873,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 
 <dialog id="postD" aria-label="Post details"></dialog>
 <dialog id="profD" aria-label="Profile"></dialog>
+<dialog id="folD" aria-label="Followers"></dialog>
 <dialog id="storyD" aria-label="Status poster"></dialog>
 <dialog id="addD"><form onsubmit="postStory(event)">
  <div class="dh"><h3 style="margin:0">Add status poster</h3><button type="button" class="x" aria-label="Close" onclick="addD.close()">✕</button></div>
@@ -1058,7 +1096,7 @@ const PRC=`<svg class="mi prc" viewBox="0 0 24 24" aria-hidden="true"><circle cx
 const CLK=IC.clock.replace("<svg ",'<svg class="mi clk" ');
 const NAV=[["home",IC.home,"Home"],["add",IC.add,"Add"],["chat",IC.chat,"Chat"],["settings",IC.settings,"Settings"]];
 function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot">${unread()}</span>`:""}</button>`).join("");
- botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.parentElement.style.visibility=un?"visible":"hidden"}
+ botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.style.visibility=un?"visible":"hidden";const uc=unread(),cb=document.getElementById("cn");cb.textContent=uc>9?"9+":uc;cb.style.visibility=uc?"visible":"hidden";document.getElementById("chatB").setAttribute("aria-label",uc?"Chat, "+uc+" unread":"Chat");document.getElementById("bellB").setAttribute("aria-label",un?"Notifications, "+un+" unread":"Notifications")}
 const BASE_T=document.title;
 const unread=()=>S.threads.reduce((a,t)=>a+(+t.u||0),0);
 const stubUser=n=>{if(n&&!S.users.some(u=>u.name===n))S.users.push({email:n.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:n,phone:"",age:"",cat:"Client",role:"client",title:"",status:"active",joined:Date.now()})};
@@ -1215,7 +1253,7 @@ function admTickets(){const x=adm.tix&&S.tix.find(t=>t.id===adm.tix);
 function tixReply(id){const x=S.tix.find(t=>t.id===id),v=ar2.value.trim();if(!v)return;const int=ai.checked;x.thread.push({by:S.name,role:"admin",t:v,ts:Date.now(),internal:int});if(!int){x.unread=1;if(x.status==="open")x.status="in-progress"}log(int?"internal note":"ticket reply",id);save();admin()}
 function tixStatus(id,st){const x=S.tix.find(t=>t.id===id);x.status=st;log("ticket "+st,id);save();admin()}
 
-function go(v){if(!S.out&&v!==S.view){navStack.push(S.view);if(navStack.length>40)navStack.shift()}closeMenu(true);navJump=true;sOpen=false;sMore=false;shut("postD","profD","storyD","addD","pitchD");S.view=v;if(v!=="profile")editP=false;if(v!=="chat")S.thread=null;render();scrollTo(0,0)}
+function go(v){if(!S.out&&v!==S.view){navStack.push(S.view);if(navStack.length>40)navStack.shift()}closeMenu(true);navJump=true;sOpen=false;sMore=false;shut("postD","profD","storyD","addD","pitchD","folD");S.view=v;if(v!=="profile")editP=false;if(v!=="chat")S.thread=null;render();scrollTo(0,0)}
 function readNotes(){S.notes=0;nav();toast("You’re all caught up")}
 function toast(t){const e=document.createElement("div");e.className="toast";e.setAttribute("role","status");e.textContent=t;const ds=[...document.querySelectorAll("dialog[open]")];(ds[ds.length-1]||document.body).append(e);setTimeout(()=>e.remove(),2400)}
 const isAdmin=()=>{const u=S.users.find(x=>x.email===S.me);return !!u&&u.role==="admin"};
@@ -1257,7 +1295,8 @@ const availTx=x=>`${daysText(x.days)} · ${fmtT(x.from)}–${fmtT(x.to)}`;
 const estTx=(x,h)=>x.min===x.max?`₹${x.min*h}`:`₹${x.min*h}–₹${x.max*h}`;
 const folOf=n=>(S.fol&&Array.isArray(S.fol[n])?S.fol[n]:[]);
 const isFol=n=>!S.out&&n!==S.name&&folOf(S.name).includes(n);
-const nFollowers=n=>Object.keys(S.fol||{}).filter(k=>k!==n&&folOf(k).includes(n)).length;
+const followersOf=n=>Object.keys(S.fol||{}).filter(k=>k!==n&&folOf(k).includes(n)&&S.users.some(u=>u.name===k)).sort((a,b)=>a.localeCompare(b));
+const nFollowers=n=>followersOf(n).length;
 const myLoc=()=>(((S.profile||{}).loc)||"Palakkad").trim()||"Palakkad";
 const AREAS={palakkad:["palakkad","palghat","kalpathy","olavakkode","chittur","ottapalam","mannarkkad","shoranur","alathur","pattambi","koduvayur","kanjikode","nemmara","kollengode","cherpulassery","malampuzha","vadakkencherry","thrithala","kongad","walayar","dhoni"]};
 const locIn=(l,u)=>{const x=String(l||"").toLowerCase();u=String(u||"").toLowerCase().trim();return !!x&&!!u&&(x.includes(u)||(AREAS[u]||[]).some(a=>x.includes(a)))};
@@ -1273,7 +1312,7 @@ const nv=o=>`${o.v.length} view${o.v.length===1?"":"s"}`;
 function addView(o){if(o.by!==S.name&&!o.v.includes(S.name))o.v.push(S.name)}
 function refresh(o){if(postD.open&&cp===o.id)(ck==="service"?openService:openPost)(o.id);else if(storyD.open&&sv.n===o.by)showStory();else if(S.view==="home"&&!S.out&&!document.querySelector("dialog[open]")){if(typingNow()||sOpen)pendR=true;else render()}}
 function simView(o){VW.filter(n=>!o.v.includes(n)).sort(()=>Math.random()-.5).slice(0,3).forEach((n,i)=>setTimeout(()=>{if(!o.v.includes(n)){o.v.push(n);save();refresh(o)}},2500+i*2500))}
-const nearOk=x=>!S.nearOnly||locNear(x.loc)||x.by===S.name||isFol(x.by);
+const nearOk=x=>true;
 const shown=()=>fFirst(S.jobs.filter(j=>live(j.by)&&nearOk(j)&&(S.cat==="All"||j.c===S.cat)));
 const shownS=()=>fFirst(S.services.filter(x=>live(x.by)&&nearOk(x)&&(S.cat==="All"||x.c===S.cat)));
 const listHTML=jobs=>jobs.length?jobs.map(card).join(""):`<div class="empty">No work posted in this field yet. Post the first job from the Add tab.</div>`;
@@ -1308,7 +1347,7 @@ function updateSearchUI(){const sb=document.getElementById("sbar");if(!sb)return
 function toggleRes(f){sOpen=f===undefined?!sOpen:!!f;if(sOpen)sMore=false;updateSearchUI()}
 function sMoreSet(v){sMore=!!v;updateSearchUI()}
 function collapseSearch(){sOpen=false;sMore=false;const a=document.activeElement;if(a&&a!==document.body&&a.blur)a.blur();updateSearchUI();scrollTo({top:0,behavior:(typeof reduce!=="undefined"&&reduce)?"auto":"smooth"})}
-function sKey(e){if(e.key==="Enter"){e.preventDefault();if(searchModel()){sOpen=true;sMore=false;updateSearchUI();e.target.blur()}}else if(e.key==="Escape"&&sOpen){sOpen=false;updateSearchUI()}}
+function sKey(e){if(e.key==="Enter"){e.preventDefault();doSearch()}else if(e.key==="Escape"){closeLocMenu();closeSug();if(sOpen){sOpen=false;updateSearchUI()}}}
 function setQ(v){S.q=v;sMore=false;updateSearchUI();save()}
 function setQL(v){S.qloc=String(v||"").slice(0,40);const i=document.getElementById("qloc");if(i&&i.value!==S.qloc)i.value=S.qloc;sMore=false;updateSearchUI();save()}
 function clearQ(){S.q="";const i=document.getElementById("q");if(i){i.value="";i.focus()}sMore=false;updateSearchUI();save()}
@@ -1327,9 +1366,10 @@ function home(){
  const jobs=shown(),svcs=shownS(),aus=authors(),isS=S.tab==="services",src=isS?S.services:S.jobs;
  view.innerHTML=`<div class="sbar ${(S.q.trim()||(S.qloc||"").trim()||sOpen)?"act":""}" id="sbar" role="search">
  <div class="sbox">
- <label class="sf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value)" onkeydown="sKey(event)" placeholder="Search people, plumber, driver…" aria-label="Search people, jobs or trades" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear search">✕</button></label>
- <div class="sf locsf" id="locsf"><span class="sfi" aria-hidden="true">📍</span><input id="qloc" type="text" value="${esc(S.qloc||"")}" oninput="setQL(this.value)" onkeydown="sKey(event)" placeholder="Any location" autocomplete="off" enterkeyhint="search" aria-label="Filter results by location"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="setQL('');document.getElementById('qloc').focus()" aria-label="Clear location">✕</button><button type="button" class="locdd" id="locb" aria-haspopup="listbox" aria-expanded="false" aria-controls="locmenu" aria-label="Choose a location" onclick="toggleLocMenu(event)"><span>Near me</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg></button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" tabindex="-1" hidden>${locItems()}</div></div>
- </div>
+ <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Search by Name" aria-label="Search by name" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
+ <div class="sf locsf" id="locsf"><span class="sfi" aria-hidden="true">📍</span><input id="qloc" type="text" value="${esc(S.qloc||"")}" oninput="setQL(this.value);openLocMenu()" onfocus="openLocMenu()" onkeydown="sKey(event)" placeholder="Search by Location" aria-label="Search by location" aria-controls="locmenu" autocomplete="off" enterkeyhint="search"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="setQL('');openLocMenu()" aria-label="Clear location">✕</button><button type="button" class="locdd" id="locb" aria-expanded="false" aria-controls="locmenu" aria-label="Show location list" onclick="toggleLocMenu(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" tabindex="-1" hidden></div></div>
+ <button type="button" class="sgo" onclick="doSearch()" aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><span>Search</span></button>
+</div>
  <div class="sact" id="sact">${searchActHTML(searchModel())}</div>
  <div id="sres" class="sdd ${sOpen&&searchModel()?"open":""}" aria-live="polite">${sOpen&&searchModel()?results():""}</div>
 </div>
@@ -1340,7 +1380,7 @@ function home(){
  <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()">${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${CMETA[c].e}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}</div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
  <div class="seg tabs2" role="group" aria-label="Choose a section: find work or talent posts"><button aria-pressed="${!isS}" onclick="setTab('jobs')">Find Work<small>${jobs.length}</small></button><button aria-pressed="${isS}" onclick="setTab('services')">Talent Post<small>${svcs.length}</small></button></div>
  <div class="row"><h2>${S.cat==="All"?(isS?"Talent posts available":"Work available now"):esc(S.cat)}</h2><span id="pcount">${String((isS?svcs:jobs).length).padStart(2,"0")}</span></div>${S.cat==="All"?"":`<button class="btn alt" style="padding:6px 16px;margin:-4px 0 14px" onclick="toggleCat(S.cat)">Show all posts</button>`}
- <p class="cnt" style="margin:-4px 0 12px" id="locnote">📍 Near <b>${esc(myLoc())}</b> · people you follow first, then posts near you<button class="link" style="margin-left:8px" onclick="editP=true;go('profile')">Change</button><button class="link" style="margin-left:8px" aria-pressed="${!!S.nearOnly}" onclick="S.nearOnly=!S.nearOnly;save();home()">${S.nearOnly?"Show everything":"Only near me"}</button> <span id="syncchip">${syncChip()}</span></p><div class="list" id="plist">${isS?listS(svcs):listHTML(jobs)}</div>`;
+ <p class="cnt" style="margin:-4px 0 12px;min-height:0" id="locnote"><span id="syncchip">${syncChip()}</span></p><div class="list" id="plist">${isS?listS(svcs):listHTML(jobs)}</div>`;
  const c=document.getElementById("cats");if(c){c.scrollLeft=keep;const sel=c.querySelector("[aria-pressed=true]");if(sel){const cr=c.getBoundingClientRect(),sr=sel.getBoundingClientRect();if(sr.left<cr.left)c.scrollLeft+=sr.left-cr.left-8;else if(sr.right>cr.right)c.scrollLeft+=sr.right-cr.right+8}catEdges()}
  if(y0!==null&&Math.abs(scrollY-y0)>2)scrollTo(0,y0)}
 function history(){const h=S.hist;
@@ -1678,7 +1718,7 @@ function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...
  const mrow=(ic,t,sub,a,cl="")=>`<button class="srow ${cl}" onclick="${a}"><span class="si" aria-hidden="true">${ic}</span><span><b>${t}</b><small>${sub}</small></span><span aria-hidden="true">›</span></button>`;
  view.innerHTML=`<div class="row"><h2>My profile</h2></div><div class="prof">
  <div class="pleft"><div class="pban"><div class="avedit"><div class="av" style="${abg(p.name)}">${ait(p.name)}</div><button class="camb" aria-label="Change profile picture" onclick="pickPhoto()">📷</button></div><input id="phf" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onchange="onPhoto(this)"><h3>${esc(p.name)}</h3><span class="rolep">${S.role==="client"?"Client":"Service provider"}</span>${p.email?`<span class="mail">${esc(p.email)}</span>`:""}<div class="phbtns"><button class="btn alt" onclick="pickPhoto()">${photoOf(p.name)?"Change photo":"Upload photo"}</button>${photoOf(p.name)?`<button class="link" onclick="removePhoto()">Remove</button>`:""}</div></div>
- <div class="pst" aria-label="Your activity"><div><b>${mj.length}</b><span>Posts</span></div><div><b>${reqs}</b><span>Requests</span></div><div><b>${views}</b><span>Views</span></div></div></div>
+ <div class="pst" aria-label="Your activity"><div><b>${mj.length}</b><span>Posts</span></div><div><b>${reqs}</b><span>Requests</span></div><div><b>${views}</b><span>Views</span></div></div>${(()=>{const n=nFollowers(S.name);return `<section class="pcard fsec" aria-label="Followers"><h4>Followers</h4><button type="button" class="srow fcard" onclick="openFollowers()" aria-haspopup="dialog" aria-label="Followers: ${n}. Open the list"><span class="si" aria-hidden="true">👥</span><span><b class="fcount">${n}</b><small>${n===1?"follower":"followers"} · tap to view</small></span><span aria-hidden="true">›</span></button></section>`})()}</div>
  <div class="pright">${editP?`<form class="pform pcard" style="padding:16px" onsubmit="saveProfile(event)">
  <div class="two"><label>Full name<input id="pn" required maxlength="40" value="${esc(p.name)}" autocomplete="name"></label>
  <label>Age<input id="pa" type="number" inputmode="numeric" min="16" max="99" required value="${esc(p.age)}"></label></div>
@@ -1710,7 +1750,7 @@ function saveProfile(e){e.preventDefault();const o=S.profile.name,n=pn.value.tri
 /* ---------- fixes: hamburger drawer, back arrow, location dropdown ---------- */
 const navStack=[];
 function menuItems(){const un=unreadN(),ch=unread();const it=(v,e,l,b)=>`<button class="dwi" ${S.view===v?'aria-current="page"':''} onclick="${v==='profile'?"editP=false;":""}go('${v}')"><i aria-hidden="true">${e}</i>${l}${b?`<span class="dwb">${b}</span>`:""}</button>`;
- return it("home","🏠","Home")+it("add","➕","Add post")+it("chat","💬","Chat",ch||"")+it("notifications","🔔","Notifications",un||"")+it("profile","👤","My profile")+it("history","🕑","Booking history")+it("settings","⚙️","Settings")+it("support","🛟","Help & support")+(isAdmin()?it("admin","🛡️","Admin"):"")}
+ return it("home","🏠","Home")+it("add","➕","Add Post")+it("chat","💬","Chat",ch||"")+it("notifications","🔔","Notifications",un||"")+it("settings","⚙️","Settings")+it("profile","👤","My profile")+it("history","🕑","Booking history")+it("support","🛟","Help & support")+(isAdmin()?it("admin","🛡️","Admin"):"")}
 function renderMenu(){const d=document.getElementById("drawer");if(!d)return;
  if(S.out){d.innerHTML=`<div class="dwh"><div><b>Welcome</b><small>Log in to hire help or find work</small></div><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div><button class="dwi" onclick="closeMenu(true);showAuth('login')"><i aria-hidden="true">🔑</i>Log in</button><button class="dwi" onclick="closeMenu(true);showAuth('register')"><i aria-hidden="true">📝</i>Create account</button>`;return}
  d.innerHTML=`<div class="dwh"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><div><b>${esc(S.name)}</b><small>${S.role==="client"?"Client":"Service provider"}</small></div><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div>${menuItems()}<div class="dwsp"></div><button class="dwi danger" onclick="closeMenu(true);outD.showModal()"><i aria-hidden="true">🚪</i>Log out</button>`}
@@ -1726,16 +1766,30 @@ function goBack(){const ds=[...document.querySelectorAll("dialog[open]")];if(ds.
  let p=navStack.pop();while(p&&p===S.view)p=navStack.pop();
  if(!p||p==="admin"&&!isAdmin())p="home";
  navJump=true;sOpen=false;S.view=p;if(p!=="profile")editP=false;if(p!=="chat")S.thread=null;render();scrollTo(0,0)}
-const locItems=()=>{const cur=(S.qloc||"").trim().toLowerCase(),me=myLoc(),seen=new Set([me.toLowerCase()]);
- const it=(v,l,sub)=>`<button type="button" role="option" aria-selected="${cur===String(v).toLowerCase()}" data-v="${esc(v)}" onclick="pickLoc(this.dataset.v)"><span>${l}${sub?`<small>${sub}</small>`:""}</span></button>`;
- return it(me,"📍 Near me","Your area: "+esc(me))+it("","Any location")+"<hr>"+allLocs().filter(l=>{const k=l.toLowerCase();if(seen.has(k))return false;seen.add(k);return true}).map(l=>it(l,esc(l))).join("")};
-function closeLocMenu(){const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(m&&!m.hidden){m.hidden=true;if(b)b.setAttribute("aria-expanded","false")}}
-function toggleLocMenu(e){if(e)e.stopPropagation();const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(!m)return;
- if(!m.hidden){closeLocMenu();return}
- sOpen=false;try{updateSearchUI()}catch(x){}
- m.innerHTML=locItems();m.hidden=false;b.setAttribute("aria-expanded","true");const s=m.querySelector("[aria-selected=true]");if(s)s.scrollIntoView({block:"nearest"})}
-function pickLoc(v){closeLocMenu();setQL(v);const i=document.getElementById("qloc");if(i&&!v)i.focus({preventScroll:true})}
-document.addEventListener("pointerdown",e=>{const m=document.getElementById("locmenu");if(m&&!m.hidden&&!(e.target.closest&&e.target.closest("#locsf")))closeLocMenu()},true);
+const allPlaces=()=>{const seen=new Set(),out=[];[...S.jobs.map(j=>j.loc),...S.services.map(x=>x.loc),...S.users.map(u=>u.loc)].forEach(l=>{l=String(l||"").trim();const k=l.toLowerCase();if(l&&!seen.has(k)){seen.add(k);out.push(l)}});return out.sort((x,y)=>x.localeCompare(y))};
+function closeLocMenu(){const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(m&&!m.hidden)m.hidden=true;if(b){b.setAttribute("aria-expanded","false");b.setAttribute("aria-label","Show location list")}}
+function openLocMenu(all){const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(!m)return;closeSug();
+ const t=all===true?"":(S.qloc||"").trim().toLowerCase(),cur=(S.qloc||"").trim().toLowerCase(),L=allPlaces().filter(l=>!t||l.toLowerCase().includes(t));
+ m.innerHTML=L.length?L.map(l=>`<button type="button" role="option" aria-selected="${l.toLowerCase()===cur}" data-v="${esc(l)}" onclick="pickLoc(this.dataset.v)">${esc(l)}</button>`).join(""):`<div class="nsn">No matching locations</div>`;
+ m.hidden=false;if(b){b.setAttribute("aria-expanded","true");b.setAttribute("aria-label","Collapse location list")}
+ const s=m.querySelector("[aria-selected=true]");if(s)s.scrollIntoView({block:"nearest"})}
+function toggleLocMenu(e){if(e)e.stopPropagation();const m=document.getElementById("locmenu");if(!m)return;if(m.hidden)openLocMenu(true);else closeLocMenu()}
+function pickLoc(v){S.qloc=String(v||"").slice(0,40);const i=document.getElementById("qloc");if(i)i.value=S.qloc;closeLocMenu();const c=document.getElementById("qlclr");if(c)c.classList.toggle("hide",!S.qloc);sMore=false;updateSearchUI();save()}
+function closeSug(){const s=document.getElementById("nsug");if(s)s.hidden=true}
+function nameSug(){const s=document.getElementById("nsug");if(!s)return;const q=(S.q||"").trim().toLowerCase();if(!q){s.hidden=true;return}closeLocMenu();
+ const L=S.users.filter(u=>u.name&&u.name!==S.name&&u.role!=="admin"&&live(u.name)&&u.name.toLowerCase().includes(q)).sort((a,b)=>(b.name.toLowerCase().startsWith(q)-a.name.toLowerCase().startsWith(q))||a.name.localeCompare(b.name)).slice(0,3);
+ s.innerHTML=L.length?L.map(u=>`<button type="button" role="option" data-n="${esc(u.name)}" onclick="sugPick(this.dataset.n)"><span class="av sm" style="${abg(u.name)}" aria-hidden="true">${ait(u.name)}</span><span><b>${esc(u.name)}</b><small>${esc(roleOf(u.name))}</small></span></button>`).join(""):`<div class="nsn">No people found</div>`;s.hidden=false}
+function sugPick(n){closeSug();openProfile(n)}
+function doSearch(){closeLocMenu();closeSug();const a=document.activeElement;if(a&&a!==document.body&&a.blur)a.blur();
+ if(!searchModel()){sOpen=false;updateSearchUI();toast("Type a name or choose a location, then tap Search");return}
+ sOpen=true;sMore=false;updateSearchUI();const sb=document.getElementById("sbar");if(sb)sb.scrollIntoView({block:"start",behavior:"auto"})}
+document.addEventListener("pointerdown",e=>{const t=e.target.closest?e.target:null;if(!t)return;const m=document.getElementById("locmenu");if(m&&!m.hidden&&!t.closest("#locsf"))closeLocMenu();const s=document.getElementById("nsug");if(s&&!s.hidden&&!t.closest("#namesf"))closeSug()},true);
+
+function openFollowers(){if(S.out)return;const L=followersOf(S.name);
+ folD.innerHTML=`<div class="dh"><h3 style="margin:0">Followers (${L.length})</h3><button class="x" aria-label="Close" onclick="folD.close()">✕</button></div>${L.length?`<div class="flist">${L.map(n=>`<div class="frow"><button type="button" class="fmain" data-n="${esc(n)}" onclick="folProfile(this.dataset.n)" aria-label="View profile of ${esc(n)}"><span class="av sm" style="${abg(n)}" aria-hidden="true">${ait(n)}</span><span><b>${esc(n)}</b><small>${esc(roleOf(n))}</small></span></button><button type="button" class="btn alt" data-n="${esc(n)}" onclick="folMsg(this.dataset.n)" aria-label="Message ${esc(n)}">Message</button></div>`).join("")}</div>`:`<div class="empty" style="padding:18px">No followers yet. When people follow you, they will show up here.</div>`}`;
+ if(!folD.open)folD.showModal()}
+function folProfile(n){folD.close();openProfile(n)}
+function folMsg(n){folD.close();msgTo(n)}
 const reduce=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches);
 spl.src=LG.s;document.querySelector(".app").inert=true;
 function hideSplash(){if(!window.splash)return;const sp=document.getElementById("splash");if(!sp)return;sp.classList.add("leave");document.querySelector(".app").inert=false;setTimeout(()=>sp.remove(),reduce?0:550)}
