@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="45OnmHHN30d7sA
+<!-- Google Search Console: paste your full verification tag here, e.g. <meta name="google-site-verification" content="YOUR_FULL_TOKEN">. The previous tag was cut off and had no closing quote, which broke the head. -->
 <link rel="icon" id="fav" type="image/png">
 <link rel="apple-touch-icon" id="fav2">
 <meta charset="utf-8">
@@ -541,6 +541,43 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .sdd .vmore{justify-self:start;min-height:40px}
 @media (prefers-reduced-motion:reduce){.rbtn svg{transition:none}}
 .camb{right:-6px;bottom:-6px}
+
+/* ===== fixes: hamburger, back arrow, location dropdown, drawer ===== */
+.top .ic{flex:none;border:1px solid rgba(0,0,0,.08)}
+.ic.menu{background:#fff;color:#14101a;position:relative;z-index:2}
+.ic.menu svg{width:26px;height:26px;fill:currentColor}
+.ic.backb{background:#fff;color:#14101a}.ic.backb[hidden]{display:none}
+.ic.backb svg{width:24px;height:24px;fill:currentColor}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ic.menu,:root:not([data-theme="light"]) .ic.backb{background:var(--soft);color:var(--ink);border-color:var(--line)}}
+:root[data-theme="dark"] .ic.menu,:root[data-theme="dark"] .ic.backb{background:var(--soft);color:var(--ink);border-color:var(--line)}
+.top .brand{min-width:0;justify-content:center}
+.top .bell{flex:none}
+#drawerBd{position:fixed;inset:0;background:rgba(20,10,30,.55);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s}
+#drawerBd.open{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;bottom:0;left:0;width:min(320px,86vw);background:var(--bg);color:var(--ink);z-index:91;transform:translateX(-102%);transition:transform .22s ease;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) 14px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 0 40px rgba(0,0,0,.3);overflow-y:auto;overscroll-behavior:contain;visibility:hidden}
+#drawer.open{transform:none;visibility:visible}
+.dwh{display:flex;align-items:center;gap:12px;padding:8px 6px 16px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.dwh .av{width:52px;height:52px;border-radius:16px;margin:0;font-size:18px;flex:none}
+.dwh div{min-width:0;flex:1}.dwh b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dwh small{color:var(--mute)}
+.dwx{width:40px;height:40px;border-radius:50%;background:var(--soft);font-size:16px;flex:none}
+.dwi{display:flex;align-items:center;gap:14px;width:100%;padding:13px 12px;border-radius:14px;text-align:left;font-weight:600;font-size:16px;color:var(--ink)}
+.dwi:hover,.dwi[aria-current=page]{background:var(--soft)}.dwi[aria-current=page]{color:var(--plum);font-weight:800}
+.dwi i{font-style:normal;width:26px;text-align:center;font-size:20px}.dwi.danger{color:var(--accent)}
+.dwi .dwb{margin-left:auto;background:var(--accent);color:#fff;border-radius:99px;font-size:12px;font-weight:700;padding:1px 8px}
+.dwsp{flex:1}
+@media (prefers-reduced-motion:reduce){#drawer,#drawerBd{transition:none}}
+.addt.hasph{position:relative;overflow:visible;font-size:0}.plusb{position:absolute;right:-5px;bottom:-5px;width:24px;height:24px;border-radius:50%;background:var(--plum);color:#fff;font-size:16px;line-height:1;display:grid;place-items:center;border:2px solid var(--bg)}
+.locsf{position:relative}
+.locdd{flex:none;display:inline-flex;align-items:center;gap:2px;min-height:34px;padding:0 6px 0 10px;border-radius:99px;background:var(--bg);color:var(--plum);font-weight:700;font-size:13px;border:1px solid var(--line);white-space:nowrap}
+.locdd svg{width:20px;height:20px;fill:currentColor;transition:transform .15s}.locdd[aria-expanded=true] svg{transform:rotate(180deg)}
+@media (max-width:360px){.locdd span{display:none}.locdd{padding:0 6px}}
+.locmenu{position:absolute;right:0;top:calc(100% + 6px);width:min(260px,100%);min-width:200px;max-height:224px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:var(--bg);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 34px rgba(20,10,40,.24);padding:6px;z-index:40}
+.locmenu[hidden]{display:none}
+.locmenu button{display:flex;align-items:center;gap:8px;width:100%;min-height:42px;padding:8px 12px;border-radius:12px;text-align:left;font-weight:600;font-size:14px;color:var(--ink)}
+.locmenu button:hover,.locmenu button[aria-selected=true]{background:var(--soft)}
+.locmenu button[aria-selected=true]{color:var(--plum);font-weight:800}
+.locmenu small{display:block;color:var(--mute);font-weight:500}
+.locmenu hr{border:0;border-top:1px solid var(--line);margin:4px 6px}
 @media (max-width:959px){.sheet{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}.addv .sheet{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}}
 
 </style>
@@ -782,7 +819,8 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 <div class="main">
  <header class="hero">
   <div class="top">
-   <button class="ic menu" aria-label="My profile" onclick="editP=false;go('profile')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v2.5H3zm0 5.75h18v2.5H3zM3 16.5h18V19H3z"/></svg></button>
+   <button class="ic backb" id="backB" type="button" aria-label="Go back" onclick="goBack()" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg></button>
+   <button class="ic menu" aria-label="Open menu" onclick="toggleMenu()" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawer" id="menuB"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v2.5H3zm0 5.75h18v2.5H3zM3 16.5h18V19H3z"/></svg></button>
    <div class="brand"><img class="hl lg-l" id="hlL" alt="RoyalCub Jobs" height="36"><img class="hl lg-d" id="hlD" alt="RoyalCub Jobs" height="36"></div>
    <button class="bell" aria-label="Notifications" onclick="go('notifications')"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9a6 6 0 1 1 12 0c0 6 2 7 2 7H4s2-1 2-7zM10 20h4"/></svg><b id="bn">0</b></button>
   </div>
@@ -793,6 +831,8 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 </div>
 </div>
 <nav class="nav" id="botNav" aria-label="Main"></nav>
+<div id="drawerBd" onclick="closeMenu()" aria-hidden="true"></div>
+<aside id="drawer" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true"></aside>
 
 <dialog id="postD" aria-label="Post details"></dialog>
 <dialog id="profD" aria-label="Profile"></dialog>
@@ -844,7 +884,7 @@ const COL=["#2a8fb8","#c0527a","#3b5b99","#d08a3c","#7a4f8a","#3f8f6a","#a8543a"
 const col=s=>COL[[...s].reduce((a,c)=>a+c.charCodeAt(0),0)%COL.length];
 const ini=n=>n.split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
 const photoOf=n=>{const u=(S.users||[]).find(x=>x.name===n);return u&&u.photo||""};
-const abg=n=>{const ph=photoOf(n);return `background:${ph?`url("${ph}") center/cover no-repeat,`:""}${col(n)}`};
+const abg=n=>{const ph=photoOf(n);return `background:${ph?`url('${ph}') center/cover no-repeat,`:""}${col(n)}`};
 const ait=n=>photoOf(n)?"":ini(n);
 const tShort=t=>{const d=new Date(t);return d.toDateString()===new Date().toDateString()?d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -1018,7 +1058,7 @@ const PRC=`<svg class="mi prc" viewBox="0 0 24 24" aria-hidden="true"><circle cx
 const CLK=IC.clock.replace("<svg ",'<svg class="mi clk" ');
 const NAV=[["home",IC.home,"Home"],["add",IC.add,"Add"],["chat",IC.chat,"Chat"],["settings",IC.settings,"Settings"]];
 function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot">${unread()}</span>`:""}</button>`).join("");
- botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;{const mb=document.querySelector(".top .menu");if(mb){if(MENU_HTML==null)MENU_HTML=mb.innerHTML;mb.innerHTML=S.out?MENU_HTML:`<span class="av meav" style="${abg(S.name)}">${ait(S.name)}</span>`}}{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.parentElement.style.visibility=un?"visible":"hidden"}
+ botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.parentElement.style.visibility=un?"visible":"hidden"}
 const BASE_T=document.title;
 const unread=()=>S.threads.reduce((a,t)=>a+(+t.u||0),0);
 const stubUser=n=>{if(n&&!S.users.some(u=>u.name===n))S.users.push({email:n.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:n,phone:"",age:"",cat:"Client",role:"client",title:"",status:"active",joined:Date.now()})};
@@ -1048,8 +1088,9 @@ async function initGoogle(){const slot=document.getElementById("gbtn");if(!slot|
  if(document.getElementById("gbtn")!==slot)return;
  const a=new Uint8Array(16);crypto.getRandomValues(a);const raw=[...a].map(x=>x.toString(16).padStart(2,"0")).join("");let gNonce=raw;try{gNonce=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw)))].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){}if(document.getElementById("gbtn")!==slot)return;gRaw[gNonce]=raw;gNonces.push(gNonce);if(gNonces.length>8)delete gRaw[gNonces.shift()];
  const dark=S.theme==="dark"||(S.theme!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);
- google.accounts.id.initialize({client_id:CFG.googleClientId,callback:onGoogleCred,nonce:gNonce,ux_mode:"popup",auto_select:false,cancel_on_tap_outside:true,use_fedcm_for_prompt:true});
- slot.innerHTML="";google.accounts.id.renderButton(slot,{type:"standard",theme:dark?"filled_black":"outline",size:"large",text:"continue_with",shape:"pill",logo_alignment:"left",width:Math.min(400,Math.max(200,Math.floor(slot.clientWidth||320)))});gerr("")}
+ google.accounts.id.initialize({client_id:CFG.googleClientId,callback:onGoogleCred,nonce:gNonce,ux_mode:"popup",auto_select:false,cancel_on_tap_outside:true,use_fedcm_for_prompt:true,use_fedcm_for_button:true,itp_support:true});
+ slot.innerHTML="";google.accounts.id.renderButton(slot,{type:"standard",theme:dark?"filled_black":"outline",size:"large",text:"continue_with",shape:"pill",logo_alignment:"left",width:Math.min(400,Math.max(200,Math.floor(slot.clientWidth||320)))});gerr("");setTimeout(()=>{if(document.getElementById("gbtn")===slot&&!slot.querySelector("iframe,[role=button]"))gFallback(slot,"Google’s button didn’t load. ")},3000)}
+function gFallback(slot,pre){slot.innerHTML=(SB_ON?`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`:"")+`<button type="button" class="gbtn" style="margin-top:8px" onclick="gerr('');initGoogle()">Retry Google sign-in</button>`;gerr((pre||"")+"Make sure "+location.origin+" is listed under Authorized JavaScript origins for your Google client, and that no ad-blocker is blocking accounts.google.com.")}
 async function googleLogin(){if(SB_ON){gerr("");try{const c=await sbClient();const {error}=await c.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname}});if(error)throw error}catch(e){gerr("Couldn’t start Google sign-in. Check your connection and that Google is enabled in Supabase.")}return}gerr(CFG.googleClientId?"Google is still loading. Try again in a moment.":"Google sign-in needs a Google client ID. Set SUPABASE_URL (recommended) or GOOGLE_CLIENT_ID in the site script, or log in with email.")}
 function decodeJwt(t){const q=String(t).split(".");if(q.length!==3)throw new Error("Invalid Google response.");const b=q[1].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b+"=".repeat((4-b.length%4)%4)),c=>c.charCodeAt(0))))}
 function checkGoogleClaims(c,server){if(!c||!c.sub||!c.email)return"Google didn’t return an email for this account.";
@@ -1057,7 +1098,7 @@ function checkGoogleClaims(c,server){if(!c||!c.sub||!c.email)return"Google didn�
  if(!server){if(c.iss!=="https://accounts.google.com"&&c.iss!=="accounts.google.com")return"Untrusted sign-in token.";if(c.aud!==CFG.googleClientId)return"This token was issued for a different app.";if(!(c.exp*1000>Date.now()))return"Sign-in expired. Please try again.";if(!c.nonce||!gNonces.includes(c.nonce))return"Sign-in couldn’t be verified. Please try again."}return""}
 async function onGoogleCred(resp){try{if(!resp||!resp.credential)throw new Error("Google sign-in was cancelled.");let c,server=false;
  if(CFG.googleVerifyUrl){const rs=await fetch(CFG.googleVerifyUrl,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({credential:resp.credential,nonce:(()=>{try{return decodeJwt(resp.credential).nonce}catch(e){return""}})()})});if(!rs.ok)throw new Error("Google sign-in couldn’t be verified. Try again.");c=await rs.json();server=true}
- else{c=decodeJwt(resp.credential);{const b0=checkGoogleClaims(c,false);if(b0)throw new Error(b0)}if(await sbGoogleOn()){sbBusy=true;try{const cl=await sbClient();const {error}=await cl.auth.signInWithIdToken({provider:"google",token:resp.credential,nonce:gRaw[c.nonce]});if(error)throw new Error("Supabase couldn’t verify this Google sign-in: "+error.message)}finally{}server=false}else try{console.warn("RoyalCub: Google ID token checked in the browser only. Set RC_CONFIG.googleVerifyUrl to verify the signature on your server before production use.")}catch(e){}}
+ else{c=decodeJwt(resp.credential);{const b0=checkGoogleClaims(c,false);if(b0)throw new Error(b0)}if(await sbGoogleOn()){sbBusy=true;try{const cl=await sbClient();const {error}=await cl.auth.signInWithIdToken({provider:"google",token:resp.credential,nonce:gRaw[c.nonce]});if(error)throw new Error(/audience|client.?id/i.test(error.message||"")?"Google sign-in works, but Supabase rejected this app’s Google Client ID. Add it under Authentication › Providers › Google › Client IDs in Supabase.":"Supabase couldn’t verify this Google sign-in: "+error.message)}finally{}server=false}else try{console.warn("RoyalCub: Google ID token checked in the browser only. Set RC_CONFIG.googleVerifyUrl to verify the signature on your server before production use.")}catch(e){}}
  const bad=checkGoogleClaims(c,server);if(bad)throw new Error(bad);googleSignIn(c);if(S.out)sbOut()}catch(e){gerr(e.message||"Google sign-in failed. Please try again.")}finally{setTimeout(()=>{sbBusy=false},600);try{const n=decodeJwt(resp.credential).nonce;gNonces=gNonces.filter(x=>x!==n);delete gRaw[n]}catch(e){}}}
 function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.gid&&x.gid===c.sub),linked=false,fresh=false;
  if(!u){u=S.users.find(x=>x.email.toLowerCase()===em);if(u){if(u.gid&&u.gid!==c.sub)return gerr("This email is already linked to a different Google account.");u.gid=c.sub;linked=true}}
@@ -1174,7 +1215,7 @@ function admTickets(){const x=adm.tix&&S.tix.find(t=>t.id===adm.tix);
 function tixReply(id){const x=S.tix.find(t=>t.id===id),v=ar2.value.trim();if(!v)return;const int=ai.checked;x.thread.push({by:S.name,role:"admin",t:v,ts:Date.now(),internal:int});if(!int){x.unread=1;if(x.status==="open")x.status="in-progress"}log(int?"internal note":"ticket reply",id);save();admin()}
 function tixStatus(id,st){const x=S.tix.find(t=>t.id===id);x.status=st;log("ticket "+st,id);save();admin()}
 
-function go(v){navJump=true;sOpen=false;sMore=false;shut("postD","profD","storyD","addD","pitchD");S.view=v;if(v!=="profile")editP=false;if(v!=="chat")S.thread=null;render();scrollTo(0,0)}
+function go(v){if(!S.out&&v!==S.view){navStack.push(S.view);if(navStack.length>40)navStack.shift()}closeMenu(true);navJump=true;sOpen=false;sMore=false;shut("postD","profD","storyD","addD","pitchD");S.view=v;if(v!=="profile")editP=false;if(v!=="chat")S.thread=null;render();scrollTo(0,0)}
 function readNotes(){S.notes=0;nav();toast("You’re all caught up")}
 function toast(t){const e=document.createElement("div");e.className="toast";e.setAttribute("role","status");e.textContent=t;const ds=[...document.querySelectorAll("dialog[open]")];(ds[ds.length-1]||document.body).append(e);setTimeout(()=>e.remove(),2400)}
 const isAdmin=()=>{const u=S.users.find(x=>x.email===S.me);return !!u&&u.role==="admin"};
@@ -1287,13 +1328,13 @@ function home(){
  view.innerHTML=`<div class="sbar ${(S.q.trim()||(S.qloc||"").trim()||sOpen)?"act":""}" id="sbar" role="search">
  <div class="sbox">
  <label class="sf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value)" onkeydown="sKey(event)" placeholder="Search people, plumber, driver…" aria-label="Search people, jobs or trades" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear search">✕</button></label>
- <label class="sf"><span class="sfi" aria-hidden="true">📍</span><input id="qloc" type="text" list="locdl" value="${esc(S.qloc||"")}" oninput="setQL(this.value)" onkeydown="sKey(event)" placeholder="Any location" autocomplete="off" enterkeyhint="search" aria-label="Filter results by location"><datalist id="locdl">${allLocs().map(l=>`<option value="${esc(l)}">`).join("")}</datalist><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="setQL('');document.getElementById('qloc').focus()" aria-label="Clear location">✕</button><button type="button" class="nearb" onclick="setQL(myLoc())">Near me</button></label>
+ <div class="sf locsf" id="locsf"><span class="sfi" aria-hidden="true">📍</span><input id="qloc" type="text" value="${esc(S.qloc||"")}" oninput="setQL(this.value)" onkeydown="sKey(event)" placeholder="Any location" autocomplete="off" enterkeyhint="search" aria-label="Filter results by location"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="setQL('');document.getElementById('qloc').focus()" aria-label="Clear location">✕</button><button type="button" class="locdd" id="locb" aria-haspopup="listbox" aria-expanded="false" aria-controls="locmenu" aria-label="Choose a location" onclick="toggleLocMenu(event)"><span>Near me</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg></button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" tabindex="-1" hidden>${locItems()}</div></div>
  </div>
  <div class="sact" id="sact">${searchActHTML(searchModel())}</div>
  <div id="sres" class="sdd ${sOpen&&searchModel()?"open":""}" aria-live="polite">${sOpen&&searchModel()?results():""}</div>
 </div>
  <div class="row"><h2>Status</h2><span>${String(aus.length).padStart(2,"0")}</span></div>
- <div class="status"><button class="st" onclick="openAdd()" aria-label="Add status poster"><div class="av addt">＋</div><b>Add</b></button>${aus.map(n=>{const me=n===S.name,l=S.stories.filter(x=>x.by===n),seen=me||l.every(x=>x.v.includes(S.name)),tot=l.reduce((a,x)=>a+x.v.length,0);
+ <div class="status"><button class="st" onclick="openAdd()" aria-label="Add status poster">${photoOf(S.name)?`<div class="av addt hasph" style="${abg(S.name)}"><span class="plusb" aria-hidden="true">＋</span></div>`:`<div class="av addt">＋</div>`}<b>Add</b></button>${aus.map(n=>{const me=n===S.name,l=S.stories.filter(x=>x.by===n),seen=me||l.every(x=>x.v.includes(S.name)),tot=l.reduce((a,x)=>a+x.v.length,0);
  return `<button class="st" data-n="${esc(n)}" onclick="openStory(this.dataset.n)" aria-label="${me?`Your status, ${tot} views`:`View status of ${esc(n)}`}"><div class="av ring ${seen?"seen":""}" style="${abg(n)}">${ait(n)}</div><b>${me?"You":esc(n.split(" ")[0])}</b>${me?`<small>👁 ${tot}</small>`:""}</button>`}).join("")}</div>
  <div class="row"><h2>Categories</h2><span>${String(CATS.length-1).padStart(2,"0")}</span></div>
  <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()">${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${CMETA[c].e}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}</div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
@@ -1426,7 +1467,7 @@ function profRevs(n){const rl=revOf(n).slice().sort((a,b)=>b.ts-a.ts),a=avgR(n);
  return `<h4>Reviews of ${esc(n.split(" ")[0])}<em style="font-style:normal;margin-left:8px">${rl.length?`<span class="stars">★</span> ${a.toFixed(1)} · ${rl.length}`:""}</em></h4><div id="prvl">${rl.length?rl.map((x,i)=>rvRow(x,i)).join(""):`<p class="cnt" style="margin:0">No reviews yet.</p>`}</div>${rl.length>3?`<button class="vmore" id="prvm" aria-expanded="false" onclick="toggleRevP()">View more (${rl.length-3})</button>`:""}`}
 function toggleRevP(){const b=document.getElementById("prvm"),x=document.querySelectorAll("#prvl .rv-x"),open=b.getAttribute("aria-expanded")!=="true";x.forEach(e=>e.classList.toggle("hide",!open));b.setAttribute("aria-expanded",open);b.textContent=open?"Show less":`View more (${x.length})`}
 
-function openStory(n){shut("postD","profD");sv={n,i:0};showStory();if(!storyD.open)storyD.showModal()}
+function openStory(n){if(!S.stories.some(x=>x.by===n))return;shut("postD","profD");sv={n,i:0};showStory();if(!storyD.open&&S.stories.some(x=>x.by===n))storyD.showModal()}
 function stepStory(d){sv.i+=d;showStory()}
 function showStory(){const l=S.stories.filter(x=>x.by===sv.n);
  if(!l.length){storyD.close();if(S.view==="home")home();return}
@@ -1665,6 +1706,36 @@ function saveProfile(e){e.preventDefault();const o=S.profile.name,n=pn.value.tri
  if(ur){ur.name=n;ur.age=pa.value;ur.phone=pph.value.trim();ur.email=ne;ur.title=pt.value.trim();ur.loc=ploc.value.trim()||"Palakkad"}S.services.forEach(x=>{if(x.by===o)x.by=n;x.v=x.v.map(y=>y===o?n:y);x.b.forEach(b=>{if(b.by===o)b.by=n})});S.me=ne;
  S.jobs.forEach(j=>{if(j.by===o)j.by=n;j.v=j.v.map(x=>x===o?n:x);j.p.forEach(q=>{if(q.by===o)q.by=n})});S.stories.forEach(x=>{if(x.by===o)x.by=n;x.v=x.v.map(y=>y===o?n:y)});{const F={};Object.keys(S.fol||{}).forEach(k=>{F[k===o?n:k]=S.fol[k].map(y=>y===o?n:y)});S.fol=F}
  S.profile={name:n,age:pa.value,email:pe.value.trim(),phone:pph.value.trim(),title:pt.value.trim(),loc:ploc.value.trim()||"Palakkad"};S.name=n;editP=false;toast("Profile saved");render()}
+
+/* ---------- fixes: hamburger drawer, back arrow, location dropdown ---------- */
+const navStack=[];
+function menuItems(){const un=unreadN(),ch=unread();const it=(v,e,l,b)=>`<button class="dwi" ${S.view===v?'aria-current="page"':''} onclick="${v==='profile'?"editP=false;":""}go('${v}')"><i aria-hidden="true">${e}</i>${l}${b?`<span class="dwb">${b}</span>`:""}</button>`;
+ return it("home","🏠","Home")+it("add","➕","Add post")+it("chat","💬","Chat",ch||"")+it("notifications","🔔","Notifications",un||"")+it("profile","👤","My profile")+it("history","🕑","Booking history")+it("settings","⚙️","Settings")+it("support","🛟","Help & support")+(isAdmin()?it("admin","🛡️","Admin"):"")}
+function renderMenu(){const d=document.getElementById("drawer");if(!d)return;
+ if(S.out){d.innerHTML=`<div class="dwh"><div><b>Welcome</b><small>Log in to hire help or find work</small></div><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div><button class="dwi" onclick="closeMenu(true);showAuth('login')"><i aria-hidden="true">🔑</i>Log in</button><button class="dwi" onclick="closeMenu(true);showAuth('register')"><i aria-hidden="true">📝</i>Create account</button>`;return}
+ d.innerHTML=`<div class="dwh"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><div><b>${esc(S.name)}</b><small>${S.role==="client"?"Client":"Service provider"}</small></div><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div>${menuItems()}<div class="dwsp"></div><button class="dwi danger" onclick="closeMenu(true);outD.showModal()"><i aria-hidden="true">🚪</i>Log out</button>`}
+let menuOpener=null;
+function openMenu(){renderMenu();const d=document.getElementById("drawer"),b=document.getElementById("drawerBd"),mb=document.getElementById("menuB");menuOpener=document.activeElement;d.classList.add("open");b.classList.add("open");d.setAttribute("aria-hidden","false");if(mb)mb.setAttribute("aria-expanded","true");document.body.style.overflow="hidden";setTimeout(()=>{const f=d.querySelector(".dwi[aria-current],.dwi");if(f)f.focus({preventScroll:true})},30)}
+function closeMenu(quiet){const d=document.getElementById("drawer");if(!d||!d.classList.contains("open"))return;const b=document.getElementById("drawerBd"),mb=document.getElementById("menuB");d.classList.remove("open");b.classList.remove("open");d.setAttribute("aria-hidden","true");if(mb)mb.setAttribute("aria-expanded","false");document.body.style.overflow="";if(!quiet&&menuOpener&&menuOpener.focus)try{menuOpener.focus({preventScroll:true})}catch(e){}}
+function toggleMenu(){const d=document.getElementById("drawer");d&&d.classList.contains("open")?closeMenu():openMenu()}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeMenu();closeLocMenu()}});
+function updateBack(){const b=document.getElementById("backB");if(!b)return;b.hidden=S.out?(au==="login"):(S.view==="home")}
+function goBack(){const ds=[...document.querySelectorAll("dialog[open]")];if(ds.length){ds[ds.length-1].close();return}
+ if(S.out){if(au!=="login")showAuth("login");return}
+ if(S.view==="chat"&&S.thread){S.thread=null;render();return}
+ let p=navStack.pop();while(p&&p===S.view)p=navStack.pop();
+ if(!p||p==="admin"&&!isAdmin())p="home";
+ navJump=true;sOpen=false;S.view=p;if(p!=="profile")editP=false;if(p!=="chat")S.thread=null;render();scrollTo(0,0)}
+const locItems=()=>{const cur=(S.qloc||"").trim().toLowerCase(),me=myLoc(),seen=new Set([me.toLowerCase()]);
+ const it=(v,l,sub)=>`<button type="button" role="option" aria-selected="${cur===String(v).toLowerCase()}" data-v="${esc(v)}" onclick="pickLoc(this.dataset.v)"><span>${l}${sub?`<small>${sub}</small>`:""}</span></button>`;
+ return it(me,"📍 Near me","Your area: "+esc(me))+it("","Any location")+"<hr>"+allLocs().filter(l=>{const k=l.toLowerCase();if(seen.has(k))return false;seen.add(k);return true}).map(l=>it(l,esc(l))).join("")};
+function closeLocMenu(){const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(m&&!m.hidden){m.hidden=true;if(b)b.setAttribute("aria-expanded","false")}}
+function toggleLocMenu(e){if(e)e.stopPropagation();const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(!m)return;
+ if(!m.hidden){closeLocMenu();return}
+ sOpen=false;try{updateSearchUI()}catch(x){}
+ m.innerHTML=locItems();m.hidden=false;b.setAttribute("aria-expanded","true");const s=m.querySelector("[aria-selected=true]");if(s)s.scrollIntoView({block:"nearest"})}
+function pickLoc(v){closeLocMenu();setQL(v);const i=document.getElementById("qloc");if(i&&!v)i.focus({preventScroll:true})}
+document.addEventListener("pointerdown",e=>{const m=document.getElementById("locmenu");if(m&&!m.hidden&&!(e.target.closest&&e.target.closest("#locsf")))closeLocMenu()},true);
 const reduce=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches);
 spl.src=LG.s;document.querySelector(".app").inert=true;
 function hideSplash(){if(!window.splash)return;const sp=document.getElementById("splash");if(!sp)return;sp.classList.add("leave");document.querySelector(".app").inert=false;setTimeout(()=>sp.remove(),reduce?0:550)}
