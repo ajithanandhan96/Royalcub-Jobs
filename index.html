@@ -616,6 +616,25 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .fmain>span:last-child{display:grid;min-width:0}.fmain b,.fmain small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fmain small{color:var(--mute)}
 .frow .btn{padding:7px 14px;flex:none}
 .sf input[type=search]{-webkit-appearance:none;appearance:none}.sf input::-webkit-search-cancel-button,.sf input::-webkit-search-decoration{display:none;-webkit-appearance:none}
+
+/* ===== v3: stable bottom navigation (Home, Add Post, Chat, My Profile) ===== */
+.nav{display:flex!important;position:fixed;left:0;right:0;bottom:0;z-index:20;justify-content:space-around;transform:none}
+body.kb:not(.chatopen) .nav{display:flex!important}
+body.kb.chatopen .nav{display:none!important}
+.nav button{flex:1;min-width:0;white-space:nowrap}
+@media (min-width:700px){.nav{left:50%;right:auto;width:min(560px,100%);transform:translateX(-50%)}}
+.sheet{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))!important}
+.addv .sheet{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important}
+.toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+/* ===== v3: icon-only Search button, pin icon, name suggestions, story note ===== */
+.sgo{width:52px;padding:0}.sgo svg{width:24px;height:24px}
+.sf .sfi .mi.loc{fill:#e5484d;color:#e5484d;width:20px;height:20px;margin:0;vertical-align:0}
+.locmenu button{gap:0}.locmenu button .mi.loc{margin-right:8px;width:18px;height:18px}
+.cnt .mi.loc,.sh .mi.loc{margin-right:4px}
+.nsug .sugi{width:36px;height:36px;border-radius:12px;background:var(--soft);display:grid;place-items:center;font-size:18px;flex:none}
+.nsug button>span:last-child{min-width:0}.nsug b,.nsug small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.poster{position:relative;padding-bottom:46px}
+.poster .sexp{position:absolute;left:12px;right:12px;bottom:12px;font-size:12px;font-weight:600;line-height:1.2;letter-spacing:.2px;color:rgba(255,255,255,.72);text-align:center}
 </style>
 
 
@@ -1075,7 +1094,7 @@ async function cSync(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOff
  try{if(await cProfiles())ch=true}catch(e){}
  try{if(ch){save();if(S.view==="home"&&!document.querySelector("dialog[open]")){if(typingNow()||sOpen)pendR=true;else render()}}}finally{cBusy=false;syncUI()}}
 function cSched(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||S.out)return;clearTimeout(cT);cT=setTimeout(()=>{cT=null;cSync()},900)}
-setInterval(()=>{if(!document.hidden)cSync()},20000);addEventListener("focus",cSync);
+setInterval(()=>{if(!document.hidden)cSync()},20000);setInterval(()=>{if(!S.out&&pruneStories()&&!document.querySelector("dialog[open]")&&!typingNow())render()},60000);addEventListener("focus",cSync);
 const save=()=>{try{localStorage.setItem("rcj",JSON.stringify(S))}catch(e){}cSched()};
 S.profile=S.profile||{name:S.name,age:"28",email:"arjun.rao@example.com",phone:"+91 98765 43210"};
 function applyTheme(){S.theme==="light"||S.theme==="dark"?document.documentElement.dataset.theme=S.theme:delete document.documentElement.dataset.theme}applyTheme();
@@ -1094,8 +1113,8 @@ const IC={home:SV("M12 2.6 2 11.4h3V21h5.5v-6h3v6H19v-9.6h3z"),
 const LOC=`<svg class="mi loc" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>`;
 const PRC=`<svg class="mi prc" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="currentColor"/><path d="M8 7.5h8M8 10.7h8M8 7.5h1.6a3 3 0 0 1 0 6H8l6 4.3" fill="none" stroke="#4a3000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const CLK=IC.clock.replace("<svg ",'<svg class="mi clk" ');
-const NAV=[["home",IC.home,"Home"],["add",IC.add,"Add"],["chat",IC.chat,"Chat"],["settings",IC.settings,"Settings"]];
-function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot">${unread()}</span>`:""}</button>`).join("");
+const NAV=[["home",IC.home,"Home"],["add",IC.add,"Add Post"],["chat",IC.chat,"Chat"],["profile",IC.person,"My Profile"]];
+function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot">${unread()}</span>`:""}</button>`).join("");
  botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.style.visibility=un?"visible":"hidden";const uc=unread(),cb=document.getElementById("cn");cb.textContent=uc>9?"9+":uc;cb.style.visibility=uc?"visible":"hidden";document.getElementById("chatB").setAttribute("aria-label",uc?"Chat, "+uc+" unread":"Chat");document.getElementById("bellB").setAttribute("aria-label",un?"Notifications, "+un+" unread":"Notifications")}
 const BASE_T=document.title;
 const unread=()=>S.threads.reduce((a,t)=>a+(+t.u||0),0);
@@ -1192,7 +1211,6 @@ function authView(){
   <div class="err" id="aerr" role="alert"></div><button class="btn">Log in</button></form>
   <div class="or"><span>new here?</span></div>
   <button class="btn alt" onclick="showAuth('register')">Create Account</button>
-  <button type="button" class="demo" onclick="fillDemo()">Use the demo account</button>
   <p class="secure">${LOCK} Secure sign-in</p></div></div>`}
 
 /* ---------- help & reports (user side) ---------- */
@@ -1270,7 +1288,8 @@ function restoreForm(o){const v=document.getElementById("view");if(!v||!o)return
  Object.keys(o.c).forEach(k=>{if(k.indexOf("sd:")===0){const e=v.querySelector("input[name=sd][value="+k.slice(3)+"]");if(e)e.checked=o.c[k]}else{const e=document.getElementById(k);if(e&&v.contains(e))e.checked=o.c[k]}});
  if(o.v.svRT&&typeof setRT==="function"&&document.getElementById("svRT"))setRT(o.v.svRT);
  if(o.f){const e=document.getElementById(o.f.id);if(e&&v.contains(e)){try{e.focus({preventScroll:true});if(o.f.s!=null)e.setSelectionRange(o.f.s,o.f.e)}catch(x){}}}}
-function render(){if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
+function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.ts)x.ts=n});const k=L.filter(x=>n-x.ts<864e5);if(k.length===L.length)return false;S.stories=k;try{save()}catch(e){}return true}
+function render(){pruneStories();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
  const VIEWS={home,add,chat,settings,profile,history,support,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
 
@@ -1333,7 +1352,7 @@ function results(){const m=searchModel();if(!m)return "";const{raw,ql,cs,ps,ss,p
  const grp=(t,l,f)=>{const n=Math.min(l.length,left);left-=n;shownN+=n;return n?`<h4 style="margin:8px 0 2px">${t} (${l.length})</h4>${l.slice(0,n).map(f).join("")}`:""};
  const body=tot?grp("People",pe,pr)+grp("Talent Post",ss,sr)+grp("Find Work",ps,jr):`<div class="empty" style="padding:18px">Nothing matched. Try a person’s name or a trade like plumber, driver or electrician.</div>`;
  const more=tot>SLIM?(sMore?`<button type="button" class="vmore" onclick="sMoreSet(false)">Show fewer</button>`:`<button type="button" class="vmore" onclick="sMoreSet(true)">Show ${tot-shownN} more</button>`):"";
- return `<div class="sres" role="region" aria-label="Search results"><div class="sh"><b>${tot} result${tot===1?"":"s"}</b>${raw?` for “${esc(raw)}”`:""}${ql?` in 📍 ${esc(S.qloc.trim())}`:""}</div>
+ return `<div class="sres" role="region" aria-label="Search results"><div class="sh"><b>${tot} result${tot===1?"":"s"}</b>${raw?` for “${esc(raw)}”`:""}${ql?` in ${LOC}${esc(S.qloc.trim())}`:""}</div>
  ${cs.length?`<div class="chips wrap">${cs.map(c=>`<button type="button" class="chip" onclick="pickCat('${c}')">${CMETA[c].e} ${c} · ${S.jobs.filter(j=>j.c===c).length+S.services.filter(x=>x.c===c).length}</button>`).join("")}</div>`:""}
  ${body}${more}</div>`}
 const UPI='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>';
@@ -1367,8 +1386,8 @@ function home(){
  view.innerHTML=`<div class="sbar ${(S.q.trim()||(S.qloc||"").trim()||sOpen)?"act":""}" id="sbar" role="search">
  <div class="sbox">
  <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Search by Name" aria-label="Search by name" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
- <div class="sf locsf" id="locsf"><span class="sfi" aria-hidden="true">📍</span><input id="qloc" type="text" value="${esc(S.qloc||"")}" oninput="setQL(this.value);openLocMenu()" onfocus="openLocMenu()" onkeydown="sKey(event)" placeholder="Search by Location" aria-label="Search by location" aria-controls="locmenu" autocomplete="off" enterkeyhint="search"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="setQL('');openLocMenu()" aria-label="Clear location">✕</button><button type="button" class="locdd" id="locb" aria-expanded="false" aria-controls="locmenu" aria-label="Show location list" onclick="toggleLocMenu(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" tabindex="-1" hidden></div></div>
- <button type="button" class="sgo" onclick="doSearch()" aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><span>Search</span></button>
+ <div class="sf locsf" id="locsf"><span class="sfi" aria-hidden="true">${LOC}</span><input id="qloc" type="text" value="${esc(S.qloc||"")}" oninput="setQL(this.value);openLocMenu()" onfocus="openLocMenu()" onkeydown="sKey(event)" placeholder="Search by Location" aria-label="Search by location" aria-controls="locmenu" autocomplete="off" enterkeyhint="search"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="setQL('');openLocMenu()" aria-label="Clear location">✕</button><button type="button" class="locdd" id="locb" aria-expanded="false" aria-controls="locmenu" aria-label="Show location list" onclick="toggleLocMenu(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" tabindex="-1" hidden></div></div>
+ <button type="button" class="sgo" onclick="doSearch()" aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></button>
 </div>
  <div class="sact" id="sact">${searchActHTML(searchModel())}</div>
  <div id="sres" class="sdd ${sOpen&&searchModel()?"open":""}" aria-live="polite">${sOpen&&searchModel()?results():""}</div>
@@ -1497,7 +1516,7 @@ function openPost(id){const j=S.jobs.find(x=>x.id===id);if(!j)return;cp=id;ck="j
 let profN="";
 function openProfile(n){profN=n;shut("postD","storyD");const js=S.jobs.filter(j=>j.by===n),svs=S.services.filter(x=>x.by===n),me=n===S.name,hasS=S.stories.some(x=>x.by===n),np=js.length+svs.length,fn=esc(n.split(" ")[0]);
  profD.innerHTML=`<div class="dh"><h3 style="margin:0">${me?"Your profile":"Profile"}</h3><button class="x" aria-label="Close" onclick="profD.close()">✕</button></div>
- <div class="pc"><div class="av" style="${abg(n)}">${ait(n)}</div><h3>${esc(n)}</h3><span class="rolep">${esc(roleOf(n))}${isFol(n)?' · <span class="fpill">Following</span>':""}</span>${userLocs(n)[0]?`<span class="cnt">📍 ${esc(userLocs(n)[0])}</span>`:""}<span class="cnt">${np} post${np===1?"":"s"} · ${nFollowers(n)} follower${nFollowers(n)===1?"":"s"} · ${folOf(n).length} following</span></div>
+ <div class="pc"><div class="av" style="${abg(n)}">${ait(n)}</div><h3>${esc(n)}</h3><span class="rolep">${esc(roleOf(n))}${isFol(n)?' · <span class="fpill">Following</span>':""}</span>${userLocs(n)[0]?`<span class="cnt">${LOC}${esc(userLocs(n)[0])}</span>`:""}<span class="cnt">${np} post${np===1?"":"s"} · ${nFollowers(n)} follower${nFollowers(n)===1?"":"s"} · ${folOf(n).length} following</span></div>
  <div class="acts" style="justify-content:center;margin:10px 0">${me?"":`<button class="btn ${isFol(n)?"alt":""}" id="folbtn" data-n="${esc(n)}" aria-pressed="${isFol(n)}" aria-label="${isFol(n)?"You follow "+esc(n)+". Tap to unfollow":"Follow "+esc(n)}" onclick="toggleFollow(this.dataset.n)">${isFol(n)?"✓ Following · Unfollow":"Follow"}</button><button class="btn alt" data-n="${esc(n)}" onclick="msgTo(this.dataset.n)">Message</button><button class="btn alt" data-n="${esc(n)}" onclick="reportUser(this.dataset.n)">Report</button>`}${hasS?`<button class="btn alt" data-n="${esc(n)}" onclick="openStory(this.dataset.n)">View status</button>`:""}</div>
  ${svs.length?`<h4>${me?"Your services":"Services offered"}</h4>${svs.map(x=>`<button class="mini" onclick="openService(${x.id})"><span class="tag" style="justify-self:start">${x.c}</span><b>${esc(x.t)}</b><small>${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small> · ${CLK}${esc(daysText(x.days))}${me?` · 👁 ${x.v.length}`:""}</small></button>`).join("")}`:""}
  ${js.length||!svs.length?`<h4>${me?"Your vacancies":"Vacancies by "+fn}</h4>${js.length?js.map(j=>`<button class="mini" onclick="openPost(${j.id})"><span class="tag" style="justify-self:start">${j.c}</span><b>${esc(j.t)}</b><small>${LOC}${esc(j.loc)} · ${PRC}${esc(j.b)}${per(j)}${me?` · 👁 ${nv(j)}`:""}</small></button>`).join(""):`<div class="empty" style="padding:18px">No posts yet.</div>`}`:""}
@@ -1513,7 +1532,7 @@ function showStory(){const l=S.stories.filter(x=>x.by===sv.n);
  if(!l.length){storyD.close();if(S.view==="home")home();return}
  sv.i=Math.max(0,Math.min(sv.i,l.length-1));const x=l[sv.i],mine=x.by===S.name;addView(x);save();
  storyD.innerHTML=`<div class="dh">${who(x.by,(l.length>1?`Poster ${sv.i+1} of ${l.length} · `:"")+(mine?"Your status":"Status"))}<button class="x" aria-label="Close" onclick="storyD.close()">✕</button></div>
- <div class="poster" style="background:${BG[x.bg]||BG[0]}">${esc(x.text)}</div>
+ <div class="poster" style="background:${BG[x.bg]||BG[0]}">${esc(x.text)}<small class="sexp">Disappears in 24 hours</small></div>
  ${mine?`<div class="vw">👁 ${nv(x)}${x.v.length?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:""}
  <div class="acts" style="margin-top:12px">${l.length>1?`<button class="btn alt" ${sv.i===0?"disabled":""} onclick="stepStory(-1)" aria-label="Previous poster">‹ Prev</button><button class="btn alt" ${sv.i===l.length-1?"disabled":""} onclick="stepStory(1)" aria-label="Next poster">Next ›</button>`:""}
  ${mine?`<button class="btn alt" onclick="delStory('${x.id}')">Delete</button>`:`<button class="btn" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">Message</button>`}</div>`;
@@ -1523,7 +1542,7 @@ function openAdd(){stx.value="";document.querySelector('input[name=sb][value="0"
 let posting=false;
 function postStory(e){e.preventDefault();if(posting)return;
  const t=stx.value.trim();if(!t){toast("Write something for your status first");stx.focus();return}
- const c=document.querySelector("input[name=sb]:checked"),o={id:"s"+uid()+Date.now(),by:S.name,text:t,bg:c?+c.value:0,v:[]};
+ const c=document.querySelector("input[name=sb]:checked"),o={id:"s"+uid()+Date.now(),by:S.name,text:t,bg:c?+c.value:0,v:[],ts:Date.now()};
  posting=true;
  try{S.stories.push(o);save();addD.close();stx.value="";if(S.view==="home"&&!S.out)home();toast("Status posted");simView(o)}
  catch(err){console.error(err);S.stories=S.stories.filter(x=>x.id!==o.id);toast("Couldn’t post your status. Please try again.")}
@@ -1770,16 +1789,21 @@ const allPlaces=()=>{const seen=new Set(),out=[];[...S.jobs.map(j=>j.loc),...S.s
 function closeLocMenu(){const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(m&&!m.hidden)m.hidden=true;if(b){b.setAttribute("aria-expanded","false");b.setAttribute("aria-label","Show location list")}}
 function openLocMenu(all){const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(!m)return;closeSug();
  const t=all===true?"":(S.qloc||"").trim().toLowerCase(),cur=(S.qloc||"").trim().toLowerCase(),L=allPlaces().filter(l=>!t||l.toLowerCase().includes(t));
- m.innerHTML=L.length?L.map(l=>`<button type="button" role="option" aria-selected="${l.toLowerCase()===cur}" data-v="${esc(l)}" onclick="pickLoc(this.dataset.v)">${esc(l)}</button>`).join(""):`<div class="nsn">No matching locations</div>`;
+ m.innerHTML=L.length?L.map(l=>`<button type="button" role="option" aria-selected="${l.toLowerCase()===cur}" data-v="${esc(l)}" onclick="pickLoc(this.dataset.v)">${LOC}${esc(l)}</button>`).join(""):`<div class="nsn">No matching locations</div>`;
  m.hidden=false;if(b){b.setAttribute("aria-expanded","true");b.setAttribute("aria-label","Collapse location list")}
  const s=m.querySelector("[aria-selected=true]");if(s)s.scrollIntoView({block:"nearest"})}
 function toggleLocMenu(e){if(e)e.stopPropagation();const m=document.getElementById("locmenu");if(!m)return;if(m.hidden)openLocMenu(true);else closeLocMenu()}
 function pickLoc(v){S.qloc=String(v||"").slice(0,40);const i=document.getElementById("qloc");if(i)i.value=S.qloc;closeLocMenu();const c=document.getElementById("qlclr");if(c)c.classList.toggle("hide",!S.qloc);sMore=false;updateSearchUI();save()}
 function closeSug(){const s=document.getElementById("nsug");if(s)s.hidden=true}
 function nameSug(){const s=document.getElementById("nsug");if(!s)return;const q=(S.q||"").trim().toLowerCase();if(!q){s.hidden=true;return}closeLocMenu();
- const L=S.users.filter(u=>u.name&&u.name!==S.name&&u.role!=="admin"&&live(u.name)&&u.name.toLowerCase().includes(q)).sort((a,b)=>(b.name.toLowerCase().startsWith(q)-a.name.toLowerCase().startsWith(q))||a.name.localeCompare(b.name)).slice(0,3);
- s.innerHTML=L.length?L.map(u=>`<button type="button" role="option" data-n="${esc(u.name)}" onclick="sugPick(this.dataset.n)"><span class="av sm" style="${abg(u.name)}" aria-hidden="true">${ait(u.name)}</span><span><b>${esc(u.name)}</b><small>${esc(roleOf(u.name))}</small></span></button>`).join(""):`<div class="nsn">No people found</div>`;s.hidden=false}
-function sugPick(n){closeSug();openProfile(n)}
+ const m=searchModel(),sc=(t,base)=>{t=String(t||"").toLowerCase();return base+(t.startsWith(q)?0:t.split(/\s+/).some(w=>w.startsWith(q))?1:2)};
+ const C=[];
+ if(m){m.pe.forEach(u=>C.push({s:sc(u.name,0),k:"p",n:u.name,t:u.name,sub:roleOf(u.name)}));
+  m.ss.forEach(x=>C.push({s:sc(x.t,3),k:"s",id:x.id,c:x.c,t:x.t,sub:"Talent · "+x.c+" · "+x.by}));
+  m.ps.forEach(j=>C.push({s:sc(j.t,6),k:"j",id:j.id,c:j.c,t:j.t,sub:"Work · "+j.c+" · "+j.by}))}
+ const L=C.sort((a,b)=>a.s-b.s).slice(0,3);
+ s.innerHTML=L.length?L.map(r=>`<button type="button" role="option" data-k="${r.k}" data-n="${esc(r.n||"")}" data-id="${r.id||""}" onclick="sugPick(this.dataset.k,this.dataset.n,this.dataset.id)">${r.k==="p"?`<span class="av sm" style="${abg(r.n)}" aria-hidden="true">${ait(r.n)}</span>`:`<span class="sugi" aria-hidden="true">${(CMETA[r.c]||{}).e||"🔎"}</span>`}<span><b>${esc(r.t)}</b><small>${esc(r.sub)}</small></span></button>`).join(""):`<div class="nsn">No results found</div>`;s.hidden=false}
+function sugPick(k,n,id){closeSug();if(k==="p")openProfile(n);else if(k==="s")openService(+id);else openPost(+id)}
 function doSearch(){closeLocMenu();closeSug();const a=document.activeElement;if(a&&a!==document.body&&a.blur)a.blur();
  if(!searchModel()){sOpen=false;updateSearchUI();toast("Type a name or choose a location, then tap Search");return}
  sOpen=true;sMore=false;updateSearchUI();const sb=document.getElementById("sbar");if(sb)sb.scrollIntoView({block:"start",behavior:"auto"})}
