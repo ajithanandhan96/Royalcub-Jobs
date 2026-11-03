@@ -214,7 +214,7 @@ dialog h3{margin:0 0 4px;font-size:20px}
 .clk{color:#2a8fb8}.tabs2{margin-bottom:14px}.tabs2 button small{font-weight:600;opacity:.85;margin-left:4px}
 .cbar{background:#fde9c9;color:#8a5200;border-radius:12px;padding:8px 14px;font-weight:600;font-size:14px;margin:0 0 8px}
 .m .mt{display:block;font-size:11px;opacity:.7;margin-top:2px;text-align:right}.m .rt{color:#c0261c;font-weight:700;text-decoration:underline;padding:0 0 0 6px}
-.addv .hero{display:none}.addv .sheet{margin:0 auto;border-radius:0;min-height:100vh;min-height:100dvh;width:100%;max-width:760px;padding:0 20px calc(40px + env(safe-area-inset-bottom,0px))}.addbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;margin:0 -20px 16px;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));background:var(--bg);border-bottom:1px solid var(--line)}.addbar h2{margin:0;font-size:20px;flex:1}.addx{width:44px;height:44px;border-radius:12px;background:var(--soft);font-size:20px;line-height:1;display:grid;place-items:center}
+.addbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;margin:0 -20px 16px;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));background:var(--bg);border-bottom:1px solid var(--line)}.addbar h2{margin:0;font-size:20px;flex:1}.addx{width:44px;height:44px;border-radius:12px;background:var(--soft);font-size:20px;line-height:1;display:grid;place-items:center}
 .adm .hero,.adm .nav,.adm .side{display:none}.adm .app{grid-template-columns:1fr}.adm .sheet{margin:0;border-radius:0;min-height:100vh}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px}.kpi{background:var(--card);border-radius:18px;padding:14px}.kpi b{display:block;font-size:26px;color:var(--plum)}.kpi span{font-weight:600}.kpi small{display:block;color:var(--mute)}
 .cm{background:var(--card);border-radius:14px;padding:10px 14px;margin-bottom:8px;display:grid;gap:4px}.cm.int{outline:2px dashed var(--mute)}.cm small{color:var(--mute)}
@@ -619,8 +619,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 
 /* ===== v3: stable bottom navigation (Home, Add Post, Chat, My Profile) ===== */
 .nav{display:flex!important;position:fixed;left:0;right:0;bottom:0;z-index:20;justify-content:space-around;transform:none}
-body.kb:not(.chatopen) .nav{display:flex!important}
-body.kb.chatopen .nav{display:none!important}
+body.kb .nav,body.kb:not(.chatopen) .nav,body.kb.chatopen .nav{display:none!important}
 .nav button{flex:1;min-width:0;white-space:nowrap}
 @media (min-width:700px){.nav{left:50%;right:auto;width:min(560px,100%);transform:translateX(-50%)}}
 .sheet{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))!important}
@@ -635,6 +634,49 @@ body.kb.chatopen .nav{display:none!important}
 .nsug button>span:last-child{min-width:0}.nsug b,.nsug small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .poster{position:relative;padding-bottom:46px}
 .poster .sexp{position:absolute;left:12px;right:12px;bottom:12px;font-size:12px;font-weight:600;line-height:1.2;letter-spacing:.2px;color:rgba(255,255,255,.72);text-align:center}
+
+/* ===== v4 ===== */
+/* narrower side gaps everywhere; content capped at 1280px on very wide screens */
+:root{--sidepad:max(16px,calc((100vw - 1280px)/2))}
+@media (min-width:700px){:root{--sidepad:max(20px,calc((100vw - 1280px)/2))}}
+.hero,.sheet{padding-left:var(--sidepad)!important;padding-right:var(--sidepad)!important}
+.sbar{box-shadow:calc(var(--sidepad)*-1) 0 0 0 var(--bg),var(--sidepad) 0 0 0 var(--bg)!important}
+/* search: two fields, no button */
+.sbox,.sbox{grid-template-columns:minmax(0,1fr)!important}
+@media (min-width:560px){.sbox{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}.sbox .namesf{grid-column:auto!important}}
+.nsug .nsall{justify-content:center;color:var(--plum);font-weight:700;font-size:14px;border-top:1px solid var(--line);border-radius:0 0 12px 12px;margin-top:4px;padding:10px}
+.locmenu{max-height:240px}
+/* bottom navigation: phones only */
+@media (min-width:768px){.nav,body.kb:not(.chatopen) .nav,body.kb .nav{display:none!important}.sheet,.addv .sheet{padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))!important}.toast{bottom:24px}}
+/* Post a vacancy / Offer a service */
+.addhead{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 20px;margin:0 0 16px}
+.addhead h2{margin:0;font-size:22px}
+.addhead .addseg{width:min(100%,380px);margin:0}
+.addcard{background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:16px}
+@media (min-width:700px){.addcard{padding:24px}}
+#view .pform{max-width:none;width:100%;gap:16px}
+#view .pform textarea{min-height:140px}
+#view .pform .btn{justify-self:start;min-width:200px}
+.duo,.trio{display:grid;gap:14px 16px;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
+.trio>:nth-child(3){grid-column:1/-1}
+@media (min-width:700px){.trio{grid-template-columns:repeat(3,minmax(0,1fr))}.trio>:nth-child(3){grid-column:auto}}
+#view .pform .duo>div>.seg{margin-top:6px}
+#svHbox{display:contents}#svHbox.hide{display:none}
+
+/* ===== v7: smooth horizontal lists, mobile header chat removed, red chat badge, "Other" category ===== */
+.status,.cats{scroll-behavior:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scroll-snap-type:none}
+.cat{scroll-snap-align:none}
+.status::-webkit-scrollbar,.cats::-webkit-scrollbar{display:none}
+@media (max-width:767px){.top .chatb{display:none!important}}
+.nav button,.side button{opacity:1}
+.nav button{color:rgba(255,255,255,.6)}.nav button[aria-current=page]{color:#fff}
+.side button{color:rgba(255,255,255,.72)}.side button[aria-current=page]{color:#fff}
+.nav .dot,.side .dot{background:#e5231b;color:#fff;display:grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;font-size:11px;font-weight:800;line-height:1;box-shadow:0 0 0 2px var(--navy);pointer-events:none}
+.nav .dot{top:-4px;left:50%;right:auto;margin-left:8px}
+.side .dot{top:50%;right:14px;left:auto;transform:translateY(-50%)}
+.cat.other{background:transparent;outline:2px dashed var(--plum2);outline-offset:-2px}
+.cat.other .ce{background:var(--soft);color:var(--plum)}
+.cat.other b{color:var(--plum)}
 </style>
 
 
@@ -903,6 +945,10 @@ body.kb.chatopen .nav{display:none!important}
 <dialog id="editD" aria-label="Edit post"></dialog>
 <dialog id="delD" aria-label="Delete post"></dialog>
 <dialog id="planD" aria-label="Subscription plans"></dialog>
+<dialog id="catD" aria-label="Add a category"><form onsubmit="addCat(event)">
+ <div class="dh"><h3 style="margin:0">Add a category</h3><button type="button" class="x" aria-label="Close" onclick="catD.close()">✕</button></div>
+ <label>Category name<input id="catN" required maxlength="20" minlength="2" autocomplete="off" autocapitalize="words" enterkeyhint="done" placeholder="e.g. Photography"></label>
+ <button class="btn" style="justify-self:start">Add category</button></form></dialog>
 <dialog id="admD" aria-label="User profile"></dialog>
 <dialog id="pitchD"><form method="dialog" id="pitchF" onsubmit="return false">
  <h3>Pitch for this job</h3><p id="pitchT" style="margin:0 0 6px;color:var(--mute)"></p>
@@ -935,8 +981,14 @@ const loadSB=()=>sbP||(sbP=new Promise((ok,no)=>{if(window.supabase&&supabase.cr
 async function sbClient(){if(sb)return sb;await loadSB();sb=supabase.createClient(SUPABASE_URL.trim().replace(/\/$/,""),SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return sb}
 const sbOut=()=>{try{if(sb)sb.auth.signOut()}catch(e){}try{RT.stop()}catch(e){}};
 const CFG=Object.assign({googleClientId:GOOGLE_CLIENT_ID||((document.querySelector('meta[name="google-client-id"]')||{}).content||"").trim(),googleVerifyUrl:"",newProMs:45000},window.RC_CONFIG||{});
-const CATS=["All","Plumbing","Electrical","Nursing","Gardening","Cleaning","Carpentry","Driving","Painting","Cooking","Mechanic"];
-const CMETA={Plumbing:{e:"🔧",k:["plumber","plumbing","pipe","tap","leak","drain"]},Electrical:{e:"⚡",k:["electrician","electrical","wiring","wire","socket","switch"]},Nursing:{e:"🩺",k:["nurse","nursing","caregiver","care","patient","elderly"]},Gardening:{e:"🌿",k:["gardener","gardening","garden","lawn","hedge","plants"]},Cleaning:{e:"🧹",k:["cleaner","cleaning","maid","housekeeping","sweep"]},Carpentry:{e:"🪑",k:["carpenter","carpentry","wood","furniture","door"]},Driving:{e:"🚗",k:["driver","driving","chauffeur","cab","taxi","car"]},Painting:{e:"🎨",k:["painter","painting","paint","wall","whitewash"]},Cooking:{e:"🍳",k:["cook","chef","cooking","kitchen","catering","food"]},Mechanic:{e:"🛠️",k:["mechanic","repair","garage","engine","bike","service"]}};
+const CATS=["All","Plumbing","Electrical","Nursing","Gardening","Cleaning","Carpentry","Driving","Painting","Cooking","Mechanic","Workshop","Tailoring","Salon","Repair Shop","Laundry","Printing"];
+const CMETA={Plumbing:{e:"🔧",k:["plumber","plumbing","pipe","tap","leak","drain"]},Electrical:{e:"⚡",k:["electrician","electrical","wiring","wire","socket","switch"]},Nursing:{e:"🩺",k:["nurse","nursing","caregiver","care","patient","elderly"]},Gardening:{e:"🌿",k:["gardener","gardening","garden","lawn","hedge","plants"]},Cleaning:{e:"🧹",k:["cleaner","cleaning","maid","housekeeping","sweep"]},Carpentry:{e:"🪑",k:["carpenter","carpentry","wood","furniture","door"]},Driving:{e:"🚗",k:["driver","driving","chauffeur","cab","taxi","car"]},Painting:{e:"🎨",k:["painter","painting","paint","wall","whitewash"]},Cooking:{e:"🍳",k:["cook","chef","cooking","kitchen","catering","food"]},Mechanic:{e:"🛠️",k:["mechanic","repair","garage","engine","bike","service"]},
+ Workshop:{e:"🔩",k:["workshop","fabrication","welding","welder","lathe","machinist","grill","gate","fitter","engineering"]},
+ Tailoring:{e:"🧵",k:["tailor","tailoring","stitching","stitch","boutique","alteration","blouse","uniform","dress"]},
+ Salon:{e:"💇",k:["salon","barber","beauty","beautician","hair","haircut","parlour","parlor","makeup","facial","spa"]},
+ "Repair Shop":{e:"📱",k:["repair shop","mobile","phone","laptop","computer","television","appliance","electronics","refrigerator","fridge"]},
+ Laundry:{e:"🧺",k:["laundry","dry clean","dryclean","dry-clean","ironing","iron","washing","wash","pickup"]},
+ Printing:{e:"🖨️",k:["printing","print","xerox","photocopy","flex","banner","flyer","stationery","design"]}};
 const COL=["#2a8fb8","#c0527a","#3b5b99","#d08a3c","#7a4f8a","#3f8f6a","#a8543a"];
 const col=s=>COL[[...s].reduce((a,c)=>a+c.charCodeAt(0),0)%COL.length];
 const ini=n=>n.split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
@@ -946,7 +998,7 @@ const ait=n=>photoOf(n)?"":ini(n);
 const tShort=t=>{const d=new Date(t);return d.toDateString()===new Date().toDateString()?d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const VW=["Meera Nair","Rohan Das","Priya Shah","Kabir Anand","Isha Rao","Tom Park","Leena Jose","Sana Iqbal"];
-const ROLE={Plumbing:"Plumber",Electrical:"Electrician",Nursing:"Nurse",Gardening:"Gardener",Cleaning:"Cleaner",Carpentry:"Carpenter",Driving:"Driver",Painting:"Painter",Cooking:"Cook",Mechanic:"Mechanic"};
+const ROLE={Plumbing:"Plumber",Electrical:"Electrician",Nursing:"Nurse",Gardening:"Gardener",Cleaning:"Cleaner",Carpentry:"Carpenter",Driving:"Driver",Painting:"Painter",Cooking:"Cook",Mechanic:"Mechanic",Workshop:"Workshop owner",Tailoring:"Tailor",Salon:"Salon & beauty",'Repair Shop':"Repair shop",Laundry:"Laundry",Printing:"Print shop"};
 const TITLES={"Anna Reed":"Reed Home Services","Victor King":"King Electricals","Hana Kim":"Kim Family Care","Dev Bose":"Bose Gardens","Rahul Menon":"Menon Travels","Sneha Pillai":"Pillai Interiors","Imran Khan":"Khan Household","Joseph Paul":"Paul Auto Works","Karan Mehta":"Mehta Residency"};
 const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],WK=["Mon","Tue","Wed","Thu","Fri","Sat"],ALL=DAYS;
 const SERV0=[{id:101,by:"Sam Foster",c:"Plumbing",t:"Licensed plumber for repairs and fittings",min:200,max:400,days:WK,from:"09:00",to:"18:00",start:"Today",loc:"Downtown",d:"8 years fixing leaks, geysers and bathroom fittings. Own tools and spares.",v:VW.slice(0,4),b:[]},
@@ -1033,13 +1085,30 @@ const NEWPROS=[{id:111,by:"Nisha Verma",c:"Cleaning",t:"Move-in and move-out cle
 {id:112,by:"Suresh Babu",c:"Electrical",t:"Electrician for solar, inverter and CCTV setup",min:300,max:450,days:WK,from:"09:00",to:"18:00",start:"This week",loc:"Lakeview",d:"Rooftop solar wiring, inverter installs and CCTV cabling with a 6-month warranty.",v:[],b:[]},
 {id:113,by:"Maya Thomas",c:"Nursing",t:"Night-shift nurse for elderly and post-op care",min:350,max:450,days:ALL,from:"20:00",to:"23:00",start:"Next week",loc:"Citywide",d:"Registered nurse with ICU experience. Medication, vitals and overnight support.",v:[],b:[]}];
 let npT=null;
-function scheduleNewPro(){clearTimeout(npT);if(S.out)return;npT=setTimeout(()=>{if(S.out)return;const q=NEWPROS.find(x=>!S.services.some(z=>z.id===x.id));if(!q)return;S.services.unshift(JSON.parse(JSON.stringify(q)));
+function scheduleNewPro(){clearTimeout(npT);if(S.out)return;npT=setTimeout(()=>{if(S.out)return;const q=NEWPROS.find(x=>!S.services.some(z=>z.id===x.id));if(!q)return;S.services.unshift(JSON.parse(JSON.stringify(q)));applyA(S.services[0],1);
  if(!S.users.some(u=>u.name===q.by))S.users.push({email:q.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:q.by,phone:"",age:"",cat:q.c,role:"worker",title:"",status:"active",joined:Date.now()});
  Notify.add({type:"pro",title:`New professional: ${q.by}`,body:`${q.t} · ${q.loc} · ₹${q.min}–₹${q.max}/h`,act:{k:"service",id:q.id}});
- const ae=document.activeElement;if(S.view==="home"&&!document.querySelector("dialog[open]")&&!(ae&&/INPUT|TEXTAREA/.test(ae.tagName)))home();scheduleNewPro()},CFG.newProMs)}
+ const ae=document.activeElement;if(S.view==="home"&&!document.querySelector("dialog[open]")&&!(ae&&/INPUT|TEXTAREA/.test(ae.tagName))){if(HS.busy)pendR=true;else home()}scheduleNewPro()},CFG.newProMs)}
 function resumeNeg(){S.services.forEach(x=>x.b.forEach(b=>{if(!b.id)b.id="b"+uid();if(!b.status)b.status="pending";if(!b.mode)b.mode="listed";if(b.status==="pending"&&b.by===S.name&&!S.out)setTimeout(()=>negRespond(x.id,b.id),2500)}))}
 S.notifs=S.notifs||seedNotifs();S.plan=S.plan||"free";S.nf=S.nf||"all";
-S.stories=S.stories||[];S.fol=S.fol||{};S.services=S.services||SERV0;S.tab=S.tab||"jobs";SEED2.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.jobs.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.svc.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(x)});S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=j.v||(j.by===S.name?[]:VW.slice(0,2+j.id%4))});
+const EXPL=[["fresher","Fresher (0–1 yr)",0,1,["fresher","beginner","entry level","entry-level","trainee","new"]],["1-3","1–3 years",1,3,["junior"]],["3-5","3–5 years",3,5,["intermediate","mid-level","mid level"]],["5-10","5–10 years",5,10,["senior","experienced"]],["10+","10+ years",10,99,["expert","veteran","master","highly experienced"]]];
+const expOpts=(v,job)=>[["",job?"Any":"Not set"],...EXPL].map(e=>`<option value="${e[0]}" ${v===e[0]?"selected":""}>${e[1]}</option>`).join("");
+const expTx=x=>{const e=EXPL.find(q=>q[0]===(x&&x.exp));return e?e[1]:""};
+const attrSpans=(x,job)=>`${expTx(x)?`<span>🏅 ${esc(expTx(x))}${job?" needed":""}</span>`:""}${x&&x.qual?`<span>🎓 ${esc(x.qual)}</span>`:""}`;
+const SAS={101:["5-10","ITI Plumbing certificate"],102:["5-10","Licensed electrician (wireman permit)"],103:["3-5","GNM nursing diploma, registered nurse"],104:["10+","Heavy and light motor vehicle licence"],105:["3-5","Housekeeping training certificate"],106:["5-10","ITI Carpenter"],107:["3-5","NAC painting course"],108:["10+","FSSAI food safety certificate"],109:["3-5","ITI Motor Mechanic"],110:["1-3","Horticulture short course"],111:["3-5","Professional cleaning certificate"],112:["5-10","Diploma in Electrical Engineering"],113:["5-10","Registered nurse, ICU training"],301:["5-10","ITI Motor Mechanic"],302:["3-5","Professional cleaning certificate"]};
+const SAJ={1:["1-3","ITI plumbing or equivalent"],2:["5-10","Licensed electrician"],3:["3-5","GNM or ANM nursing qualification"],5:["3-5","Valid driving licence"],6:["3-5",""],301:["5-10","Licensed electrician"],302:["5-10",""]};
+const applyA=(x,svc)=>{const a=(svc?SAS:SAJ)[x.id];if(a&&x.exp===undefined){x.exp=a[0];x.qual=a[1]}};
+const SEED4T={"Ashraf Basheer":"Basheer Workshop","Sulekha Rahman":"Rahman Tailors","Reshma Menon":"Reshma Beauty Salon","Nizar Ali":"Nizar Mobile Care","Gopalan Nair":"Nair Laundry","Anitha Das":"Das Print Hub","Rajesh Pillai":"Pillai Bike Workshop","Mini Sebastian":"Mini’s Boutique"};
+const SEED4=[
+{id:401,by:"Ashraf Basheer",c:"Workshop",t:"Welding, gates and grills: fabrication workshop",min:400,max:800,days:WK,from:"08:30",to:"18:30",start:"Today",loc:"Kalpathy, Palakkad",d:"Gate and grill fabrication, welding, lathe work and small machine repairs. Walk-ins welcome; site visits for measurements.",exp:"10+",qual:"ITI Welder, own workshop for 12 years",v:[],b:[]},
+{id:402,by:"Sulekha Rahman",c:"Tailoring",t:"Tailoring and same-day alterations",min:150,max:350,days:WK,from:"09:30",to:"18:00",start:"Today",loc:"Olavakkode, Palakkad",d:"Ladies and gents stitching, blouse and kurta alterations, school uniforms in bulk.",exp:"5-10",qual:"Diploma in Fashion Designing",v:[],b:[]},
+{id:403,by:"Reshma Menon",c:"Salon",t:"Unisex salon: haircuts, facials and bridal makeup",min:300,max:900,days:["Tue","Wed","Thu","Fri","Sat","Sun"],from:"10:00",to:"19:30",start:"This week",loc:"Chittur",d:"Haircuts, colour, facials, threading and bridal packages. Appointments recommended on weekends.",exp:"3-5",qual:"Beautician course (Level 3)",v:[],b:[]},
+{id:404,by:"Nizar Ali",c:"Repair Shop",t:"Mobile, laptop and TV repair shop",min:200,max:500,days:WK,from:"10:00",to:"19:00",start:"Today",loc:"Palakkad Town",d:"Screen and battery replacement, laptop servicing, LED TV and small appliance repair with warranty.",exp:"5-10",qual:"Diploma in Electronics",v:[],b:[]},
+{id:405,by:"Gopalan Nair",c:"Laundry",t:"Wash, iron and dry-clean with doorstep pickup",min:100,max:300,days:WK,from:"08:00",to:"18:00",start:"Tomorrow",loc:"Mannarkkad",d:"Everyday washing, steam ironing, dry cleaning for suits and sarees. Free pickup above ₹300.",exp:"10+",qual:"",v:[],b:[]},
+{id:406,by:"Anitha Das",c:"Printing",t:"Digital printing, flex banners and photocopy",min:150,max:400,days:WK,from:"09:00",to:"18:30",start:"Today",loc:"Ottapalam",d:"Flex banners, visiting cards, flyers, binding and colour photocopy. Design help available.",exp:"3-5",qual:"Diploma in Graphic Design",v:[],b:[]},
+{id:407,by:"Rajesh Pillai",c:"Workshop",t:"Bike and scooter service workshop with free pickup",min:250,max:500,days:WK,from:"08:30",to:"19:00",start:"Today",loc:"Chittur",d:"Periodic service, brake and clutch work, engine tune-ups and denting. Pickup and drop within 5 km.",exp:"5-10",qual:"ITI Motor Mechanic",v:[],b:[]},
+{id:408,by:"Mini Sebastian",c:"Tailoring",t:"Boutique blouse stitching and school uniforms",min:200,max:450,days:WK,from:"10:00",to:"17:30",start:"This week",loc:"Ottapalam",d:"Designer blouses, saree falls, bridal wear and uniforms. Fittings by appointment.",exp:"1-3",qual:"Tailoring and embroidery certificate",v:[],b:[]}];
+S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.fol=S.fol||{};S.services=S.services||SERV0;S.tab=S.tab||"jobs";SEED2.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.jobs.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.svc.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(x)});SEED4.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(JSON.parse(JSON.stringify(x)));if(!(S.users||[]).some(u=>u.name===x.by))(S.users=S.users||[]).push({email:x.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:x.by,phone:"",age:"",cat:x.c,role:"worker",title:SEED4T[x.by]||"",loc:x.loc.split(",").pop().trim(),status:"active",joined:Date.now()-5*864e5})});S.services.forEach(x=>applyA(x,1));S.jobs.forEach(x=>applyA(x,0));S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=j.v||(j.by===S.name?[]:VW.slice(0,2+j.id%4))});
 /* ---------- Shared content: posts, services and stories are visible to every logged-in user (Supabase table rc_content; run supabase_setup.sql once) ---------- */
 const CK=[["job","jobs"],["service","services"],["story","stories"]];
 let cT=null,cBusy=false,cOff=!SB_ON,cHash={},cState=SB_ON?"wait":"local",cOffAt=0;
@@ -1113,8 +1182,8 @@ const IC={home:SV("M12 2.6 2 11.4h3V21h5.5v-6h3v6H19v-9.6h3z"),
 const LOC=`<svg class="mi loc" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>`;
 const PRC=`<svg class="mi prc" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="currentColor"/><path d="M8 7.5h8M8 10.7h8M8 7.5h1.6a3 3 0 0 1 0 6H8l6 4.3" fill="none" stroke="#4a3000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const CLK=IC.clock.replace("<svg ",'<svg class="mi clk" ');
-const NAV=[["home",IC.home,"Home"],["add",IC.add,"Add Post"],["chat",IC.chat,"Chat"],["profile",IC.person,"My Profile"]];
-function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot">${unread()}</span>`:""}</button>`).join("");
+const NAV=[["home",IC.home,"Home"],["add",IC.add,"Add Post"],["chat",IC.chat,"Chat"],["profile",IC.person,"Profile"]];
+function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
  botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.style.visibility=un?"visible":"hidden";const uc=unread(),cb=document.getElementById("cn");cb.textContent=uc>9?"9+":uc;cb.style.visibility=uc?"visible":"hidden";document.getElementById("chatB").setAttribute("aria-label",uc?"Chat, "+uc+" unread":"Chat");document.getElementById("bellB").setAttribute("aria-label",un?"Notifications, "+un+" unread":"Notifications")}
 const BASE_T=document.title;
 const unread=()=>S.threads.reduce((a,t)=>a+(+t.u||0),0);
@@ -1129,7 +1198,7 @@ function showAuth(k){au=k;if(k==="forgot")fp={step:1,email:"",code:"",tries:0};r
 function setErr(m,id){document.getElementById("aerr").textContent=m;const f=id&&document.getElementById(id);if(f)f.focus();return false}
 function pwErr(p,c){if(p.length<8)return["Password must be at least 8 characters.",0];if(!/[A-Za-z]/.test(p)||!/\d/.test(p))return["Use at least one letter and one number.",0];if(p!==c)return["Passwords don’t match.",1];return null}
 function swapBoxes(n){S.box=S.box||{};if(S.boxFor===n)return;if(S.boxFor)S.box[S.boxFor]={t:S.threads,n:S.notifs};const b=S.box[n];S.threads=b?b.t:(S.boxFor?[]:S.threads);S.notifs=b?b.n:(S.boxFor?[]:S.notifs);S.boxFor=n;S.thread=null}
-function enter(u,msg){navJump=true;swapBoxes(u.name);S.me=u.email;u.last=Date.now();S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false;S.view=u.role==="admin"?"admin":"home";S.cat="All";S.q="";S.thread=null;log("login");save();render();scrollTo(0,0);resumeNeg();scheduleNewPro();RT.start();toast(msg||"Welcome back, "+u.name.split(" ")[0])}
+function enter(u,msg){navJump=true;swapBoxes(u.name);S.me=u.email;u.last=Date.now();S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false;HS.st=HS.cats=0;S.view=u.role==="admin"?"admin":"home";S.cat="All";S.q="";S.thread=null;log("login");save();render();scrollTo(0,0);resumeNeg();scheduleNewPro();RT.start();toast(msg||"Welcome back, "+u.name.split(" ")[0])}
 function doLogin(e){e.preventDefault();const em=le.value.trim().toLowerCase(),pw=lp.value;
  if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","le");if(!pw)return setErr("Enter your password.","lp");
  const u=S.users.find(x=>x.email.toLowerCase()===em&&x.pw===pw);if(!u)return setErr("Incorrect email or password.","lp");
@@ -1277,8 +1346,15 @@ function toast(t){const e=document.createElement("div");e.className="toast";e.se
 const isAdmin=()=>{const u=S.users.find(x=>x.email===S.me);return !!u&&u.role==="admin"};
 let lastV="",navJump=false,MENU_HTML=null;
 function fillLocs(){const d=document.getElementById("locdl2");if(d)d.innerHTML=allLocs().map(l=>`<option value="${esc(l)}">`).join("")}
-const typingNow=()=>{const a=document.activeElement;return !!a&&a!==document.body&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!!a.closest&&!!a.closest("#view")};
+const typingNow=()=>{if(HS.busy)return true;if(document.querySelector("#locmenu:not([hidden]),#nsug:not([hidden])"))return true;const a=document.activeElement;return !!a&&a!==document.body&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!!a.closest&&!!a.closest("#view")};
 let pendR=false,sOpen=false,sMore=false;
+/* horizontal list scroll memory (Status + Categories): survives re-renders and navigation */
+const HS={st:0,cats:0,busy:0,reveal:0,t:0};
+function hsIdle(){HS.busy=0;if(pendR&&!typingNow()&&!sOpen&&S.view==="home"&&!S.out&&!document.querySelector("dialog[open]")){pendR=false;render()}}
+function hsHold(ms){HS.busy=1;clearTimeout(HS.t);HS.t=setTimeout(hsIdle,ms)}
+document.addEventListener("scroll",e=>{const t=e.target;if(!t||!t.classList)return;if(t.classList.contains("cats"))HS.cats=t.scrollLeft;else if(t.classList.contains("status"))HS.st=t.scrollLeft;else return;hsHold(400)},true);
+document.addEventListener("touchstart",e=>{if(e.target.closest&&e.target.closest(".cats,.status"))hsHold(1500)},{passive:true,capture:true});
+document.addEventListener("touchend",e=>{if(HS.busy)hsHold(700)},{passive:true,capture:true});
 function snapForm(){const v=document.getElementById("view");if(!v||!v.querySelector("form"))return null;const o={v:{},c:{},f:null};
  v.querySelectorAll("input[id],select[id],textarea[id]").forEach(e=>{if(e.type==="checkbox"||e.type==="radio")o.c[e.id]=e.checked;else o.v[e.id]=e.value});
  v.querySelectorAll("input[name=sd]").forEach(e=>{o.c["sd:"+e.value]=e.checked});
@@ -1289,7 +1365,7 @@ function restoreForm(o){const v=document.getElementById("view");if(!v||!o)return
  if(o.v.svRT&&typeof setRT==="function"&&document.getElementById("svRT"))setRT(o.v.svRT);
  if(o.f){const e=document.getElementById(o.f.id);if(e&&v.contains(e)){try{e.focus({preventScroll:true});if(o.f.s!=null)e.setSelectionRange(o.f.s,o.f.e)}catch(x){}}}}
 function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.ts)x.ts=n});const k=L.filter(x=>n-x.ts<864e5);if(k.length===L.length)return false;S.stories=k;try{save()}catch(e){}return true}
-function render(){pruneStories();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
+function render(){pruneStories();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
  const VIEWS={home,add,chat,settings,profile,history,support,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
 
@@ -1337,12 +1413,35 @@ const shownS=()=>fFirst(S.services.filter(x=>live(x.by)&&nearOk(x)&&(S.cat==="Al
 const listHTML=jobs=>jobs.length?jobs.map(card).join(""):`<div class="empty">No work posted in this field yet. Post the first job from the Add tab.</div>`;
 const listS=l=>l.length?l.map(svcCard).join(""):`<div class="empty">No talent listed in this field yet. Offer your service from the Add tab.</div>`;
 function setTab(k){S.tab=k;render()}
-const catsFor=q=>q.length<3?[]:CATS.slice(1).filter(c=>c.toLowerCase().startsWith(q)||CMETA[c].k.some(k=>k.startsWith(q)||(k.length>=4&&q.startsWith(k))));
-const hitText=(j,q)=>[j.t,j.loc,j.by,j.d,j.c].some(x=>String(x).toLowerCase().includes(q));
-function searchModel(){const raw=S.q.trim(),q=raw.toLowerCase(),ql=(S.qloc||"").trim().toLowerCase(),inL=l=>!ql||locIn(l,ql);
- if(!q&&!ql)return null;
- const cs=catsFor(q),ps=S.jobs.filter(j=>live(j.by)&&inL(j.loc)&&(!q||cs.includes(j.c)||hitText(j,q))),ss=S.services.filter(x=>live(x.by)&&inL(x.loc)&&(!q||cs.includes(x.c)||hitText(x,q)||(ROLE[x.c]||"").toLowerCase().includes(q))),pe=S.users.filter(u=>u.name&&u.name!==S.name&&u.role!=="admin"&&live(u.name)&&(!q||u.name.toLowerCase().includes(q))&&(!ql||userLocs(u.name).some(inL))).slice(0,20);
- return{raw,q,ql,cs,ps,ss,pe,tot:ps.length+ss.length+pe.length}}
+const STOPW=new Set(["years","year","yrs","yr","exp","experience","of","in","with","a","an","the","and","for","to","at","near","plus","above","min","minimum","who","has","have"]);
+const locWords=()=>{const w=new Set();allLocs().forEach(l=>String(l).toLowerCase().split(/[^a-z0-9]+/).forEach(t=>t&&w.add(t)));Object.values(AREAS).forEach(a=>a.forEach(t=>w.add(t)));return w};
+function parseQ(raw){let q=String(raw||"").toLowerCase().replace(/[“”"']/g," "),N=null;
+ const m=q.match(/(\d+)\s*\+?\s*(?:years?|yrs?|yr)\b/);if(m){N=+m[1];q=q.replace(m[0]," ")}
+ const lw=locWords();const all=q.split(/[\s,;]+/).map(t=>t.replace(/^[^a-z0-9]+|[^a-z0-9+#.-]+$/g,"")).filter(Boolean);let toks=all.filter(t=>!STOPW.has(t));if(!toks.length&&N===null)toks=all;
+ const nonLoc=toks.filter(t=>!lw.has(t));const onlyLoc=toks.length>0&&nonLoc.length===0;
+ return{tokens:nonLoc,N,none:onlyLoc||(!!q.trim()&&toks.length===0&&N===null)}}
+const catsFor=q=>{const tk=parseQ(q).tokens;return CATS.slice(1).filter(c=>tk.some(t=>t.length>=3&&(c.toLowerCase().startsWith(t)||CMETA[c].k.some(k=>k.startsWith(t)||(k.length>=4&&t.startsWith(k))))))};
+const hitText=(j,q)=>postScore(j,parseQ(q))>=0;
+const yearsOf=x=>{const e=EXPL.find(q=>q[0]===(x&&x.exp));if(e)return[e[2],e[3]];const m=String((x&&x.d)||"").match(/(\d+)\s*\+?\s*(?:years?|yrs?)/i);return m?[+m[1],+m[1]]:null};
+const hasTok=(f,a)=>a.length>=4?f.includes(a):new RegExp("(^|[^a-z0-9])"+a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).test(f);
+function scoreFields(F,pq){let sc=0;for(const t of pq.tokens){const alt=t.length>3&&t.endsWith("s")?[t,t.slice(0,-1)]:[t];let hit=false;for(const[f,w]of F){if(alt.some(a=>hasTok(f,a))){sc+=w;hit=true}}if(!hit)return-1}return sc}
+function postScore(x,pq){if(pq.none)return-1;if(!pq.tokens.length&&pq.N===null)return 0;
+ const c=x.c,ex=EXPL.find(q=>q[0]===x.exp),L=v=>String(v||"").toLowerCase();
+ const F=[[L(x.t),5],[L([c,ROLE[c],((CMETA[c]||{}).k||[]).join(" ")].join(" ")),4],[L(x.by+" "+roleOf(x.by)),3],[L([ex&&ex[1],ex&&ex[4].join(" "),x.qual].join(" ")),3],[L(x.d),1],[L([x.start,x.days?daysText(x.days):"",x.rt==="day"?"daily":x.min?"hourly":"",x.per?"per "+x.per:""].join(" ")),1]];
+ let sc=scoreFields(F,pq);if(sc<0)return-1;
+ if(pq.N!==null){const y=yearsOf(x);if(!y||!(y[0]>=pq.N||y[1]>pq.N))return-1;sc+=2}return sc}
+function personScore(u,pq){if(pq.none)return-1;if(!pq.tokens.length&&pq.N===null)return 0;const L=v=>String(v||"").toLowerCase(),mine=S.services.filter(x=>x.by===u.name);
+ const att=mine.map(x=>{const e=EXPL.find(q=>q[0]===x.exp);return[x.c,ROLE[x.c],x.t,e&&e[1],e&&e[4].join(" "),x.qual].join(" ")}).join(" ");
+ const F=[[L(u.name),6],[L(roleOf(u.name)+" "+(u.title||"")+" "+(u.cat||"")+" "+(ROLE[u.cat]||"")),4],[L(att),2]];
+ let sc=scoreFields(F,pq);if(sc<0)return-1;
+ if(pq.N!==null){if(!mine.some(x=>{const y=yearsOf(x);return y&&(y[0]>=pq.N||y[1]>pq.N)}))return-1;sc+=2}return sc}
+function searchModel(){const raw=S.q.trim(),ql=(S.qloc||"").trim().toLowerCase(),inL=l=>!ql||locIn(l,ql);
+ if(!raw&&!ql)return null;
+ const pq=parseQ(raw),q=raw.toLowerCase(),cs=raw?catsFor(raw):[];
+ const rank=(L,f)=>L.map(x=>[x,f(x)]).filter(r=>r[1]>=0).sort((a,b)=>b[1]-a[1]).map(r=>r[0]);
+ const ps=rank(S.jobs.filter(j=>live(j.by)&&inL(j.loc)),j=>postScore(j,pq)),ss=rank(S.services.filter(x=>live(x.by)&&inL(x.loc)),x=>postScore(x,pq)),
+  pe=rank(S.users.filter(u=>u.name&&u.name!==S.name&&u.role!=="admin"&&live(u.name)&&(!ql||userLocs(u.name).some(inL))),u=>personScore(u,pq)).slice(0,20);
+ return{raw,q,ql,cs,pq,ps,ss,pe,tot:ps.length+ss.length+pe.length}}
 const SLIM=5;
 function results(){const m=searchModel();if(!m)return "";const{raw,ql,cs,ps,ss,pe,tot}=m;
  const pr=u=>{const f=isFol(u.name);return `<div class="prow"><button type="button" class="pbtn" data-n="${esc(u.name)}" onclick="openProfile(this.dataset.n)" aria-label="View profile of ${esc(u.name)}"><span class="av tiny" style="${abg(u.name)}" aria-hidden="true">${ait(u.name)}</span><span><b>${esc(u.name)}</b><small>${esc(roleOf(u.name))} · ${nFollowers(u.name)} follower${nFollowers(u.name)===1?"":"s"}</small></span></button><button type="button" class="btn ${f?"alt":""}" data-n="${esc(u.name)}" aria-pressed="${f}" onclick="toggleFollow(this.dataset.n)">${f?"Following":"Follow"}</button></div>`};
@@ -1375,19 +1474,28 @@ document.addEventListener("pointerdown",e=>{if(!sOpen)return;const sb=document.g
 document.addEventListener("click",e=>{if(sSwallow&&Date.now()-sSwallow<700){sSwallow=0;e.preventDefault();e.stopPropagation()}},true);
 document.addEventListener("click",e=>{if(!sOpen)return;const t=e.target.closest&&e.target.closest("#sres .mini,#sres .pbtn,#sres .chip");if(t){sOpen=false;setTimeout(updateSearchUI,0)}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sOpen){sOpen=false;updateSearchUI()}});
-function toggleCat(c){S.cat=S.cat===c?"All":c;sOpen=false;render()}
-function pickCat(c){S.cat=c;S.q="";S.qloc="";sOpen=false;sMore=false;render();scrollTo(0,0)}
+
+/* ---------- Custom categories ("Other") ---------- */
+const CAT_OK=/^[\p{L}\p{N}][\p{L}\p{N} &.\-]{1,19}$/u;
+function regCat(n){n=String(n||"").replace(/\s+/g," ").trim();if(!CAT_OK.test(n)||n==="All"||n==="Other"||n==="Client"||n==="Admin")return null;const f=CATS.find(c=>c.toLowerCase()===n.toLowerCase());if(f)return f;CATS.push(n);CMETA[n]={e:"🏷️",k:[n.toLowerCase()]};ROLE[n]=ROLE[n]||n;return n}
+function syncCats(){(S.cats||[]).forEach(regCat);[...(S.jobs||[]),...(S.services||[])].forEach(x=>{if(x&&x.c)regCat(x.c)})}
+function openOtherCat(){catN.value="";catD.showModal();setTimeout(()=>{try{catN.focus()}catch(e){}},60)}
+function addCat(e){e.preventDefault();let v=catN.value.replace(/\s+/g," ").trim();if(!CAT_OK.test(v)||/^(all|other|client|admin)$/i.test(v)){toast("Use 2–20 letters or numbers (spaces, & and - are fine)");catN.focus();return}
+ v=v[0].toUpperCase()+v.slice(1);const had=CATS.some(c=>c.toLowerCase()===v.toLowerCase()),n=regCat(v);if(!n)return;if(!had){S.cats=S.cats||[];S.cats.push(n)}
+ catD.close();S.cat=n;S.q="";S.qloc="";HS.reveal=1;render();toast(had?n+" already exists, showing it":n+" category added")}
+function toggleCat(c){S.cat=S.cat===c?"All":c;HS.reveal=1;sOpen=false;render()}
+function pickCat(c){S.cat=c;HS.reveal=1;S.q="";S.qloc="";sOpen=false;sMore=false;render();scrollTo(0,0)}
 const CHL=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>`,CHR=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>`;
 function scrollCats(d){const c=document.getElementById("cats");if(c)c.scrollBy({left:d*c.clientWidth*.8,behavior:"smooth"})}
 function catEdges(){const c=document.getElementById("cats"),l=document.getElementById("cl"),r=document.getElementById("cr");if(!c||!l||!r)return;l.disabled=c.scrollLeft<4;r.disabled=c.scrollLeft+c.clientWidth>=c.scrollWidth-4}
 function home(){
- const prevC=document.getElementById("cats"),keep=prevC?prevC.scrollLeft:0,y0=prevC?scrollY:null;
+ syncCats();const prevC=document.getElementById("cats"),y0=prevC?scrollY:null;{const a=document.getElementById("cats"),b=document.querySelector("#view .status");if(a)HS.cats=a.scrollLeft;if(b)HS.st=b.scrollLeft}
  const jobs=shown(),svcs=shownS(),aus=authors(),isS=S.tab==="services",src=isS?S.services:S.jobs;
  view.innerHTML=`<div class="sbar ${(S.q.trim()||(S.qloc||"").trim()||sOpen)?"act":""}" id="sbar" role="search">
  <div class="sbox">
- <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Search by Name" aria-label="Search by name" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
- <div class="sf locsf" id="locsf"><span class="sfi" aria-hidden="true">${LOC}</span><input id="qloc" type="text" value="${esc(S.qloc||"")}" oninput="setQL(this.value);openLocMenu()" onfocus="openLocMenu()" onkeydown="sKey(event)" placeholder="Search by Location" aria-label="Search by location" aria-controls="locmenu" autocomplete="off" enterkeyhint="search"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="setQL('');openLocMenu()" aria-label="Clear location">✕</button><button type="button" class="locdd" id="locb" aria-expanded="false" aria-controls="locmenu" aria-label="Show location list" onclick="toggleLocMenu(event)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" tabindex="-1" hidden></div></div>
- <button type="button" class="sgo" onclick="doSearch()" aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></button>
+ <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Search name, role, skill…" aria-label="Search by name, role, skill, experience or qualification" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
+ <div class="sf locsf" id="locsf"><span class="sfi" aria-hidden="true">${LOC}</span><input id="qloc" type="text" value="${esc(S.qloc||"")}" oninput="setQL(this.value);openLocMenu(true)" onfocus="openLocMenu()" onclick="openLocMenu()" onkeydown="sKey(event)" placeholder="Search by Location" aria-label="Search by location" aria-controls="locmenu" autocomplete="off" enterkeyhint="search"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="setQL('');openLocMenu(true)" aria-label="Clear location">✕</button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" tabindex="-1" hidden></div></div>
+ 
 </div>
  <div class="sact" id="sact">${searchActHTML(searchModel())}</div>
  <div id="sres" class="sdd ${sOpen&&searchModel()?"open":""}" aria-live="polite">${sOpen&&searchModel()?results():""}</div>
@@ -1396,11 +1504,11 @@ function home(){
  <div class="status"><button class="st" onclick="openAdd()" aria-label="Add status poster">${photoOf(S.name)?`<div class="av addt hasph" style="${abg(S.name)}"><span class="plusb" aria-hidden="true">＋</span></div>`:`<div class="av addt">＋</div>`}<b>Add</b></button>${aus.map(n=>{const me=n===S.name,l=S.stories.filter(x=>x.by===n),seen=me||l.every(x=>x.v.includes(S.name)),tot=l.reduce((a,x)=>a+x.v.length,0);
  return `<button class="st" data-n="${esc(n)}" onclick="openStory(this.dataset.n)" aria-label="${me?`Your status, ${tot} views`:`View status of ${esc(n)}`}"><div class="av ring ${seen?"seen":""}" style="${abg(n)}">${ait(n)}</div><b>${me?"You":esc(n.split(" ")[0])}</b>${me?`<small>👁 ${tot}</small>`:""}</button>`}).join("")}</div>
  <div class="row"><h2>Categories</h2><span>${String(CATS.length-1).padStart(2,"0")}</span></div>
- <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()">${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${CMETA[c].e}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}</div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
+ <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()">${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${CMETA[c].e}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}<button class="cat other" onclick="openOtherCat()" aria-label="Other, add a new category"><span class="ce" aria-hidden="true">＋</span><b>Other</b><small>Add new</small></button></div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
  <div class="seg tabs2" role="group" aria-label="Choose a section: find work or talent posts"><button aria-pressed="${!isS}" onclick="setTab('jobs')">Find Work<small>${jobs.length}</small></button><button aria-pressed="${isS}" onclick="setTab('services')">Talent Post<small>${svcs.length}</small></button></div>
  <div class="row"><h2>${S.cat==="All"?(isS?"Talent posts available":"Work available now"):esc(S.cat)}</h2><span id="pcount">${String((isS?svcs:jobs).length).padStart(2,"0")}</span></div>${S.cat==="All"?"":`<button class="btn alt" style="padding:6px 16px;margin:-4px 0 14px" onclick="toggleCat(S.cat)">Show all posts</button>`}
  <p class="cnt" style="margin:-4px 0 12px;min-height:0" id="locnote"><span id="syncchip">${syncChip()}</span></p><div class="list" id="plist">${isS?listS(svcs):listHTML(jobs)}</div>`;
- const c=document.getElementById("cats");if(c){c.scrollLeft=keep;const sel=c.querySelector("[aria-pressed=true]");if(sel){const cr=c.getBoundingClientRect(),sr=sel.getBoundingClientRect();if(sr.left<cr.left)c.scrollLeft+=sr.left-cr.left-8;else if(sr.right>cr.right)c.scrollLeft+=sr.right-cr.right+8}catEdges()}
+ const stl=document.querySelector("#view .status");if(stl)stl.scrollLeft=HS.st;const c=document.getElementById("cats");if(c){c.scrollLeft=HS.cats;const sel=HS.reveal?c.querySelector("[aria-pressed=true]"):null;HS.reveal=0;if(sel){const cr=c.getBoundingClientRect(),sr=sel.getBoundingClientRect();if(sr.left<cr.left)c.scrollLeft+=sr.left-cr.left-8;else if(sr.right>cr.right)c.scrollLeft+=sr.right-cr.right+8}catEdges()}
  if(y0!==null&&Math.abs(scrollY-y0)>2)scrollTo(0,y0)}
 function history(){const h=S.hist;
  view.innerHTML=`<button class="btn alt" style="padding:6px 16px;margin-bottom:14px" onclick="go('profile')">‹ Back</button><div class="row"><h2>Booking history</h2><span>${String(h.length).padStart(2,"0")}</span></div>
@@ -1408,7 +1516,7 @@ function history(){const h=S.hist;
 function svcCard(x){const mine=x.by===S.name,n=x.v.length;
  return `<article class="job" onclick="openService(${x.id})"><div class="jh">${who(x.by,byLine(x.by))}<span class="tag">${x.c}</span></div>
  <h3><button class="lnk">${esc(x.t)}</button></h3>
- <div class="meta"><span>${LOC}${esc(x.loc)}${nearPill(x.loc)}</span><span>${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${CLK}${esc(availTx(x))}</span>${mine?`<span>👁 ${n} view${n===1?"":"s"}</span>`:""}</div>
+ <div class="meta"><span>${LOC}${esc(x.loc)}${nearPill(x.loc)}</span><span>${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${CLK}${esc(availTx(x))}</span>${attrSpans(x)}${mine?`<span>👁 ${n} view${n===1?"":"s"}</span>`:""}</div>
  <p>${esc(x.d)}</p><div style="margin-bottom:12px"><span class="pill Completed">Available ${esc(x.start.toLowerCase())}</span></div>
  <div class="acts pm">${mine?`<span class="cnt">${x.b.length} booking${x.b.length===1?"":"s"} received</span>`:`<button class="btn pitchb" onclick="event.stopPropagation();book(${x.id})">Book now</button><button class="msgi" title="Message" aria-label="Message ${esc(x.by)}" data-n="${esc(x.by)}" onclick="event.stopPropagation();msgTo(this.dataset.n)">${IC.chat}</button>`}</div></article>`}
 const fmtS=t=>new Date(t).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
@@ -1441,7 +1549,7 @@ function openService(id){const x=S.services.find(z=>z.id===id);if(!x)return;cp=i
  const mine=x.by===S.name,n=x.v.length,own=x.b.filter(b=>b.by===S.name);
  const bk=mine?(x.b.length?x.b.map(b=>bkCard(x,b,true)).join(""):`<div class="empty" style="padding:18px">No bookings yet.</div>`):(own.length?own.map(b=>bkCard(x,b,false)).join(""):`<p class="cnt" style="margin:0">You haven’t booked yet. Book at the listed rate or make an offer.</p>`);
  postShell({by:x.by,c:x.c,t:x.t,d:x.d,
-  meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(x.loc)}</span><span>${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${CLK}${esc(availTx(x))}</span><span class="pill Completed">Available ${esc(x.start.toLowerCase())}</span>${x.rt!=="day"&&x.hrs>1?`<span class="pill Requested">Min. ${x.hrs} hours</span>`:""}</div>`,
+  meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(x.loc)}</span><span>${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${CLK}${esc(availTx(x))}</span><span class="pill Completed">Available ${esc(x.start.toLowerCase())}</span>${attrSpans(x)}${x.rt!=="day"&&x.hrs>1?`<span class="pill Requested">Min. ${x.hrs} hours</span>`:""}</div>`,
   views:mine?`<div class="vw" style="margin:0">👁 ${n} view${n===1?"":"s"}${n?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:"",
   listT:mine?`Bookings (${x.b.length})`:`Your bookings (${own.length})`,list:bk,
   foot:mine?`<button class="btn pitchb" onclick="editPost('service',${x.id})">Edit</button><button class="btn alt dng" onclick="delPost('service',${x.id})">Delete</button><span class="hint">This is your service. Bookings and offers appear above.</span>`:`<button class="btn pitchb" onclick="book(${x.id})">Book now</button><button class="btn alt ico" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">${IC.chat}Message</button><span class="hint">Book, negotiate, message and review in one place</span>`})}
@@ -1497,7 +1605,7 @@ const who=(n,sub,cls="")=>`<button class="who ${cls}" data-n="${esc(n)}" onclick
 function card(j){const mine=j.by===S.name,pitched=j.p.some(p=>p.by===S.name);
  return `<article class="job" onclick="openPost(${j.id})"><div class="jh">${who(j.by,byLine(j.by))}<span class="tag">${j.c}</span></div>
  <h3><button class="lnk">${esc(j.t)}</button></h3>
- <div class="meta"><span>${LOC}${esc(j.loc)}${nearPill(j.loc)}</span><span>${PRC}${esc(j.b)}${per(j)}</span>${mine?`<span>👁 ${nv(j)}</span>`:""}</div>
+ <div class="meta"><span>${LOC}${esc(j.loc)}${nearPill(j.loc)}</span><span>${PRC}${esc(j.b)}${per(j)}</span>${attrSpans(j,1)}${mine?`<span>👁 ${nv(j)}</span>`:""}</div>
  <p>${esc(j.d)}</p><div class="acts pm">
  ${mine?`<span class="cnt">${j.p.length} request${j.p.length===1?"":"s"} received</span>`:`<button class="btn pitchb" ${pitched?"disabled":""} onclick="event.stopPropagation();pitch(${j.id})">${pitched?"Pitch sent":"Pitch for job"}</button><button class="msgi" title="Message" aria-label="Message ${esc(j.by)}" onclick="event.stopPropagation();msgClient(${j.id})">${IC.chat}</button>`}
  </div></article>`}
@@ -1507,7 +1615,7 @@ function openPost(id){const j=S.jobs.find(x=>x.id===id);if(!j)return;cp=id;ck="j
  const reqs=mine?(j.p.length?j.p.map(p=>`<div class="req"><div><b>${esc(p.by)}</b> · ₹${esc(p.price)} · ${esc(p.start)}</div><span style="color:var(--mute)">${esc(p.msg)}</span><div><button class="btn alt" style="padding:6px 14px" data-n="${esc(p.by)}" onclick="msgTo(this.dataset.n)">Message</button></div></div>`).join(""):`<div class="empty" style="padding:18px">No requests yet.</div>`)
   :`${mineReq.map(p=>`<div class="req"><div><b>${esc(S.name)}</b> <span class="pill">You</span> · ₹${esc(p.price)} · ${esc(p.start)}</div><span style="color:var(--mute)">${esc(p.msg)}</span></div>`).join("")}${mineReq.length?"":`<p class="cnt" style="margin:0">You haven’t pitched yet.</p>`}`;
  postShell({by:j.by,c:j.c,t:j.t,d:j.d,
-  meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(j.loc)}</span><span>${PRC}${esc(j.b)}${per(j)}</span></div>`,
+  meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(j.loc)}</span><span>${PRC}${esc(j.b)}${per(j)}</span>${attrSpans(j,1)}</div>`,
   views:mine?`<div class="vw" style="margin:0">👁 ${nv(j)}${j.v.length?`<small>Viewed by ${j.v.map(esc).join(", ")}</small>`:""}</div>`:"",
   listT:mine?`Requests (${j.p.length})`:`Requests · ${j.p.length} received`,list:reqs,
   foot:mine?`<button class="btn pitchb" onclick="editPost('job',${j.id})">Edit</button><button class="btn alt dng" onclick="delPost('job',${j.id})">Delete</button><span class="hint">This is your job post. Pitches appear above.</span>`:`<button class="btn pitchb" ${pitched?"disabled":""} onclick="pitch(${j.id})">${pitched?"Pitch sent":"Pitch for Job"}</button><button class="btn alt ico" onclick="msgClient(${j.id})">${IC.chat}Message</button><span class="hint">Review and comment without leaving this page</span>`});
@@ -1528,11 +1636,15 @@ function toggleRevP(){const b=document.getElementById("prvm"),x=document.querySe
 
 function openStory(n){if(!S.stories.some(x=>x.by===n))return;shut("postD","profD");sv={n,i:0};showStory();if(!storyD.open&&S.stories.some(x=>x.by===n))storyD.showModal()}
 function stepStory(d){sv.i+=d;showStory()}
+function expTxt(ts){const rem=864e5-(Date.now()-(ts||Date.now()));if(rem<=0)return "Disappearing now";const m=Math.ceil(rem/6e4),h=Math.floor(m/60),mm=m%60;
+ return h>=24?"Disappears in 24 hours":h>0?"Disappears in "+h+"h"+(mm?" "+mm+"m":""):"Disappears in "+mm+"m"}
+function tickStory(){if(!storyD.open)return;const e=storyD.querySelector(".sexp");if(!e)return;const t=+e.dataset.ts;if(t&&Date.now()-t>=864e5){pruneStories();showStory()}else e.textContent=expTxt(t)}
+setInterval(tickStory,20000);
 function showStory(){const l=S.stories.filter(x=>x.by===sv.n);
  if(!l.length){storyD.close();if(S.view==="home")home();return}
  sv.i=Math.max(0,Math.min(sv.i,l.length-1));const x=l[sv.i],mine=x.by===S.name;addView(x);save();
  storyD.innerHTML=`<div class="dh">${who(x.by,(l.length>1?`Poster ${sv.i+1} of ${l.length} · `:"")+(mine?"Your status":"Status"))}<button class="x" aria-label="Close" onclick="storyD.close()">✕</button></div>
- <div class="poster" style="background:${BG[x.bg]||BG[0]}">${esc(x.text)}<small class="sexp">Disappears in 24 hours</small></div>
+ <div class="poster" style="background:${BG[x.bg]||BG[0]}">${esc(x.text)}<small class="sexp" data-ts="${x.ts||0}">${expTxt(x.ts)}</small></div>
  ${mine?`<div class="vw">👁 ${nv(x)}${x.v.length?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:""}
  <div class="acts" style="margin-top:12px">${l.length>1?`<button class="btn alt" ${sv.i===0?"disabled":""} onclick="stepStory(-1)" aria-label="Previous poster">‹ Prev</button><button class="btn alt" ${sv.i===l.length-1?"disabled":""} onclick="stepStory(1)" aria-label="Next poster">Next ›</button>`:""}
  ${mine?`<button class="btn alt" onclick="delStory('${x.id}')">Delete</button>`:`<button class="btn" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">Message</button>`}</div>`;
@@ -1561,24 +1673,26 @@ function msgClient(id){const j=S.jobs.find(j=>j.id===id);shut("postD","profD","s
 let at=null;
 function setAdd(k){at=k;add()}
 function add(){const k=at||(S.role==="worker"?"service":"job");
- view.innerHTML=`<div class="addbar"><button class="addx" aria-label="Close and go back" onclick="go('home')"><span aria-hidden="true">✕</span></button><h2>${k==="job"?"Post a vacancy":"Offer your service"}</h2></div>
- <div class="seg" style="max-width:560px;margin-bottom:16px" role="group" aria-label="What do you want to post?"><button aria-pressed="${k==="job"}" onclick="setAdd('job')">Post a vacancy</button><button aria-pressed="${k==="service"}" onclick="setAdd('service')">Offer a service</button></div>
- ${k==="job"?jobForm():svcForm()}`;if(k==="service")setRT("hour")}
-const jobForm=o=>`<form onsubmit="${o?"saveEdit(event)":"postJob(event)"}"><label>Job title<input id="jt" required maxlength="70" placeholder="e.g. Install a new water heater" value="${o?esc(o.t):""}"></label>
- <div class="two"><label>Field<select id="jc">${CATS.slice(1).map(c=>`<option ${o&&o.c===c?"selected":""}>${c}</option>`).join("")}</select></label><label>Budget (₹)<input id="jb" required type="number" inputmode="numeric" enterkeyhint="next" min="1" value="${o?o.b.replace(/\D/g,""):""}"></label></div>
- <label>Price is for<select id="jp"><option value="day" ${o&&o.per==="day"?"selected":""}>One day</option><option value="week" ${o&&o.per==="week"?"selected":""}>One week</option></select></label>
+ view.innerHTML=`<div class="addhead"><h2>${k==="job"?"Post a vacancy":"Offer your service"}</h2>
+ <div class="seg addseg" role="group" aria-label="What do you want to post?"><button aria-pressed="${k==="job"}" onclick="setAdd('job')">Post a vacancy</button><button aria-pressed="${k==="service"}" onclick="setAdd('service')">Offer a service</button></div></div>
+ <div class="addcard">${k==="job"?jobForm():svcForm()}</div>`;if(k==="service")setRT("hour")}
+const jobForm=o=>`<form class="pform" onsubmit="${o?"saveEdit(event)":"postJob(event)"}"><label>Job title<input id="jt" required maxlength="70" placeholder="e.g. Install a new water heater" value="${o?esc(o.t):""}"></label>
+ <div class="trio"><label>Field<select id="jc">${CATS.slice(1).map(c=>`<option ${o&&o.c===c?"selected":""}>${c}</option>`).join("")}</select></label><label>Budget (₹)<input id="jb" required type="number" inputmode="numeric" enterkeyhint="next" min="1" value="${o?o.b.replace(/\D/g,""):""}"></label>
+ <label>Price is for<select id="jp"><option value="day" ${o&&o.per==="day"?"selected":""}>One day</option><option value="week" ${o&&o.per==="week"?"selected":""}>One week</option></select></label></div>
  <label>Location<input id="jl" required autocomplete="address-level2" list="locdl2" placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label>
+ <div class="duo"><label>Experience needed<select id="jx">${expOpts(o&&o.exp,1)}</select></label><label>Qualifications (optional)<input id="jq" maxlength="80" placeholder="e.g. ITI certificate, valid licence" value="${o?esc(o.qual||""):""}"></label></div>
  <label>What needs doing<textarea id="jd" required placeholder="Describe the work, timing and any tools or certificates needed.">${o?esc(o.d):""}</textarea></label>
  <button class="btn" style="justify-self:start">${o?"Save changes":"Publish vacancy"}</button></form>`;
-const svcForm=o=>{const rt=o&&o.rt==="day"?"day":"hour";return `<form onsubmit="${o?"saveEdit(event)":"postService(event)"}"><label>Service title<input id="svT" required maxlength="70" placeholder="e.g. Experienced plumber for home repairs" value="${o?esc(o.t):""}"></label>
- <label>Field<select id="svC">${CATS.slice(1).map(c=>`<option ${o&&o.c===c?"selected":""}>${c}</option>`).join("")}</select></label>
- <div><b style="font-size:14px">How do you charge?</b><div class="seg" id="rtSeg" role="group" aria-label="Rate type" style="margin-top:6px"><button type="button" data-v="hour" aria-pressed="${rt==="hour"}" onclick="setRT('hour')">Hourly</button><button type="button" data-v="day" aria-pressed="${rt==="day"}" onclick="setRT('day')">Daily</button></div><input type="hidden" id="svRT" value="${rt}"></div>
- <div class="two"><label><span id="svMinL">Hourly rate from (₹)</span><input id="svMin" type="number" min="1" required placeholder="200" value="${o?o.min:""}"></label><label><span id="svMaxL">Hourly rate to (₹)</span><input id="svMax" type="number" min="1" required placeholder="400" value="${o?o.max:""}"></label></div>
- <div id="svHbox"><label>Minimum hours per booking<input id="svH" type="number" min="1" max="12" step="1" inputmode="numeric" value="${o&&o.hrs?o.hrs:1}"></label><div class="fine">Clients must book at least this many hours.</div></div>
+const svcForm=o=>{const rt=o&&o.rt==="day"?"day":"hour";return `<form class="pform" onsubmit="${o?"saveEdit(event)":"postService(event)"}"><label>Service title<input id="svT" required maxlength="70" placeholder="e.g. Experienced plumber for home repairs" value="${o?esc(o.t):""}"></label>
+ <div class="duo"><label>Field<select id="svC">${CATS.slice(1).map(c=>`<option ${o&&o.c===c?"selected":""}>${c}</option>`).join("")}</select></label>
+ <div><b style="font-size:14px">How do you charge?</b><div class="seg" id="rtSeg" role="group" aria-label="Rate type" style="margin-top:6px"><button type="button" data-v="hour" aria-pressed="${rt==="hour"}" onclick="setRT('hour')">Hourly</button><button type="button" data-v="day" aria-pressed="${rt==="day"}" onclick="setRT('day')">Daily</button></div><input type="hidden" id="svRT" value="${rt}"></div></div>
+ <div class="duo"><label><span id="svMinL">Hourly rate from (₹)</span><input id="svMin" type="number" min="1" required placeholder="200" value="${o?o.min:""}"></label><label><span id="svMaxL">Hourly rate to (₹)</span><input id="svMax" type="number" min="1" required placeholder="400" value="${o?o.max:""}"></label></div>
+ <div class="trio"><div id="svHbox"><label>Minimum hours per booking<input id="svH" type="number" min="1" max="12" step="1" inputmode="numeric" value="${o&&o.hrs?o.hrs:1}"></label></div>
+  <label>Available from<input id="svF" type="time" value="${o?o.from:"09:00"}" required></label><label>Available until<input id="svU" type="time" value="${o?o.to:"18:00"}" required></label></div>
  <div><b style="font-size:14px">Available days</b><div class="days" role="group" aria-label="Available days">${DAYS.map(d=>`<label class="dchip"><input type="checkbox" name="sd" value="${d}" ${(o?o.days.includes(d):d!=="Sun")?"checked":""}><span>${d}</span></label>`).join("")}</div></div>
- <div class="two"><label>Available from<input id="svF" type="time" value="${o?o.from:"09:00"}" required></label><label>Available until<input id="svU" type="time" value="${o?o.to:"18:00"}" required></label></div>
- <label>Can start<select id="svS">${["Today","This week","Next week"].map(c=>`<option ${o&&o.start===c?"selected":""}>${c}</option>`).join("")}</select></label>
- <label>Location<input id="svL" required placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label>
+<div class="duo"><label>Can start<select id="svS">${["Today","This week","Next week"].map(c=>`<option ${o&&o.start===c?"selected":""}>${c}</option>`).join("")}</select></label>
+ <label>Location<input id="svL" required placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label></div>
+ <div class="duo"><label>Experience level<select id="svX">${expOpts(o&&o.exp,0)}</select></label><label>Qualifications (optional)<input id="svQ" maxlength="80" placeholder="e.g. ITI Plumbing, diploma, licence" value="${o?esc(o.qual||""):""}"></label></div>
  <label>About your service<textarea id="svD" required placeholder="Experience, tools, certificates and anything clients should know.">${o?esc(o.d):""}</textarea></label>
  <button class="btn" style="justify-self:start">${o?"Save changes":"Publish service"}</button></form>`};
 function setRT(v){const i=document.getElementById("svRT");if(!i)return;i.value=v;document.querySelectorAll("#rtSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));const h=v==="hour",w=h?"Hourly":"Daily";
@@ -1589,8 +1703,8 @@ function readSvc(){const rt=svRT.value==="day"?"day":"hour",mn=+svMin.value,mx=+
  if(rt==="hour"&&!(Number.isInteger(hrs)&&hrs>=1&&hrs<=12)){toast("Enter minimum hours between 1 and 12");svH.focus();return null}
  if(!ds.length){toast("Pick at least one available day");return null}
  if(svU.value<=svF.value){toast("End time must be after the start time");svU.focus();return null}
- return{c:svC.value,t:svT.value.trim(),rt,min:mn,max:mx,hrs,days:ds,from:svF.value,to:svU.value,start:svS.value,loc:svL.value.trim(),d:svD.value.trim()}}
-function readJob(){const n=Number(jb.value);if(!(n>=1)){toast("Enter a valid budget");jb.focus();return null}return{t:jt.value.trim(),c:jc.value,loc:jl.value.trim(),b:"₹"+n.toLocaleString("en-IN"),per:jp.value,d:jd.value.trim()}}
+ return{c:svC.value,t:svT.value.trim(),rt,min:mn,max:mx,hrs,days:ds,from:svF.value,to:svU.value,start:svS.value,loc:svL.value.trim(),d:svD.value.trim(),exp:svX.value,qual:svQ.value.trim()}}
+function readJob(){const n=Number(jb.value);if(!(n>=1)){toast("Enter a valid budget");jb.focus();return null}return{t:jt.value.trim(),c:jc.value,loc:jl.value.trim(),b:"₹"+n.toLocaleString("en-IN"),per:jp.value,d:jd.value.trim(),exp:jx.value,qual:jq.value.trim()}}
 function postService(e){e.preventDefault();const d=readSvc();if(!d)return;const o=Object.assign({id:Date.now(),by:S.name,v:[],b:[]},d);
  S.services.unshift(o);log("posted service",o.t);Notify.add({type:"pro",title:"Your service is live",body:o.t,act:{k:"service",id:o.id},read:1});simView(o);S.tab="services";S.cat="All";toast("Service published");go("home")}
 function postJob(e){e.preventDefault();const d=readJob();if(!d)return;const nj=Object.assign({id:Date.now(),by:S.name,p:[],v:[]},d);S.jobs.unshift(nj);log("posted vacancy",nj.t);simView(nj);S.cat="All";toast("Vacancy published");go("home")}
@@ -1673,7 +1787,12 @@ const RT={ok:null,err:undefined,at:0,me:"",since:0,first:true,timer:null,ch:null
  stop(){clearInterval(RT.timer);RT.timer=null;RT.me="";try{if(RT.bc){RT.bc.close();RT.bc=null}}catch(e){}try{if(sb){if(RT.ch)sb.removeChannel(RT.ch);if(RT.pch)sb.removeChannel(RT.pch)}}catch(e){}RT.ch=RT.pch=null}};
 addEventListener("storage",ev=>{if(ev.key==="rc_mbox")RT.poll()});
 /* ---------- Keyboard-aware layout (mobile chat) and form behaviour ---------- */
-function vv(){const v=window.visualViewport,h=v?v.height:innerHeight,t=v?v.offsetTop:0,a=document.activeElement,typing=!!a&&/^(INPUT|TEXTAREA)$/.test(a.tagName)&&matchMedia("(pointer:coarse)").matches,kb=(innerHeight-h>140)||(typing&&S.view==="chat"&&!!S.thread);
+let kbBase=innerHeight,kbSeen=false;
+function vv(){const v=window.visualViewport,h=v?v.height:innerHeight,t=v?v.offsetTop:0,a=document.activeElement,
+ typing=!!a&&(a.tagName==="TEXTAREA"||(a.tagName==="INPUT"&&!/^(checkbox|radio|button|submit|reset|file|range|color|hidden|image)$/.test(a.type)))&&matchMedia("(pointer:coarse)").matches;
+ if(!typing){kbBase=Math.max(innerHeight,h);kbSeen=false}
+ const shrunk=kbBase-Math.min(innerHeight,h);if(typing&&shrunk>120)kbSeen=true;
+ const kb=typing?!(kbSeen&&shrunk<=120):shrunk>140;
  const r=document.documentElement.style;r.setProperty("--vvh",h+"px");r.setProperty("--vvt",t+"px");document.body.classList.toggle("kb",kb);
  const nb=document.getElementById("botNav");r.setProperty("--nbh",kb||!nb||getComputedStyle(nb).display==="none"?"0px":nb.offsetHeight+"px");
  const m=document.getElementById("ms");if(m&&kb&&Chat.stick!==false)m.scrollTop=m.scrollHeight}
@@ -1786,14 +1905,15 @@ function goBack(){const ds=[...document.querySelectorAll("dialog[open]")];if(ds.
  if(!p||p==="admin"&&!isAdmin())p="home";
  navJump=true;sOpen=false;S.view=p;if(p!=="profile")editP=false;if(p!=="chat")S.thread=null;render();scrollTo(0,0)}
 const allPlaces=()=>{const seen=new Set(),out=[];[...S.jobs.map(j=>j.loc),...S.services.map(x=>x.loc),...S.users.map(u=>u.loc)].forEach(l=>{l=String(l||"").trim();const k=l.toLowerCase();if(l&&!seen.has(k)){seen.add(k);out.push(l)}});return out.sort((x,y)=>x.localeCompare(y))};
-function closeLocMenu(){const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(m&&!m.hidden)m.hidden=true;if(b){b.setAttribute("aria-expanded","false");b.setAttribute("aria-label","Show location list")}}
-function openLocMenu(all){const m=document.getElementById("locmenu"),b=document.getElementById("locb");if(!m)return;closeSug();
- const t=all===true?"":(S.qloc||"").trim().toLowerCase(),cur=(S.qloc||"").trim().toLowerCase(),L=allPlaces().filter(l=>!t||l.toLowerCase().includes(t));
+function closeLocMenu(){const m=document.getElementById("locmenu"),i=document.getElementById("qloc");if(m&&!m.hidden)m.hidden=true;if(i)i.setAttribute("aria-expanded","false")}
+function openLocMenu(force){const m=document.getElementById("locmenu"),i=document.getElementById("qloc");if(!m)return;
+ if(!m.hidden&&force!==true)return;closeSug();
+ const cur=(S.qloc||"").trim().toLowerCase(),t=force===true?cur:"",L=allPlaces().filter(l=>!t||l.toLowerCase().includes(t));
  m.innerHTML=L.length?L.map(l=>`<button type="button" role="option" aria-selected="${l.toLowerCase()===cur}" data-v="${esc(l)}" onclick="pickLoc(this.dataset.v)">${LOC}${esc(l)}</button>`).join(""):`<div class="nsn">No matching locations</div>`;
- m.hidden=false;if(b){b.setAttribute("aria-expanded","true");b.setAttribute("aria-label","Collapse location list")}
- const s=m.querySelector("[aria-selected=true]");if(s)s.scrollIntoView({block:"nearest"})}
+ m.hidden=false;if(i)i.setAttribute("aria-expanded","true");
+ if(force!==true){const s=m.querySelector("[aria-selected=true]");if(s)m.scrollTop=Math.max(0,s.offsetTop-m.clientHeight/2+s.offsetHeight/2)}}
 function toggleLocMenu(e){if(e)e.stopPropagation();const m=document.getElementById("locmenu");if(!m)return;if(m.hidden)openLocMenu(true);else closeLocMenu()}
-function pickLoc(v){S.qloc=String(v||"").slice(0,40);const i=document.getElementById("qloc");if(i)i.value=S.qloc;closeLocMenu();const c=document.getElementById("qlclr");if(c)c.classList.toggle("hide",!S.qloc);sMore=false;updateSearchUI();save()}
+function pickLoc(v){S.qloc=String(v||"").slice(0,40);const i=document.getElementById("qloc");if(i)i.value=S.qloc;closeLocMenu();const c=document.getElementById("qlclr");if(c)c.classList.toggle("hide",!S.qloc);save();doSearch()}
 function closeSug(){const s=document.getElementById("nsug");if(s)s.hidden=true}
 function nameSug(){const s=document.getElementById("nsug");if(!s)return;const q=(S.q||"").trim().toLowerCase();if(!q){s.hidden=true;return}closeLocMenu();
  const m=searchModel(),sc=(t,base)=>{t=String(t||"").toLowerCase();return base+(t.startsWith(q)?0:t.split(/\s+/).some(w=>w.startsWith(q))?1:2)};
@@ -1802,7 +1922,7 @@ function nameSug(){const s=document.getElementById("nsug");if(!s)return;const q=
   m.ss.forEach(x=>C.push({s:sc(x.t,3),k:"s",id:x.id,c:x.c,t:x.t,sub:"Talent · "+x.c+" · "+x.by}));
   m.ps.forEach(j=>C.push({s:sc(j.t,6),k:"j",id:j.id,c:j.c,t:j.t,sub:"Work · "+j.c+" · "+j.by}))}
  const L=C.sort((a,b)=>a.s-b.s).slice(0,3);
- s.innerHTML=L.length?L.map(r=>`<button type="button" role="option" data-k="${r.k}" data-n="${esc(r.n||"")}" data-id="${r.id||""}" onclick="sugPick(this.dataset.k,this.dataset.n,this.dataset.id)">${r.k==="p"?`<span class="av sm" style="${abg(r.n)}" aria-hidden="true">${ait(r.n)}</span>`:`<span class="sugi" aria-hidden="true">${(CMETA[r.c]||{}).e||"🔎"}</span>`}<span><b>${esc(r.t)}</b><small>${esc(r.sub)}</small></span></button>`).join(""):`<div class="nsn">No results found</div>`;s.hidden=false}
+ s.innerHTML=L.length?L.map(r=>`<button type="button" role="option" data-k="${r.k}" data-n="${esc(r.n||"")}" data-id="${r.id||""}" onclick="sugPick(this.dataset.k,this.dataset.n,this.dataset.id)">${r.k==="p"?`<span class="av sm" style="${abg(r.n)}" aria-hidden="true">${ait(r.n)}</span>`:`<span class="sugi" aria-hidden="true">${(CMETA[r.c]||{}).e||"🔎"}</span>`}<span><b>${esc(r.t)}</b><small>${esc(r.sub)}</small></span></button>`).join("")+`<button type="button" class="nsall" onclick="doSearch()">See all results</button>`:`<div class="nsn">No results found</div>`;s.hidden=false}
 function sugPick(k,n,id){closeSug();if(k==="p")openProfile(n);else if(k==="s")openService(+id);else openPost(+id)}
 function doSearch(){closeLocMenu();closeSug();const a=document.activeElement;if(a&&a!==document.body&&a.blur)a.blur();
  if(!searchModel()){sOpen=false;updateSearchUI();toast("Type a name or choose a location, then tap Search");return}
