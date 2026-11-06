@@ -905,6 +905,81 @@ body.kb .nav,body.kb:not(.chatopen) .nav,body.kb.chatopen .nav{display:none!impo
 
 
 
+<style id="v3">
+/* ===== v3: modern layer — filled icons, profile-first menu, terms gate ===== */
+.btn{background:linear-gradient(135deg,var(--plum),var(--plum2));box-shadow:0 6px 16px rgba(109,0,72,.22);letter-spacing:.1px}
+.btn.alt,.btn:disabled{box-shadow:none}.btn.alt{background:var(--bg)}
+.btn.pitchb{background:var(--navy)}
+.job{background:var(--bg);border:1px solid var(--line);box-shadow:var(--sh)}
+.sheet{box-shadow:0 -10px 30px rgba(20,10,40,.06)}
+/* bottom navigation: filled icons with a pill indicator */
+.nav svg{width:24px;height:24px}
+.nav button{gap:3px}
+.nav button i{width:58px;height:32px;border-radius:16px;display:grid;place-items:center;transition:background .2s ease,transform .2s ease}
+.nav button[aria-current=page] i{background:rgba(255,255,255,.2)}
+.nav button:active i{transform:scale(.94)}
+@media (prefers-reduced-motion:reduce){.nav button i{transition:none}}
+@media (max-width:380px){.nav button i{width:48px;height:30px}}
+/* header icons */
+.bell svg,.ic svg{fill:currentColor;stroke:none}
+/* category tiles + chips */
+.cat{background:var(--bg);border:1px solid var(--line)}
+.cat .ce{width:52px;height:52px;border-radius:17px;background:var(--ct,var(--soft));color:var(--c,var(--plum))}
+.cat .ce svg{width:30px;height:30px;fill:currentColor}
+.cat:not(.other):hover,.cat[aria-pressed=true]:not(.other){outline-color:var(--c,var(--plum2))}
+.cat[aria-pressed=true]:not(.other){background:var(--ct,var(--soft))}
+.cat[aria-pressed=true]:not(.other) b{color:var(--c,var(--plum))}
+.cat.other .ce svg{width:28px;height:28px}
+.chip.cic{display:inline-flex;align-items:center;gap:6px;background:var(--ct,var(--soft))}
+.chip.cic svg{width:17px;height:17px;fill:currentColor;color:var(--c,var(--plum));flex:none}
+.nsug .sugi{background:var(--ct,var(--soft));color:var(--c,var(--plum))}
+.nsug .sugi svg{width:20px;height:20px;fill:currentColor}
+/* hamburger menu: profile card on top, icon chips */
+#drawer{gap:2px}
+.dwtop{position:relative;margin-bottom:10px}
+.dwp{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 52px 14px 14px;border-radius:22px;background:linear-gradient(135deg,var(--g1),var(--g2));color:var(--ink)}
+.dwp:hover{filter:brightness(.98)}
+.dwp[aria-current=page]{box-shadow:inset 0 0 0 2px var(--plum)}
+.dwp .av{width:60px;height:60px;border-radius:19px;margin:0;font-size:19px;flex:none;box-shadow:0 0 0 3px var(--bg)}
+.dwn{display:grid;gap:3px;min-width:0;justify-items:start}
+.dwn b{display:block;max-width:100%;font-size:17px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dwn small{color:var(--mute);font-weight:600;font-size:12px}
+.dwtop .dwx{position:absolute;top:8px;right:8px;background:var(--bg)}
+.dwgo{position:absolute;right:14px;bottom:14px;color:var(--plum);display:grid}.dwgo svg{width:22px;height:22px;fill:currentColor}
+.dwi i{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--ct,var(--soft));color:var(--c,var(--plum));font-size:0;flex:none}
+.dwi i svg{width:21px;height:21px;fill:currentColor}
+.dwi{padding:8px 10px;gap:14px}
+.dwi[aria-current=page]{box-shadow:inset 3px 0 0 var(--c,var(--plum))}
+/* settings + terms rows */
+.scard .si svg,.pi .si svg{fill:currentColor}
+.tmeta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-4px 0 14px;color:var(--mute);font-weight:600}
+.tver{display:inline-flex;align-items:center;gap:8px;background:var(--soft);color:var(--plum);border-radius:99px;padding:6px 14px 6px 10px}.tver svg{width:18px;height:18px;fill:currentColor}.tver b{font-weight:700}
+.tdoc{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 18px 10px;max-height:min(44vh,400px);overflow-y:auto;overscroll-behavior:contain}
+.tdoc.full{max-height:none;overflow:visible;max-width:760px}
+.tdoc h4{margin:16px 0 4px;font-size:15px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--ink)}
+.tdoc p{margin:0 0 8px;opacity:.82;max-width:70ch}
+/* onboarding gate */
+.onb .hero,.onb .nav,.onb .side{display:none!important}
+.onb .app{grid-template-columns:minmax(0,1fr)}
+.onb .sheet{margin:0;border-radius:0;padding:24px 16px;min-height:100vh;min-height:100dvh;background:linear-gradient(135deg,var(--g1),var(--g2));display:grid;place-items:center;box-shadow:none}
+.obcard{width:min(540px,100%);background:var(--bg);border-radius:28px;padding:26px 22px 22px;box-shadow:var(--sh);display:grid;gap:16px}
+.obcard .al{height:42px}
+.obcard h2{margin:0;font-size:26px;font-weight:800;letter-spacing:-.4px}.obcard h2:focus{outline:none}
+.obcard .sub{margin:-8px 0 0;color:var(--mute)}
+.obcard .btn{width:100%}
+.obp{display:flex;gap:6px}.obp i{flex:1;height:5px;border-radius:5px;background:var(--line)}.obp i.on{background:var(--plum)}
+.obl{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.obl li{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:18px;padding:12px 14px}
+.obl .obi{width:44px;height:44px;border-radius:14px;background:var(--ct);color:var(--c);display:grid;place-items:center;flex:none}.obl .obi svg{width:24px;height:24px;fill:currentColor}
+.obl b{display:block}.obl small{display:block;color:var(--mute);font-weight:500}
+.tbox{display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:16px;background:var(--soft);cursor:pointer;font-size:15px;font-weight:600}
+.tbox input{-webkit-appearance:none;appearance:none;flex:none;width:26px;height:26px;padding:0;margin:0;border:2px solid var(--mute);border-radius:8px;background:var(--bg);display:grid;place-items:center;cursor:pointer}
+.tbox input::after{content:"";width:12px;height:6px;border:solid #fff;border-width:0 0 3px 3px;transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+.tbox input:checked{background:var(--plum);border-color:var(--plum)}.tbox input:checked::after{opacity:1}
+.onb .toast{bottom:auto;top:calc(16px + env(safe-area-inset-top,0px))}
+.obx{display:flex;justify-content:space-between;gap:12px}.obx .link{justify-self:auto}
+@media (prefers-reduced-motion:no-preference){.obcard{animation:rise .45s ease both}}
+</style>
 </head>
 <body>
 <div id="splash" role="presentation" aria-hidden="true" onclick="hideSplash()"><div class="sp-in"><div class="sp-ring"></div><div class="sp-logo"><img id="spl" alt=""></div><p class="sp-tag">Hire fast. Work smart.</p><div class="sp-bar"><i></i></div></div></div>
@@ -1182,7 +1257,85 @@ const IC={home:SV("M12 2.6 2 11.4h3V21h5.5v-6h3v6H19v-9.6h3z"),
 const LOC=`<svg class="mi loc" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>`;
 const PRC=`<svg class="mi prc" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="currentColor"/><path d="M8 7.5h8M8 10.7h8M8 7.5h1.6a3 3 0 0 1 0 6H8l6 4.3" fill="none" stroke="#4a3000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const CLK=IC.clock.replace("<svg ",'<svg class="mi clk" ');
-const NAV=[["home",IC.home,"Home"],["add",IC.add,"Add Post"],["chat",IC.chat,"Chat"],["profile",IC.person,"Profile"]];
+/* ---------- v3: unique filled icon set (duotone: solid + soft layer) ---------- */
+const FP=(d,x)=>`<path fill-rule="evenodd" d="${d}"${x||""}/>`;
+const FS=(a,b)=>`<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">${b?`<g opacity=".4">${b}</g>`:""}${a}</svg>`;
+const FI={
+ home:FS(FP("M12 2.6 2.7 10.9a.9.9 0 0 0 .6 1.6H5v7.5A1.5 1.5 0 0 0 6.5 21.5h11a1.5 1.5 0 0 0 1.5-1.5v-7.5h1.7a.9.9 0 0 0 .6-1.6zM10 21.5v-4.7a2 2 0 0 1 4 0v4.7z"),FP("M16.3 4h2.5v5l-2.5-2.2z")),
+ add:FS(FP("M6 3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3zm5 4.8V11H7.8v2H11v3.2h2V13h3.2v-2H13V7.8z")),
+ chat:FS(FP("M5.5 3h13A3.5 3.5 0 0 1 22 6.5v7a3.5 3.5 0 0 1-3.5 3.5H13l-4.2 3.8a.7.7 0 0 1-1.2-.5V17H5.5A3.5 3.5 0 0 1 2 13.5v-7A3.5 3.5 0 0 1 5.5 3zM8 9.4a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8zm4 0a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8zm4 0a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z")),
+ person:FS(FP("M12 2.8a4.7 4.7 0 1 1 0 9.4 4.7 4.7 0 0 1 0-9.4zM4 20.3c0-3.7 3.6-6 8-6s8 2.3 8 6a1.2 1.2 0 0 1-1.2 1.2H5.2A1.2 1.2 0 0 1 4 20.3z")),
+ bell:FS(FP("M12 2.5a1.6 1.6 0 0 1 1.6 1.6v.6a6.6 6.6 0 0 1 5 6.4v3.2l1.7 2.4a.9.9 0 0 1-.7 1.4H4.4a.9.9 0 0 1-.7-1.4l1.7-2.4v-3.2a6.6 6.6 0 0 1 5-6.4v-.6A1.6 1.6 0 0 1 12 2.5zM9.2 19.6h5.6a2.8 2.8 0 0 1-5.6 0z")),
+ settings:IC.settings,
+ history:FS(FP("M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19zM11 6.6h1.9v4.8l3.7 2.2-.9 1.6-4.7-2.8z")),
+ support:FS(FP("M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19zm.1 4.4c-2 0-3.3 1.2-3.4 3h2c.1-.7.6-1.1 1.3-1.1s1.3.5 1.3 1.1c0 .6-.3.9-1 1.4-.9.6-1.4 1.3-1.4 2.4v.4h2v-.3c0-.6.2-.9.9-1.4.9-.7 1.5-1.3 1.5-2.5 0-1.8-1.4-3-3.2-3zM11 15.5h2.2v2.2H11z")),
+ terms:FS(FP("M7 2.5h6.9v4.4a2 2 0 0 0 2 2H20v10.6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2zm1.2 9.7v1.6h7.6v-1.6zm0 3.4v1.6h5v-1.6z"),FP("M14.8 2.8 20.2 8.2h-3.3a2.1 2.1 0 0 1-2.1-2.1z")),
+ admin:FS(FP("M12 2.4 4.2 5.5v5.7c0 4.8 3.2 8.7 7.8 10.4 4.6-1.7 7.8-5.6 7.8-10.4V5.5zM10.8 14.7 8.2 12.1l1.3-1.3 1.3 1.3 3.7-3.7 1.3 1.3z")),
+ login:FS(FP("M15 3h3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-3z")+FP("M2.5 10.3h6.4V7l5.6 5-5.6 5v-3.3H2.5z")),
+ register:FS(FP("M9.5 3a4.2 4.2 0 1 1 0 8.4 4.2 4.2 0 0 1 0-8.4zM2 20.3c0-3.5 3.3-5.6 7.5-5.6s7.5 2.1 7.5 5.6a1.2 1.2 0 0 1-1.2 1.2H3.2A1.2 1.2 0 0 1 2 20.3z")+FP("M18.4 6.8h1.8v2.4h2.4V11h-2.4v2.4h-1.8V11H16V9.2h2.4z")),
+ logout:FS(FP("M9 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h3z")+FP("M21.5 12 16 7v3.3h-5.4v3.4H16V17z")),
+ star:FS(FP("M12 2.6l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 16.7l-5.6 3.2 1.2-6.3L3 9.2l6.3-.8z")),
+ edit:IC.edit,
+ /* categories */
+ Plumbing:FS(FP("M2.5 3h2.6v7.4H2.5z")+FP("M5.1 4.6h8.2a3.7 3.7 0 0 1 3.7 3.7v1.4h-2.6V8.3a1.1 1.1 0 0 0-1.1-1.1H5.1z")+FP("M15.7 12.6s3.2 3.1 3.2 5.6a3.2 3.2 0 0 1-6.4 0c0-2.5 3.2-5.6 3.2-5.6z"),FP("M7.2 2h4.2v1.7H7.2z")),
+ Electrical:FS(FP("M13.5 4.6 7.3 12.9h4l-.9 6.5 6.3-8.5h-4z"),FP("M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19z")),
+ Nursing:FS(FP("M12 21.2 3.9 13.1a5.2 5.2 0 0 1 0-7.3 5.2 5.2 0 0 1 7.3 0l.8.8.8-.8a5.2 5.2 0 0 1 7.3 7.3zM11 9v2.7H8.3v2H11v2.7h2v-2.7h2.7v-2H13V9z")),
+ Gardening:FS(FP("M11 12.4C11 8 8 5.2 3.4 5.2c0 4.5 2.5 7.4 7.6 7.4z")+FP("M13 10.4c0-4.4 2.6-7.6 7.6-7.6 0 5-2.4 8.2-7.6 8.2z")+FP("M11 12v9.5h2V10z"),FP("M6.5 21.5h11v-1.7h-11z")),
+ Cleaning:FS(FP("M10 3.5l1.9 5.2 5.2 1.9-5.2 1.9L10 17.7l-1.9-5.2L2.9 10.6l5.2-1.9z"),FP("M18.3 14.3l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z")+FP("M18.4 2.8l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z")),
+ Carpentry:FS(`<g transform="rotate(-40 12 12)">${FP("M5.5 2.8h11.8a1.5 1.5 0 0 1 1.5 1.5v3.6a1.5 1.5 0 0 1-1.5 1.5H14V20a1.3 1.3 0 0 1-1.3 1.3h-1.4A1.3 1.3 0 0 1 10 20V9.4H5.5A2.5 2.5 0 0 1 3 6.9V5.3a2.5 2.5 0 0 1 2.5-2.5z")}</g>`),
+ Driving:FS(FP("M5 10.2 6.5 6.1A2.2 2.2 0 0 1 8.6 4.6h6.8a2.2 2.2 0 0 1 2.1 1.5L19 10.2a2.4 2.4 0 0 1 2 2.3V17a1 1 0 0 1-1 1h-.7a2.6 2.6 0 0 1-5.1 0H9.8a2.6 2.6 0 0 1-5.1 0H4a1 1 0 0 1-1-1v-4.5a2.4 2.4 0 0 1 2-2.3zm3.1-3.4-.9 2.7h3.9V6.8zm5.6 0v2.7h3.2l-.9-2.7zM7.2 16.9a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2zm9.6 0a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2z")),
+ Painting:FS(FP("M12 2.5C6.5 2.5 2.5 6.6 2.5 11.7c0 5 4 8.8 8.9 8.8 1.4 0 2.1-.9 2.1-1.8 0-.8-.5-1.3-.8-1.8-.4-.6-.5-1.3-.1-1.9.4-.7 1.1-1 2-1H17a4.5 4.5 0 0 0 4.5-4.5C21.5 5.7 17.4 2.5 12 2.5zM7.3 11a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6zm2.4-4.2a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6zm4.9 0a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6zm2.5 3.6a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6z")),
+ Cooking:FS(FP("M8 3.4a4 4 0 0 0-3.2 6.5c.1.1.2.3.2.4V14h14v-3.7c0-.1.1-.3.2-.4A4 4 0 0 0 16 3.4a4 4 0 0 0-4 1.5 4 4 0 0 0-4-1.5z")+FP("M5 15.6h14v3.6a1.6 1.6 0 0 1-1.6 1.6H6.6A1.6 1.6 0 0 1 5 19.2z")),
+ Mechanic:FS(FP("M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z")),
+ Workshop:FS(FP("M3 21.5V9.9l6 3.5V9.9l6 3.5V4.5h6v17zM16.5 8h3v2h-3zm0 4h3v2h-3zm0 4h3v2h-3z")),
+ Tailoring:FS(FP("M6.2 2.8h11.6a1.2 1.2 0 0 1 0 2.4H6.2a1.2 1.2 0 0 1 0-2.4zM6.2 18.8h11.6a1.2 1.2 0 0 1 0 2.4H6.2a1.2 1.2 0 0 1 0-2.4zM7.8 9.6 16.2 7.4V9L7.8 11.2zM7.8 13.6l8.4-2.2V13l-8.4 2.2z"),FP("M7.8 6h8.4v12H7.8z")),
+ Salon:FS(FP("M6.2 14a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4zm0 1.9a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6zM17.8 14a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4zm0 1.9a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6z")+FP("M7.3 14.2 17.9 3.6a.6.6 0 0 1 .9.9L9 16.4z")+FP("M16.7 14.2 6.1 3.6a.6.6 0 0 0-.9.9L15 16.4z")),
+ "Repair Shop":FS(FP("M8 2.5h8a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2zM8 5.6v10h8v-10zM12 17.4a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2z")),
+ Laundry:FS(FP("M6 2.5h12a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2zm6 6.2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM7.3 4.8a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8zm3.3 0a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8z")+FP("M12 11.1a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2z")),
+ Printing:FS(FP("M7 3h10v4H7zM5 8h14a3 3 0 0 1 3 3v6h-3.5v-3.5h-13V17H2v-6a3 3 0 0 1 3-3z"),FP("M7 14.5h10V21H7z")),
+ Other:FS(FP("M4.5 3.5h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zM14.5 3.5h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zM4.5 13.5h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z")+FP("M16.2 13.5h1.6v2.7h2.7v1.6h-2.7v2.7h-1.6v-2.7h-2.7v-1.6h2.7z")),
+ tag:FS(FP("M3 4.7A1.7 1.7 0 0 1 4.7 3h6.2a2 2 0 0 1 1.4.6l8.1 8.1a2 2 0 0 1 0 2.8l-6.2 6.2a2 2 0 0 1-2.8 0L3.6 12.2a2 2 0 0 1-.6-1.4zM7.8 6.3a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z"))
+};
+const CCOL={Plumbing:"#0b84d6",Electrical:"#e59a00",Nursing:"#e5395a",Gardening:"#2e9e5b",Cleaning:"#12a6b8",Carpentry:"#a8663a",Driving:"#5c6bc0",Painting:"#e0662c",Cooking:"#d9423b",Mechanic:"#607d8b",Workshop:"#7b57c9",Tailoring:"#c2379a",Salon:"#e0559c","Repair Shop":"#2a8fb8",Laundry:"#7c8cff",Printing:"#43a047",Other:"#8a0d5f"};
+const cCol=c=>CCOL[c]||col(String(c));
+const cIcon=c=>FI[c]||FI.tag;
+const cTile=c=>`--c:${cCol(c)};--ct:${cCol(c)}26`;
+
+/* ---------- v3: Terms & Conditions + mandatory onboarding ---------- */
+const TNC_V="1.0",TNC_DATE="6 November 2026";
+const TNC=[
+["1. About these terms",["RoyalCub Jobs connects people who need work done (clients) with people who offer skills and services (service providers). By creating an account or using the app, you agree to these Terms & Conditions."]],
+["2. Your account",["You must be at least 16 years old. Give accurate details, keep your password private, and use one account per person.","You are responsible for everything done through your account. Tell us straight away if you think someone else is using it."]],
+["3. Posting jobs and services",["Posts must be genuine, lawful and accurate, including the work, rate, place and timing. Do not post anything misleading, discriminatory or illegal.","We may edit, hide or remove posts that break these terms."]],
+["4. Hiring and working",["RoyalCub Jobs is a marketplace. We do not employ service providers and we do not guarantee the quality, safety or availability of any work.","Agreements are made between the client and the service provider. Agree the scope, price and timing before work starts."]],
+["5. Payments and plans",["Unless the app says otherwise, clients pay service providers directly. Prices are shown in rupees (₹).","Any paid plan or feature shows its price before you confirm it."]],
+["6. Respectful conduct",["Do not harass, threaten or discriminate against anyone. Do not send spam, run scams, post fake reviews, share other people’s private details, or try to break or misuse the app."]],
+["7. Messages, reviews and reports",["Use chat for job-related conversations. Reviews must be honest and based on real experience.","If something looks wrong, report it from Help & support. We may review reported content and accounts."]],
+["8. Your information",["We use your name, email, phone number, age, location and activity to run the app, show your profile and keep the community safe.","You choose who can see your profile and when you appear online in Settings, under Privacy."]],
+["9. Staying safe",["Meet in safe, public or well-known places where you can, and be careful before paying anyone in advance. In an emergency, contact your local emergency services first."]],
+["10. Suspension and ending your account",["We may warn, restrict, suspend or ban accounts that break these terms or put others at risk. You can stop using RoyalCub Jobs at any time."]],
+["11. Our responsibility",["RoyalCub Jobs is provided “as is”. To the extent the law allows, we are not responsible for losses that come from work done by other users, missed jobs, or events outside our control. Nothing here limits rights that the law does not allow us to limit."]],
+["12. Changes to these terms",["We may update these terms. When a change matters, we will ask you to agree again. If you keep using the app after an update, you accept the new terms."]],
+["13. Contact and governing law",["Questions about these terms? Send them from Help & support. These terms are governed by the laws of India."]]
+];
+const tncDoc=()=>TNC.map(([h,ps])=>`<h4>${h.replace(/&/g,"&amp;")}</h4>${ps.map(p=>`<p>${p.replace(/&/g,"&amp;")}</p>`).join("")}`).join("");
+const meU=()=>S.users.find(x=>x.email===S.me)||S.users.find(x=>x.name===S.name);
+const needTnc=()=>{const u=meU();return !!u&&(!u.tnc||u.tnc.v!==TNC_V)};
+let onbStep=1;
+function onbGo(n){onbStep=n;render();scrollTo(0,0);setTimeout(()=>{const h=document.querySelector(".obcard h2");if(h){h.setAttribute("tabindex","-1");try{h.focus({preventScroll:true})}catch(e){}}},40)}
+function tncCheck(cb){const b=document.getElementById("tncGo");if(b)b.disabled=!cb.checked}
+function tncAccept(){const cb=document.getElementById("tncCk");if(!cb||!cb.checked){toast("Tick the box to agree to the Terms & Conditions");return}
+ const u=meU();if(!u)return;u.tnc={v:TNC_V,at:Date.now()};try{log("terms","accepted v"+TNC_V)}catch(e){}
+ onbStep=1;S.view=u.role==="admin"?"admin":"home";save();render();scrollTo(0,0);toast("You’re in. Welcome, "+String(u.name||"").split(" ")[0]+"!")}
+function onbView(){const u=meU()||{name:S.name},fn=esc(String(u.name||"there").split(" ")[0]);
+ const dots=`<div class="obp" role="img" aria-label="Step ${onbStep} of 2"><i class="on"></i><i class="${onbStep>=2?"on":""}"></i></div>`;
+ const logo=`<img class="al lg-l" src="${LG.l}" alt="RoyalCub Jobs"><img class="al lg-d" src="${LG.d}" alt="RoyalCub Jobs">`;
+ if(onbStep===1)return `<div class="auth"><section class="obcard">${logo}${dots}<h2>Welcome, ${fn}</h2><p class="sub">Here is how RoyalCub Jobs works.</p><ul class="obl">${[[IC.search,"Find skilled people nearby","Browse by field and place, then check profiles and reviews.","#2a8fb8"],[FI.chat,"Talk and agree the price","Chat directly and confirm the work and rate before you start.","#a31d78"],[FI.admin,"Stay protected","Honest reviews and reports keep the community safe.","#1d8a4e"]].map(([i,t,s,c])=>`<li style="--c:${c};--ct:${c}26"><span class="obi" aria-hidden="true">${i}</span><span><b>${t}</b><small>${s}</small></span></li>`).join("")}</ul><button class="btn" onclick="onbGo(2)">Continue</button></section></div>`;
+ return `<div class="auth"><section class="obcard">${logo}${dots}<h2>Terms &amp; Conditions</h2><p class="sub">Read and agree to continue. You can read these again from the menu.</p><div class="tdoc" tabindex="0" role="region" aria-label="Terms and Conditions text">${tncDoc()}</div><label class="tbox"><input id="tncCk" type="checkbox" onchange="tncCheck(this)"><span>I have read and agree to the Terms &amp; Conditions.</span></label><button class="btn" id="tncGo" onclick="tncAccept()" disabled>Agree and continue</button><div class="obx"><button class="link" onclick="onbGo(1)">Back</button><button class="link" onclick="outD.showModal()">Log out</button></div></section></div>`}
+function terms(){const u=meU(),at=u&&u.tnc&&u.tnc.at;
+ view.innerHTML=`<div class="row"><h2>Terms &amp; Conditions</h2></div><div class="tmeta"><span class="tver">${FI.terms}<b>Version ${TNC_V}</b></span><span>Updated ${TNC_DATE}</span>${at?`<span>You agreed on ${new Date(at).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</span>`:""}</div><div class="tdoc full">${tncDoc()}</div><div class="acts" style="margin-top:16px"><button class="btn alt" onclick="go('support')">Contact support</button></div>`}
+
+const NAV=[["home",FI.home,"Home"],["add",FI.add,"Add Post"],["chat",FI.chat,"Chat"],["profile",FI.person,"Profile"]];
 function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
  botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.style.visibility=un?"visible":"hidden";const uc=unread(),cb=document.getElementById("cn");cb.textContent=uc>9?"9+":uc;cb.style.visibility=uc?"visible":"hidden";document.getElementById("chatB").setAttribute("aria-label",uc?"Chat, "+uc+" unread":"Chat");document.getElementById("bellB").setAttribute("aria-label",un?"Notifications, "+un+" unread":"Notifications")}
 const BASE_T=document.title;
@@ -1365,9 +1518,10 @@ function restoreForm(o){const v=document.getElementById("view");if(!v||!o)return
  if(o.v.svRT&&typeof setRT==="function"&&document.getElementById("svRT"))setRT(o.v.svRT);
  if(o.f){const e=document.getElementById(o.f.id);if(e&&v.contains(e)){try{e.focus({preventScroll:true});if(o.f.s!=null)e.setSelectionRange(o.f.s,o.f.e)}catch(x){}}}}
 function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.ts)x.ts=n});const k=L.filter(x=>n-x.ts<864e5);if(k.length===L.length)return false;S.stories=k;try{save()}catch(e){}return true}
-function render(){pruneStories();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
+function render(){pruneStories();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
- const VIEWS={home,add,chat,settings,profile,history,support,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
+  if(needTnc()){view.innerHTML=onbView();lastV="";return}
+ const VIEWS={home,add,chat,settings,profile,history,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
 
 function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u.title;if(u.role==="worker"&&ROLE[u.cat])return ROLE[u.cat]}
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
@@ -1452,7 +1606,7 @@ function results(){const m=searchModel();if(!m)return "";const{raw,ql,cs,ps,ss,p
  const body=tot?grp("People",pe,pr)+grp("Talent Post",ss,sr)+grp("Find Work",ps,jr):`<div class="empty" style="padding:18px">Nothing matched. Try a person’s name or a trade like plumber, driver or electrician.</div>`;
  const more=tot>SLIM?(sMore?`<button type="button" class="vmore" onclick="sMoreSet(false)">Show fewer</button>`:`<button type="button" class="vmore" onclick="sMoreSet(true)">Show ${tot-shownN} more</button>`):"";
  return `<div class="sres" role="region" aria-label="Search results"><div class="sh"><b>${tot} result${tot===1?"":"s"}</b>${raw?` for “${esc(raw)}”`:""}${ql?` in ${LOC}${esc(S.qloc.trim())}`:""}</div>
- ${cs.length?`<div class="chips wrap">${cs.map(c=>`<button type="button" class="chip" onclick="pickCat('${c}')">${CMETA[c].e} ${c} · ${S.jobs.filter(j=>j.c===c).length+S.services.filter(x=>x.c===c).length}</button>`).join("")}</div>`:""}
+ ${cs.length?`<div class="chips wrap">${cs.map(c=>`<button type="button" class="chip cic" style="${cTile(c)}" onclick="pickCat('${c}')">${cIcon(c)}${c} · ${S.jobs.filter(j=>j.c===c).length+S.services.filter(x=>x.c===c).length}</button>`).join("")}</div>`:""}
  ${body}${more}</div>`}
 const UPI='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>';
 const DNI='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>';
@@ -1504,7 +1658,7 @@ function home(){
  <div class="status"><button class="st" onclick="openAdd()" aria-label="Add status poster">${photoOf(S.name)?`<div class="av addt hasph" style="${abg(S.name)}"><span class="plusb" aria-hidden="true">＋</span></div>`:`<div class="av addt">＋</div>`}<b>Add</b></button>${aus.map(n=>{const me=n===S.name,l=S.stories.filter(x=>x.by===n),seen=me||l.every(x=>x.v.includes(S.name)),tot=l.reduce((a,x)=>a+x.v.length,0);
  return `<button class="st" data-n="${esc(n)}" onclick="openStory(this.dataset.n)" aria-label="${me?`Your status, ${tot} views`:`View status of ${esc(n)}`}"><div class="av ring ${seen?"seen":""}" style="${abg(n)}">${ait(n)}</div><b>${me?"You":esc(n.split(" ")[0])}</b>${me?`<small>👁 ${tot}</small>`:""}</button>`}).join("")}</div>
  <div class="row"><h2>Categories</h2><span>${String(CATS.length-1).padStart(2,"0")}</span></div>
- <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()">${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${CMETA[c].e}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}<button class="cat other" onclick="openOtherCat()" aria-label="Other, add a new category"><span class="ce" aria-hidden="true">＋</span><b>Other</b><small>Add new</small></button></div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
+ <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()">${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" style="${cTile(c)}" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${cIcon(c)}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}<button class="cat other" onclick="openOtherCat()" aria-label="Other, add a new category"><span class="ce" aria-hidden="true">${FI.Other}</span><b>Other</b><small>Add new</small></button></div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
  <div class="seg tabs2" role="group" aria-label="Choose a section: find work or talent posts"><button aria-pressed="${!isS}" onclick="setTab('jobs')">Find Work<small>${jobs.length}</small></button><button aria-pressed="${isS}" onclick="setTab('services')">Talent Post<small>${svcs.length}</small></button></div>
  <div class="row"><h2>${S.cat==="All"?(isS?"Talent posts available":"Work available now"):esc(S.cat)}</h2><span id="pcount">${String((isS?svcs:jobs).length).padStart(2,"0")}</span></div>${S.cat==="All"?"":`<button class="btn alt" style="padding:6px 16px;margin:-4px 0 14px" onclick="toggleCat(S.cat)">Show all posts</button>`}
  <p class="cnt" style="margin:-4px 0 12px;min-height:0" id="locnote"><span id="syncchip">${syncChip()}</span></p><div class="list" id="plist">${isS?listS(svcs):listHTML(jobs)}</div>`;
@@ -1835,12 +1989,13 @@ function settings(){
  <section class="sprof"><div class="av" style="${abg(nm)}" aria-hidden="true">${ait(nm)}</div><div class="sinfo"><h3>${esc(nm)}</h3><small>${esc(pr.email||"Add your details")}</small><span class="rolep">${cl?"Client":"Service provider"}</span></div><button class="btn" onclick="editP=true;go('profile')">Edit profile</button></section>
  <div class="sgrid"><div class="scol">
   <section class="scard"><h4>Account</h4>
-   ${row("✏️","Edit profile","Name, age, email and phone","editP=true;go('profile')")}
-   ${row("🔔","Notifications",unreadN()?unreadN()+" unread":"You’re all caught up","go('notifications')")}
-   ${row("⭐","Subscription plan",(PLANS.find(q=>q.id===S.plan)||PLANS[0]).n+" plan · compare plans","openPlans()")}
+   ${row(FI.edit,"Edit profile","Name, age, email and phone","editP=true;go('profile')")}
+   ${row(FI.bell,"Notifications",unreadN()?unreadN()+" unread":"You’re all caught up","go('notifications')")}
+   ${row(FI.star,"Subscription plan",(PLANS.find(q=>q.id===S.plan)||PLANS[0]).n+" plan · compare plans","openPlans()")}
    ${(()=>{const u=S.users.find(x=>x.email===S.me),g=u&&u.gid;return `<div class="srow gstat"><span class="si" aria-hidden="true">${GG}</span><span><b>Google account</b><small>${g?"Linked to "+esc(u.email):"Not linked. Sign in with Google using "+esc(S.profile.email||"your email")+" to link it"}</small></span><span class="pill ${g?"Completed":"Requested"}">${g?"Linked":"Not linked"}</span></div>`})()}
-   ${row(IC.clock,"History","View booking history","go('history')")}
-   ${row("🛟","Help & support","Contact us or report an issue","go('support')")}</section>
+   ${row(FI.history,"History","View booking history","go('history')")}
+   ${row(FI.support,"Help &amp; support","Contact us or report an issue","go('support')")}
+    ${row(FI.terms,"Terms &amp; Conditions","Read the rules for using RoyalCub Jobs","go('terms')")}</section>
   <section class="scard"><h4>Appearance</h4><div class="themes" role="group" aria-label="Theme">${[["light","☀️","Light"],["dark","🌙","Dark"],["auto","🖥️","Auto"]].map(([k,e,l])=>`<button class="tile" aria-pressed="${th===k}" onclick="S.theme='${k}';applyTheme();render()"><span aria-hidden="true">${e}</span>${l}</button>`).join("")}</div></section>
   <section class="scard"><h4>I am a</h4><div class="roles" role="group" aria-label="Account type">${rt("client","🧑‍💼","Client","Post jobs and review pitches")}${rt("worker","🛠️","Service provider","Find work and pitch for jobs")}</div></section>
  </div><div class="scol">
@@ -1866,7 +2021,7 @@ function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...
  <label>Company name or service role (optional)<input id="pt" maxlength="40" value="${esc(p.title||"")}" placeholder="e.g. Plumber or Sharma Constructions"></label>
  <div class="acts"><button class="btn">Save changes</button><button type="button" class="btn alt" onclick="editP=false;render()">Cancel</button></div></form>`
  :`<div class="pcard"><h4>Personal details</h4>${item(IC.person,"Name",v(p.name))}${item(IC.person,"Company / role",esc(roleOf(S.name)))}${item(IC.person,"Age",v(p.age))}${item(IC.mail,"Email ID",v(p.email))}${item(IC.phone,"Phone number",v(p.phone))}</div>
- ${myPosts(mj)}<div class="pmenu">${mrow(IC.edit,"Edit profile","Update your name, email and phone","editP=true;render()")}${mrow(IC.clock,"History","View booking history","go('history')")}${mrow(IC.settings,"Settings","Theme, privacy and help","go('settings')")}${mrow(IC.out,"Log out","Sign out of this device","outD.showModal()","danger")}</div>`}</div></div>`}
+ ${myPosts(mj)}<div class="pmenu">${mrow(IC.edit,"Edit profile","Update your name, email and phone","editP=true;render()")}${mrow(FI.history,"History","View booking history","go('history')")}${mrow(IC.settings,"Settings","Theme, privacy and help","go('settings')")}${mrow(IC.out,"Log out","Sign out of this device","outD.showModal()","danger")}</div>`}</div></div>`}
 function pickPhoto(){const f=document.getElementById("phf");if(f)f.click()}
 function onPhoto(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
  if(!/^image\/(png|jpe?g|webp|gif)$/.test(f.type)){toast("Choose a PNG, JPG, WebP or GIF image");return}
@@ -1887,11 +2042,11 @@ function saveProfile(e){e.preventDefault();const o=S.profile.name,n=pn.value.tri
 
 /* ---------- fixes: hamburger drawer, back arrow, location dropdown ---------- */
 const navStack=[];
-function menuItems(){const un=unreadN(),ch=unread();const it=(v,e,l,b)=>`<button class="dwi" ${S.view===v?'aria-current="page"':''} onclick="${v==='profile'?"editP=false;":""}go('${v}')"><i aria-hidden="true">${e}</i>${l}${b?`<span class="dwb">${b}</span>`:""}</button>`;
- return it("home","🏠","Home")+it("add","➕","Add Post")+it("chat","💬","Chat",ch||"")+it("notifications","🔔","Notifications",un||"")+it("settings","⚙️","Settings")+it("profile","👤","My profile")+it("history","🕑","Booking history")+it("support","🛟","Help & support")+(isAdmin()?it("admin","🛡️","Admin"):"")}
+function menuItems(){const un=unreadN(),ch=unread();const it=(v,ic,l,b,c)=>`<button class="dwi" style="--c:${c};--ct:${c}26" ${S.view===v?'aria-current="page"':''} onclick="go('${v}')"><i aria-hidden="true">${ic}</i>${l}${b?`<span class="dwb">${b}</span>`:""}</button>`;
+ return it("home",FI.home,"Home",0,"#a31d78")+it("add",FI.add,"Add Post",0,"#1d8a4e")+it("chat",FI.chat,"Chat",ch||"","#2a8fb8")+it("notifications",FI.bell,"Notifications",un||"","#e08a00")+it("settings",FI.settings,"Settings",0,"#5c6bc0")+it("history",FI.history,"Booking history",0,"#7a4f8a")+it("support",FI.support,"Help &amp; support",0,"#12a6b8")+it("terms",FI.terms,"Terms &amp; Conditions",0,"#3b5b99")+(isAdmin()?it("admin",FI.admin,"Admin",0,"#546e7a"):"")}
 function renderMenu(){const d=document.getElementById("drawer");if(!d)return;
- if(S.out){d.innerHTML=`<div class="dwh"><div><b>Welcome</b><small>Log in to hire help or find work</small></div><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div><button class="dwi" onclick="closeMenu(true);showAuth('login')"><i aria-hidden="true">🔑</i>Log in</button><button class="dwi" onclick="closeMenu(true);showAuth('register')"><i aria-hidden="true">📝</i>Create account</button>`;return}
- d.innerHTML=`<div class="dwh"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><div><b>${esc(S.name)}</b><small>${S.role==="client"?"Client":"Service provider"}</small></div><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div>${menuItems()}<div class="dwsp"></div><button class="dwi danger" onclick="closeMenu(true);outD.showModal()"><i aria-hidden="true">🚪</i>Log out</button>`}
+ if(S.out){d.innerHTML=`<div class="dwtop"><div class="dwp" style="padding-right:56px"><span class="dwn"><b>Welcome</b><small>Log in to hire help or find work</small></span></div><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div><button class="dwi" style="--c:#1d8a4e;--ct:#1d8a4e26" onclick="closeMenu(true);showAuth('login')"><i aria-hidden="true">${FI.login}</i>Log in</button><button class="dwi" style="--c:#a31d78;--ct:#a31d7826" onclick="closeMenu(true);showAuth('register')"><i aria-hidden="true">${FI.register}</i>Create account</button>`;return}
+ d.innerHTML=`<div class="dwtop"><button class="dwp" ${S.view==="profile"?'aria-current="page"':''} onclick="editP=false;go('profile')" aria-label="Open my profile"><span class="av" style="${abg(S.name)}">${ait(S.name)}</span><span class="dwn"><b>${esc(S.name)}</b><span class="rolep">${S.role==="client"?"Client":"Service Provider"}</span><small>View profile</small></span><span class="dwgo" aria-hidden="true">${CHR}</span></button><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div>${menuItems()}<div class="dwsp"></div><button class="dwi danger" style="--c:#ff3b30;--ct:#ff3b3026" onclick="closeMenu(true);outD.showModal()"><i aria-hidden="true">${FI.logout}</i>Log out</button>`}
 let menuOpener=null;
 function openMenu(){renderMenu();const d=document.getElementById("drawer"),b=document.getElementById("drawerBd"),mb=document.getElementById("menuB");menuOpener=document.activeElement;d.classList.add("open");b.classList.add("open");d.setAttribute("aria-hidden","false");if(mb)mb.setAttribute("aria-expanded","true");document.body.style.overflow="hidden";setTimeout(()=>{const f=d.querySelector(".dwi[aria-current],.dwi");if(f)f.focus({preventScroll:true})},30)}
 function closeMenu(quiet){const d=document.getElementById("drawer");if(!d||!d.classList.contains("open"))return;const b=document.getElementById("drawerBd"),mb=document.getElementById("menuB");d.classList.remove("open");b.classList.remove("open");d.setAttribute("aria-hidden","true");if(mb)mb.setAttribute("aria-expanded","false");document.body.style.overflow="";if(!quiet&&menuOpener&&menuOpener.focus)try{menuOpener.focus({preventScroll:true})}catch(e){}}
@@ -1922,7 +2077,7 @@ function nameSug(){const s=document.getElementById("nsug");if(!s)return;const q=
   m.ss.forEach(x=>C.push({s:sc(x.t,3),k:"s",id:x.id,c:x.c,t:x.t,sub:"Talent · "+x.c+" · "+x.by}));
   m.ps.forEach(j=>C.push({s:sc(j.t,6),k:"j",id:j.id,c:j.c,t:j.t,sub:"Work · "+j.c+" · "+j.by}))}
  const L=C.sort((a,b)=>a.s-b.s).slice(0,3);
- s.innerHTML=L.length?L.map(r=>`<button type="button" role="option" data-k="${r.k}" data-n="${esc(r.n||"")}" data-id="${r.id||""}" onclick="sugPick(this.dataset.k,this.dataset.n,this.dataset.id)">${r.k==="p"?`<span class="av sm" style="${abg(r.n)}" aria-hidden="true">${ait(r.n)}</span>`:`<span class="sugi" aria-hidden="true">${(CMETA[r.c]||{}).e||"🔎"}</span>`}<span><b>${esc(r.t)}</b><small>${esc(r.sub)}</small></span></button>`).join("")+`<button type="button" class="nsall" onclick="doSearch()">See all results</button>`:`<div class="nsn">No results found</div>`;s.hidden=false}
+ s.innerHTML=L.length?L.map(r=>`<button type="button" role="option" data-k="${r.k}" data-n="${esc(r.n||"")}" data-id="${r.id||""}" onclick="sugPick(this.dataset.k,this.dataset.n,this.dataset.id)">${r.k==="p"?`<span class="av sm" style="${abg(r.n)}" aria-hidden="true">${ait(r.n)}</span>`:`<span class="sugi" style="${cTile(r.c)}" aria-hidden="true">${cIcon(r.c)}</span>`}<span><b>${esc(r.t)}</b><small>${esc(r.sub)}</small></span></button>`).join("")+`<button type="button" class="nsall" onclick="doSearch()">See all results</button>`:`<div class="nsn">No results found</div>`;s.hidden=false}
 function sugPick(k,n,id){closeSug();if(k==="p")openProfile(n);else if(k==="s")openService(+id);else openPost(+id)}
 function doSearch(){closeLocMenu();closeSug();const a=document.activeElement;if(a&&a!==document.body&&a.blur)a.blur();
  if(!searchModel()){sOpen=false;updateSearchUI();toast("Type a name or choose a location, then tap Search");return}
@@ -1935,6 +2090,7 @@ function openFollowers(){if(S.out)return;const L=followersOf(S.name);
 function folProfile(n){folD.close();openProfile(n)}
 function folMsg(n){folD.close();msgTo(n)}
 const reduce=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches);
+{const cb=document.getElementById("chatB"),bb=document.getElementById("bellB");if(cb)cb.querySelector("svg").outerHTML=FI.chat.replace("<svg ",'<svg width="27" height="27" ');if(bb)bb.querySelector("svg").outerHTML=FI.bell.replace("<svg ",'<svg width="28" height="28" ')}
 spl.src=LG.s;document.querySelector(".app").inert=true;
 function hideSplash(){if(!window.splash)return;const sp=document.getElementById("splash");if(!sp)return;sp.classList.add("leave");document.querySelector(".app").inert=false;setTimeout(()=>sp.remove(),reduce?0:550)}
 setTimeout(hideSplash,reduce?700:2700);
