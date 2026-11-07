@@ -64,7 +64,7 @@ button{cursor:pointer;border:0;background:none}
 .st small{display:block;font-size:11px;font-weight:600;color:var(--plum)}
 .av.ring{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--plum2)}
 .av.ring.seen{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--line)}
-.addt{background:var(--soft);color:var(--plum);font-size:30px;border:2px dashed var(--plum)}
+.addt{background:var(--soft);color:var(--plum);font-size:30px;border:0;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--plum)}
 .av.sm{width:40px;height:40px;border-radius:12px;font-size:14px;margin:0;flex:none}
 .locrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:-4px 0 12px}.locrow .lbl{font-weight:700;font-size:13px}.locrow input{flex:1;min-width:140px;padding:9px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:inherit}
 .prow{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:8px 10px;margin-bottom:8px}.prow .pbtn{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-align:left;background:none}.prow .pbtn span:last-child{display:grid;min-width:0}.prow .pbtn b,.prow .pbtn small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.prow .btn{padding:7px 16px;flex:none}.fpill{color:var(--plum);font-weight:700}
@@ -402,7 +402,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .ctr{background:var(--soft);border-radius:12px;padding:8px 12px;font-weight:600;font-size:14px}
 .bka{display:flex;flex-wrap:wrap;gap:8px}.bka .btn{padding:8px 14px;min-height:40px;font-size:14px}
 .cin{display:flex;gap:8px}.cin input{flex:1;min-width:0;padding:9px 12px}.cin .btn{padding:8px 14px;min-height:40px;font-size:14px;flex:none}
-#bookD{width:min(520px,94vw)}
+#bookD{width:min(780px,96vw)}
 .bkf{max-width:none;gap:12px}
 .bkpro{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:10px 12px}.bkpro>div:nth-child(2){flex:1;min-width:0}.bkpro b{display:block}.bkpro small{display:block;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .neg{display:grid;gap:10px;background:var(--card);border-radius:16px;padding:12px}.neg>b{font-size:14px}.neg .seg{background:var(--bg)}
@@ -457,6 +457,8 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .bkf{grid-template-columns:minmax(0,1fr)}.bkf>*{min-width:0}
 .neg .chips{flex-wrap:wrap;overflow:visible}
 #bookD{overflow-x:hidden}
+.btn.applyb{background:#0f8a5f;color:#fff}.btn.applyb:hover:not(:disabled){background:#0b7350}.btn.applyb:disabled{opacity:.6;cursor:default}
+.acts.pm>.btn{flex:1 1 auto}
 .bkpro{flex-wrap:wrap}.bkpro>div:nth-child(2){flex:1 1 140px}.bkpro .pill{white-space:nowrap}
 
 /* ===== chat alignment ===== */
@@ -610,6 +612,15 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .locmenu{left:0;right:0;width:auto;min-width:0}
 /* ===== v2: followers ===== */
 .fcard .fcount{font-size:24px;font-weight:800;display:block;line-height:1.1}
+.prof,.sx{max-width:none}.fullv .main{max-width:none!important}
+.pst>div,.pst>button{background:var(--card);border-radius:20px;padding:14px 8px;text-align:center;border:0;width:100%;font:inherit;color:inherit}
+.pst>button{cursor:pointer;transition:.15s}.pst>button:hover{outline:2px solid var(--plum2)}
+#postsD{width:min(420px,92vw);text-align:center}#postsD .dh{text-align:left}.pbig{margin:6px 0 18px}.pbig b{display:block;font-size:56px;font-weight:800;color:var(--plum);line-height:1}.pbig span{color:var(--mute);font-weight:600}
+.hdrop>summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;padding:6px 4px}.hdrop>summary::-webkit-details-marker{display:none}
+.hdrop>summary::after{content:"▾";color:var(--mute);font-size:18px;transition:transform .2s}.hdrop[open]>summary::after{transform:rotate(180deg)}
+.hdrop>summary h4{margin:0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}.hdrop>:not(summary){margin-top:8px}
+.rsel select{width:100%}
+#drwrap{margin-top:12px}
 .flist{display:grid;gap:8px;max-height:min(60vh,460px);overflow-y:auto;overscroll-behavior:contain}
 .frow{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:8px 10px}
 .fmain{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-align:left;border-radius:12px}
@@ -677,6 +688,107 @@ body.kb .nav,body.kb:not(.chatopen) .nav,body.kb.chatopen .nav{display:none!impo
 .cat.other{background:transparent;outline:2px dashed var(--plum2);outline-offset:-2px}
 .cat.other .ce{background:var(--soft);color:var(--plum)}
 .cat.other b{color:var(--plum)}
+
+/* ===== v4: chat action cards, full-screen Terms, field icons, unread circle ===== */
+.mi.fx{width:19px;height:19px;vertical-align:-5px;margin-right:6px}
+.pill .mi.fx{width:16px;height:16px;vertical-align:-3px;margin-right:5px}
+.req .mi.fx,.bk small .mi.fx,.mini .mi.fx{width:16px;height:16px;vertical-align:-3px;margin-right:4px}
+.pill.Rejected{background:#fbd9d6;color:#9a1c12}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pill.Rejected{background:#43201d;color:#f4a49c}}
+:root[data-theme="dark"] .pill.Rejected{background:#43201d;color:#f4a49c}
+.chatrow{align-items:center}
+.row .ucirc{margin-left:auto;flex:none;min-width:32px;height:32px;padding:0 9px;border-radius:99px;background:#fff;color:#d92d20;font-weight:800;font-size:14px;line-height:1;display:grid;place-items:center;box-shadow:0 2px 10px rgba(20,10,40,.2),inset 0 0 0 1.5px rgba(20,10,40,.1)}
+.mact{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px}
+.mact .btn{min-height:36px;padding:6px 14px;font-size:13px;border-radius:12px}
+.mact .pill{font-size:12px}
+.m.me .mact .btn.alt{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.65)}
+.m .mact+.mt{margin-top:6px}
+
+/* ===== v5: one-screen Terms under the hero, dashboard icon set ===== */
+body.tncv,body.tnc2{height:100vh;height:100dvh;overflow:hidden}
+html:has(body.tncv),html:has(body.tnc2){overflow:hidden}
+.tncv .app,.tnc2 .app{height:100vh;height:100dvh;min-height:0;overflow:hidden}
+.tncv .main,.tnc2 .main{display:flex;flex-direction:column;height:100%;min-height:0;max-width:none!important}
+.tncv .nav,.tnc2 .nav,.tncv .side,.tnc2 .side{display:none!important}
+.onb.tnc2 .hero{display:block!important}
+.tnc2 .top .menu,.tnc2 .top .bell,.tnc2 .top .backb{display:none!important}
+.tncv .hero,.tnc2 .hero{flex:none;padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:34px!important}
+.tncv .hero p,.tnc2 .hero p{margin:8px 0 2px;font-size:13px;font-size:clamp(12px,1.9dvh,17px)}
+.tncv .hero h1,.tnc2 .hero h1{font-size:clamp(17px,5.2vw,28px);font-size:min(clamp(17px,3.2dvh,28px),5.4vw)}
+.tncv .sheet,.onb.tnc2 .sheet{flex:1 1 auto;min-height:0!important;margin:-26px 0 0;border-radius:30px 30px 0 0;display:flex;flex-direction:column;gap:12px;gap:clamp(10px,1.8dvh,18px);overflow:hidden;background:var(--bg);place-items:initial;box-shadow:0 -10px 30px rgba(20,10,40,.06);padding:14px var(--sidepad,16px) calc(14px + env(safe-area-inset-bottom,0px))!important}
+.tcard,.tcft{width:100%;max-width:760px;margin-left:auto;margin-right:auto}
+.tcard{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:14px;gap:clamp(10px,2dvh,20px);background:var(--card);border:1px solid var(--line);border-radius:24px;padding:16px;padding:clamp(14px,2.6dvh,28px) clamp(14px,4vw,32px)}
+.tchd{display:flex;align-items:center;gap:12px}
+.tcic{flex:none;width:46px;height:46px;width:clamp(38px,6dvh,56px);height:clamp(38px,6dvh,56px);border-radius:16px;background:var(--soft);color:var(--plum);display:grid;place-items:center}
+.tcic svg{width:56%;height:56%;fill:currentColor}
+.tcti{flex:1;min-width:0}
+.tcti h2{margin:0;font-size:20px;font-size:clamp(18px,3dvh,26px);font-weight:800;letter-spacing:-.3px;line-height:1.15}
+.tcti small{display:block;margin-top:2px;color:var(--mute);font-weight:600;font-size:12px}
+.tchd .link{flex:none;justify-self:auto}
+.tcp{margin:0;font-size:14px;font-size:clamp(12.5px,min(1.95dvh,3.4vw),17px);line-height:1.45;color:var(--ink);opacity:.92;text-wrap:pretty}
+.tcp b{color:var(--plum);font-weight:800}
+.tcok{display:flex;align-items:center;gap:8px;margin:0;font-weight:700;color:#14663a;font-size:14px}
+.tcok .dx{width:22px;height:22px;margin:0;color:#1d8a4e}
+.tcard .tbox{padding:10px 12px;padding:clamp(8px,1.6dvh,14px) 12px;font-size:14px}
+.tcft{flex:none}.tcft .btn{width:100%;min-height:48px;min-height:clamp(46px,6.4dvh,58px);font-size:16px}
+@media (max-height:620px){.tcti small{display:none}.tcic{width:36px;height:36px}.tcp{font-size:12.5px;line-height:1.4}.tcard{gap:8px;padding-top:12px;padding-bottom:12px}.tcard .tbox{padding:6px 10px;font-size:13px}.tcft .btn{min-height:44px}.tncv .sheet,.onb.tnc2 .sheet{gap:8px;padding-top:10px!important;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))!important}}
+@media (max-height:480px){.tncv .sheet,.onb.tnc2 .sheet{overflow-y:auto}.tcard{justify-content:flex-start;flex:none}}
+.tcbody{flex:0 1 auto;min-height:0;display:grid;gap:.75em;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.tchd,.tcard .tbox,.tcok{flex:none}
+.tcp b:first-child{display:inline}
+/* dashboard icon set */
+.mi.dx{width:17px;height:17px;vertical-align:-3px;margin-right:5px;flex:none}
+.dx.eye{color:#12a6b8}.dx.medal{color:#e59a00}.dx.cap{color:#5c6bc0}.dx.cal{color:#a31d78}.dx.inbox{color:#2a8fb8}
+.btn .mi.dx,.seg button .mi.dx{color:currentColor;width:18px;height:18px;margin-right:7px;vertical-align:-4px}
+.cnt .mi.dx{width:16px;height:16px}
+.mi.fe{width:19px;height:19px;vertical-align:-5px;margin-right:6px}
+.earn{color:#14663a;font-weight:700}
+.hi .mi.fe,.hi .mi.dx{width:17px;height:17px;vertical-align:-3px}
+.addt .mi.dx{width:30px;height:30px;margin:0;color:var(--plum)}
+.plusb .mi.dx{width:14px;height:14px;margin:0;color:#fff}
+.st small .mi.dx{width:13px;height:13px;margin-right:3px;vertical-align:-2px}
+.bell svg{fill:currentColor;stroke:none}
+
+/* ===== v6: Workers header + dropdown, Add Post categories, calendar ===== */
+.wkrow{align-items:center;gap:12px;flex-wrap:nowrap}
+.wkh{display:flex;align-items:baseline;gap:10px;min-width:0}.wkh h2{margin:0;white-space:nowrap}
+.wksel{position:relative;display:inline-flex;margin-left:auto;flex:none}
+.wksel select{appearance:none;-webkit-appearance:none;width:auto;min-width:156px;padding:10px 40px 10px 18px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-family:inherit;font-weight:700;font-size:15px;line-height:1.2;cursor:pointer;box-shadow:0 2px 8px rgba(20,10,40,.06)}
+.wksel select:focus-visible{outline:3px solid var(--plum2);outline-offset:2px}
+.wksel::after{content:"";position:absolute;right:17px;top:50%;width:8px;height:8px;border:solid var(--plum);border-width:0 2.5px 2.5px 0;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+@media (max-width:420px){.wksel select{min-width:136px;padding:9px 36px 9px 14px;font-size:14px}.wkh h2{font-size:20px}}
+.addhead{margin-bottom:12px}
+.addpick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.pick{display:flex;align-items:center;gap:12px;text-align:left;padding:16px;border-radius:20px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;min-width:0}
+.pick .pki{flex:none;width:46px;height:46px;border-radius:15px;background:var(--soft);color:var(--plum);display:grid;place-items:center}
+.pick .pki svg{width:26px;height:26px;margin:0;color:inherit}
+.pick .pkt{display:grid;gap:2px;min-width:0}.pick b{font-size:16px}.pick small{color:var(--mute);font-weight:600;font-size:12.5px}
+.pick.on{border-color:var(--plum);background:var(--soft);box-shadow:0 6px 18px -8px rgba(109,0,72,.4)}
+.pick.on .pki{background:var(--plum);color:#fff}
+@media (max-width:560px){.addpick{grid-template-columns:1fr}.pick{padding:14px}}
+.catbox{display:grid;gap:12px}
+.fgrp{display:grid;gap:8px}.fl{font-size:14px}
+.rtseg{flex-wrap:wrap}.rtseg button{flex:1 1 auto}
+.dr{display:grid;gap:12px}
+.drtype{flex-wrap:wrap}.drtype button{flex:1 1 auto}
+.drsum{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:14px;background:var(--soft);font-size:14px;font-weight:600}
+.drsum .dx{width:20px;height:20px;margin:0;flex:none}
+.cal{border:1px solid var(--line);border-radius:20px;background:var(--card);padding:12px;max-width:440px}
+.calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.calh b{font-size:16px}
+.calh button{width:40px;height:40px;border-radius:12px;border:0;background:var(--soft);color:var(--plum);font-size:22px;font-weight:700;cursor:pointer}
+.calh button:disabled{opacity:.35;cursor:default}
+.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cw{text-align:center;font-size:12px;font-weight:700;color:var(--mute);padding:4px 0}
+.cd{aspect-ratio:1;min-height:38px;border:0;border-radius:12px;background:transparent;color:var(--ink);font-family:inherit;font-weight:600;font-size:15px;line-height:1;cursor:pointer;padding:0}
+.cd.blank{pointer-events:none}
+.cd:hover:not(:disabled):not(.s):not(.e){background:var(--soft)}
+.cd.today{box-shadow:inset 0 0 0 2px var(--plum2)}
+.cd.in{background:var(--soft);border-radius:6px;color:var(--plum)}
+.cd.s,.cd.e{background:var(--plum);color:#fff}
+.cd.past{opacity:.3;cursor:default}
+.cd:focus-visible,.calh button:focus-visible{outline:3px solid var(--plum2);outline-offset:1px}
+.drongo{margin-top:2px}
 </style>
 
 
@@ -1010,6 +1122,7 @@ body.kb .nav,body.kb:not(.chatopen) .nav,body.kb.chatopen .nav{display:none!impo
 <dialog id="postD" aria-label="Post details"></dialog>
 <dialog id="profD" aria-label="Profile"></dialog>
 <dialog id="folD" aria-label="Followers"></dialog>
+<dialog id="postsD" aria-label="Your posts"></dialog>
 <dialog id="storyD" aria-label="Status poster"></dialog>
 <dialog id="addD"><form onsubmit="postStory(event)">
  <div class="dh"><h3 style="margin:0">Add status poster</h3><button type="button" class="x" aria-label="Close" onclick="addD.close()">✕</button></div>
@@ -1026,10 +1139,10 @@ body.kb .nav,body.kb:not(.chatopen) .nav,body.kb.chatopen .nav{display:none!impo
  <button class="btn" style="justify-self:start">Add category</button></form></dialog>
 <dialog id="admD" aria-label="User profile"></dialog>
 <dialog id="pitchD"><form method="dialog" id="pitchF" onsubmit="return false">
- <h3>Pitch for this job</h3><p id="pitchT" style="margin:0 0 6px;color:var(--mute)"></p>
+ <h3>Apply for this job</h3><p id="pitchT" style="margin:0 0 6px;color:var(--mute)"></p>
  <div class="two"><label>Your price (₹)<input id="pp" type="number" inputmode="numeric" min="1" required></label><label>Can start<select id="ps"><option>Today</option><option>This week</option><option>Next week</option></select></label></div>
  <label>Why you’re a good fit<textarea id="pm" required placeholder="Years of experience, tools, certificates…"></textarea></label>
- <div class="acts"><button class="btn" onclick="sendPitch()">Request</button><button class="btn alt" onclick="pitchD.close()">Cancel</button></div>
+ <div class="acts"><button class="btn" onclick="sendPitch()">Apply now</button><button class="btn alt" onclick="pitchD.close()">Cancel</button></div>
 </form></dialog>
 
 <dialog id="outD"><h3>Log out?</h3><p style="color:var(--mute)">You can log back in any time. Your vacancies and chats stay saved.</p><div class="acts"><button class="btn" onclick="outD.close();try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view='home';au='login';save();render()">Log out</button><button class="btn alt" onclick="outD.close()">Stay logged in</button></div></dialog>
@@ -1118,7 +1231,7 @@ const SEED2=[{id:5,t:"Driver needed for weekend trip",c:"Driving",loc:"Airport R
 {id:9,t:"Install new bathroom taps",c:"Plumbing",loc:"Northside",b:"₹1,100",per:"day",by:"Karan Mehta",d:"Replace two taps and a shower mixer. Fittings are already bought.",p:[],v:VW.slice(0,2)}];
 const PER0={1:["₹800","day"],2:["₹2,500","week"],3:["₹2,400","day"],4:["₹1,500","day"]};
 S.jobs.forEach(j=>{if(!j.per){const d=PER0[j.id];if(d){j.b=d[0];j.per=d[1]}else j.per=/week|mo/i.test(j.b)?"week":"day"}});
-const per=j=>`<small class="per">per ${j.per==="week"?"week":"day"}</small>`;
+const per=j=>`<small class="per">${({week:"per week",month:"per month",total:"in total",choose:"for these dates"})[j.per]||"per day"}</small>`;
 const REV0=[["Sam Foster","Meera Nair",5,"Fixed our leak in under an hour. Tidy and on time."],["Sam Foster","Rohan Das",4,"Good work, fair price."],["Sam Foster","Isha Rao",5,"Very professional, will hire again."],
 ["Dana Fox","Priya Shah",5,"Safe, neat wiring and explained everything."],["Dana Fox","Tom Park",4,"Arrived a little late but did a great job."],
 ["Priya Nair","Kabir Anand",5,"Caring and patient with my father."],["Priya Nair","Leena Jose",5,"Highly recommended for home care."],["Arun Das","Sana Iqbal",4,"Smooth ride and polite driver."],
@@ -1135,7 +1248,7 @@ const live=n=>{const u=S.users.find(x=>x.name===n);return !u||u.status==="active
 const log=(act,target="",detail="")=>{S.log.unshift({ts:Date.now(),who:S.name,act,target,detail});S.log.length=Math.min(S.log.length,500)};
 /* ---------- notifications ---------- */
 const NT={chat:["💬","Chats"],pro:["🧑‍🔧","Professionals"],booking:["🤝","Bookings"],plan:["⭐","Plans"]};
-const PLANS=[{id:"free",n:"Free",p:0,f:["Browse all jobs and talent posts","3 pitches per week","Chat with anyone"]},{id:"pro",n:"Pro",p:199,pop:1,f:["Unlimited pitches","Verified badge","Priority placement in search"]},{id:"biz",n:"Business",p:499,f:["Everything in Pro","Post up to 20 jobs","Dedicated support"]}];
+const PLANS=[{id:"free",n:"Free",p:0,f:["Browse all workers and job vacancies","3 pitches per week","Chat with anyone"]},{id:"pro",n:"Pro",p:199,pop:1,f:["Unlimited pitches","Verified badge","Priority placement in search"]},{id:"biz",n:"Business",p:499,f:["Everything in Pro","Post up to 20 jobs","Dedicated support"]}];
 const seedNotifs=()=>{const h=36e5,t=Date.now();return[
  {id:"n1",type:"plan",title:"Go Pro for 50% off this week",body:"Unlimited pitches, a verified badge and priority placement.",ts:t-2*h,read:0,act:{k:"plans"}},
  {id:"n2",type:"pro",title:"New professional: Kiran Rao",body:"Gardener in Eastgate · ₹200–₹280 per hour",ts:t-5*h,read:0,act:{k:"service",id:110}},
@@ -1169,7 +1282,7 @@ S.notifs=S.notifs||seedNotifs();S.plan=S.plan||"free";S.nf=S.nf||"all";
 const EXPL=[["fresher","Fresher (0–1 yr)",0,1,["fresher","beginner","entry level","entry-level","trainee","new"]],["1-3","1–3 years",1,3,["junior"]],["3-5","3–5 years",3,5,["intermediate","mid-level","mid level"]],["5-10","5–10 years",5,10,["senior","experienced"]],["10+","10+ years",10,99,["expert","veteran","master","highly experienced"]]];
 const expOpts=(v,job)=>[["",job?"Any":"Not set"],...EXPL].map(e=>`<option value="${e[0]}" ${v===e[0]?"selected":""}>${e[1]}</option>`).join("");
 const expTx=x=>{const e=EXPL.find(q=>q[0]===(x&&x.exp));return e?e[1]:""};
-const attrSpans=(x,job)=>`${expTx(x)?`<span>🏅 ${esc(expTx(x))}${job?" needed":""}</span>`:""}${x&&x.qual?`<span>🎓 ${esc(x.qual)}</span>`:""}`;
+const attrSpans=(x,job)=>`${expTx(x)?`<span>${DI.medal}${esc(expTx(x))}${job?" needed":""}</span>`:""}${x&&x.qual?`<span>${DI.cap}${esc(x.qual)}</span>`:""}`;
 const SAS={101:["5-10","ITI Plumbing certificate"],102:["5-10","Licensed electrician (wireman permit)"],103:["3-5","GNM nursing diploma, registered nurse"],104:["10+","Heavy and light motor vehicle licence"],105:["3-5","Housekeeping training certificate"],106:["5-10","ITI Carpenter"],107:["3-5","NAC painting course"],108:["10+","FSSAI food safety certificate"],109:["3-5","ITI Motor Mechanic"],110:["1-3","Horticulture short course"],111:["3-5","Professional cleaning certificate"],112:["5-10","Diploma in Electrical Engineering"],113:["5-10","Registered nurse, ICU training"],301:["5-10","ITI Motor Mechanic"],302:["3-5","Professional cleaning certificate"]};
 const SAJ={1:["1-3","ITI plumbing or equivalent"],2:["5-10","Licensed electrician"],3:["3-5","GNM or ANM nursing qualification"],5:["3-5","Valid driving licence"],6:["3-5",""],301:["5-10","Licensed electrician"],302:["5-10",""]};
 const applyA=(x,svc)=>{const a=(svc?SAS:SAJ)[x.id];if(a&&x.exp===undefined){x.exp=a[0];x.qual=a[1]}};
@@ -1183,11 +1296,11 @@ const SEED4=[
 {id:406,by:"Anitha Das",c:"Printing",t:"Digital printing, flex banners and photocopy",min:150,max:400,days:WK,from:"09:00",to:"18:30",start:"Today",loc:"Ottapalam",d:"Flex banners, visiting cards, flyers, binding and colour photocopy. Design help available.",exp:"3-5",qual:"Diploma in Graphic Design",v:[],b:[]},
 {id:407,by:"Rajesh Pillai",c:"Workshop",t:"Bike and scooter service workshop with free pickup",min:250,max:500,days:WK,from:"08:30",to:"19:00",start:"Today",loc:"Chittur",d:"Periodic service, brake and clutch work, engine tune-ups and denting. Pickup and drop within 5 km.",exp:"5-10",qual:"ITI Motor Mechanic",v:[],b:[]},
 {id:408,by:"Mini Sebastian",c:"Tailoring",t:"Boutique blouse stitching and school uniforms",min:200,max:450,days:WK,from:"10:00",to:"17:30",start:"This week",loc:"Ottapalam",d:"Designer blouses, saree falls, bridal wear and uniforms. Fittings by appointment.",exp:"1-3",qual:"Tailoring and embroidery certificate",v:[],b:[]}];
-S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.fol=S.fol||{};S.services=S.services||SERV0;S.tab=S.tab||"jobs";SEED2.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.jobs.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.svc.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(x)});SEED4.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(JSON.parse(JSON.stringify(x)));if(!(S.users||[]).some(u=>u.name===x.by))(S.users=S.users||[]).push({email:x.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:x.by,phone:"",age:"",cat:x.c,role:"worker",title:SEED4T[x.by]||"",loc:x.loc.split(",").pop().trim(),status:"active",joined:Date.now()-5*864e5})});S.services.forEach(x=>applyA(x,1));S.jobs.forEach(x=>applyA(x,0));S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=j.v||(j.by===S.name?[]:VW.slice(0,2+j.id%4))});
+S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.fol=S.fol||{};S.services=S.services||SERV0;S.tab="services";SEED2.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.jobs.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.svc.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(x)});SEED4.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(JSON.parse(JSON.stringify(x)));if(!(S.users||[]).some(u=>u.name===x.by))(S.users=S.users||[]).push({email:x.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:x.by,phone:"",age:"",cat:x.c,role:"worker",title:SEED4T[x.by]||"",loc:x.loc.split(",").pop().trim(),status:"active",joined:Date.now()-5*864e5})});S.services.forEach(x=>applyA(x,1));S.jobs.forEach(x=>applyA(x,0));S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=j.v||(j.by===S.name?[]:VW.slice(0,2+j.id%4))});
 /* ---------- Shared content: posts, services and stories are visible to every logged-in user (Supabase table rc_content; run supabase_setup.sql once) ---------- */
 const CK=[["job","jobs"],["service","services"],["story","stories"]];
 let cT=null,cBusy=false,cOff=!SB_ON,cHash={},cState=SB_ON?"wait":"local",cOffAt=0;
-const syncChip=()=>cState==="local"?`<span title="Posts are stored on this device only">💾 This device only</span>`:cState==="off"?`<span style="color:#b54708;font-weight:700" title="Run supabase_setup.sql in your Supabase project so posts appear on other accounts and devices">⚠ Posts aren’t syncing to other devices yet</span>`:cState==="err"?`<span title="Will retry automatically">⚠ Offline, will retry</span>`:cState==="ok"?`<span>☁ Synced</span>`:`<span>☁ Syncing…</span>`;
+const syncChip=()=>cState==="local"?`<span title="Posts are stored on this device only">💾 This device only</span>`:cState==="off"?`<span style="color:#b54708;font-weight:700" title="Run supabase_setup.sql in your Supabase project so posts appear on other accounts and devices">⚠ Posts aren’t syncing to other devices yet</span>`:cState==="err"?`<span title="Will retry automatically">⚠ Offline, will retry</span>`:"";
 function syncUI(){const e=document.getElementById("syncchip");if(e)e.innerHTML=syncChip()}
 const cBase=()=>SUPABASE_URL.trim().replace(/\/$/,"")+"/rest/v1/rc_content";
 const cHead=x=>Object.assign({apikey:SUPABASE_KEY,"Content-Type":"application/json"},x||{});
@@ -1273,7 +1386,7 @@ const FI={
  admin:FS(FP("M12 2.4 4.2 5.5v5.7c0 4.8 3.2 8.7 7.8 10.4 4.6-1.7 7.8-5.6 7.8-10.4V5.5zM10.8 14.7 8.2 12.1l1.3-1.3 1.3 1.3 3.7-3.7 1.3 1.3z")),
  login:FS(FP("M15 3h3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-3z")+FP("M2.5 10.3h6.4V7l5.6 5-5.6 5v-3.3H2.5z")),
  register:FS(FP("M9.5 3a4.2 4.2 0 1 1 0 8.4 4.2 4.2 0 0 1 0-8.4zM2 20.3c0-3.5 3.3-5.6 7.5-5.6s7.5 2.1 7.5 5.6a1.2 1.2 0 0 1-1.2 1.2H3.2A1.2 1.2 0 0 1 2 20.3z")+FP("M18.4 6.8h1.8v2.4h2.4V11h-2.4v2.4h-1.8V11H16V9.2h2.4z")),
- logout:FS(FP("M9 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h3z")+FP("M21.5 12 16 7v3.3h-5.4v3.4H16V17z")),
+ logout:FS(FP("M13 3h-2v10h2V3zm4.83 2.17-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z")),
  star:FS(FP("M12 2.6l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 16.7l-5.6 3.2 1.2-6.3L3 9.2l6.3-.8z")),
  edit:IC.edit,
  /* categories */
@@ -1299,30 +1412,42 @@ const FI={
 const CCOL={Plumbing:"#0b84d6",Electrical:"#e59a00",Nursing:"#e5395a",Gardening:"#2e9e5b",Cleaning:"#12a6b8",Carpentry:"#a8663a",Driving:"#5c6bc0",Painting:"#e0662c",Cooking:"#d9423b",Mechanic:"#607d8b",Workshop:"#7b57c9",Tailoring:"#c2379a",Salon:"#e0559c","Repair Shop":"#2a8fb8",Laundry:"#7c8cff",Printing:"#43a047",Other:"#8a0d5f"};
 const cCol=c=>CCOL[c]||col(String(c));
 const cIcon=c=>FI[c]||FI.tag;
+const FALL=FS(FP("M4.5 3.5h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zM14.5 3.5h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zM4.5 13.5h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zM14.5 13.5h5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z"));
 const cTile=c=>`--c:${cCol(c)};--ct:${cCol(c)}26`;
+/* field-specific meta icons: every field (Plumbing, Electrical, ...) gets its own price, date and clock symbol */
+const fIn=c=>cIcon(c).replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"");
+const fMI=(k,c,b)=>`<svg class="mi fx ${k}" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="color:${cCol(c)}">${b}</svg>`;
+const mPrice=c=>fMI("fp",c,`<circle cx="11" cy="11" r="10" fill="currentColor"/><path d="M7.2 6.8h7.6M7.2 9.7h7.6M7.2 6.8h2a2.9 2.9 0 0 1 0 5.8H7.2l5.2 4.2" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.2" cy="18.2" r="5" fill="#fff" stroke="currentColor" stroke-width="1.2"/><svg x="14.6" y="14.6" width="7.2" height="7.2" viewBox="0 0 24 24" fill="currentColor">${fIn(c)}</svg>`);
+const mDate=c=>fMI("fd",c,`<rect x="6.6" y="1.2" width="2.8" height="5.2" rx="1.4" fill="currentColor"/><rect x="14.6" y="1.2" width="2.8" height="5.2" rx="1.4" fill="currentColor"/><rect x="2" y="4" width="20" height="18.5" rx="4" fill="currentColor"/><rect x="2" y="8.4" width="20" height="1.4" fill="#fff" fill-opacity=".45"/><svg x="6.5" y="10.5" width="11" height="11" viewBox="0 0 24 24" fill="#fff">${fIn(c)}</svg>`);
+const mClock=c=>fMI("fc",c,`<circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M12 5.6V12h4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.1" cy="18.1" r="5.3" fill="#fff" stroke="currentColor" stroke-width="1.2"/><svg x="14.3" y="14.3" width="7.6" height="7.6" viewBox="0 0 24 24" fill="currentColor">${fIn(c)}</svg>`);
+const mEarn=()=>`<svg class="mi fx fe" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="color:#1d8a4e"><rect x="1" y="1" width="22" height="22" rx="6.5" fill="currentColor"/><path d="M5.2 16.4l4.6-4.6 3 3 5.6-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.6 8.8h4.8v4.8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const dx=(k,d)=>`<svg class="mi dx ${k}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="${d}"/></svg>`;
+const DI={
+ eye:dx("eye","M12 5C7 5 3.4 9.1 2.2 11.4a1.3 1.3 0 0 0 0 1.2C3.4 14.9 7 19 12 19s8.6-4.1 9.8-6.4a1.3 1.3 0 0 0 0-1.2C20.6 9.1 17 5 12 5zm0 3.3a3.7 3.7 0 1 1 0 7.4 3.7 3.7 0 0 1 0-7.4zm0 2.2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"),
+ medal:dx("medal","M12 2a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM8.2 15.8 6.5 22.2l5.5-2.4 5.5 2.4-1.7-6.4A8 8 0 0 1 12 17a8 8 0 0 1-3.8-1.2zM12 4.8l1.3 2.6 2.9.4-2.1 2 .5 2.9-2.6-1.4-2.6 1.4.5-2.9-2.1-2 2.9-.4z"),
+ cap:dx("cap","M12 3 1 9l11 6 9-4.9V17h2V9zM5 13.2v4L12 21l7-3.8v-4L12 17z"),
+ brief:dx("brief","M20 6h-4V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-10-2h4v2h-4z"),
+ talent:dx("talent","M9 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-3.3 0-8 1.7-8 5v2h12v-2c0-1 .3-1.9.8-2.7A9.8 9.8 0 0 0 9 14zm9.5-7 1.1 2.3 2.5.4-1.8 1.8.4 2.5-2.2-1.2-2.2 1.2.4-2.5-1.8-1.8 2.5-.4z"),
+ send:dx("send","M2.5 3.5 22 12 2.5 20.5v-6.7L15 12 2.5 10.2z"),
+ cal:dx("cal","M7 2h2v2h6V2h2v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2zm-2 8v10h14V10zm9.7 2.3-3.7 3.7-1.7-1.7-1.3 1.3 3 3 5-5z"),
+ inbox:dx("inbox","M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 12h-4a3 3 0 0 1-6 0H5V5h14z"),
+ plus:dx("plus","M10.5 4h3v6.5H20v3h-6.5V20h-3v-6.5H4v-3h6.5z"),
+ check:dx("check","M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.6 14.4L6 12l1.4-1.4 3 3 6.2-6.2L18 9z"),
+ rupee:`<svg class="mi dx rupee" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="color:#e59a00"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7.6 7h8.8M7.6 10.1h8.8M7.6 7H10a3.1 3.1 0 0 1 0 6.2H7.6l6 4.8" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`};
+const earnTx=x=>{const a=(x.b||[]).filter(b=>b.status==="accepted");if(!a.length)return"No earnings yet";let lo=0,hi=0;a.forEach(b=>{if(b.mode==="offer"&&b.offer){lo+=b.offer*b.hours;hi+=b.offer*b.hours}else{lo+=x.min*b.hours;hi+=x.max*b.hours}});return "Earned "+(lo===hi?"₹"+lo:"₹"+lo+"–₹"+hi)};
+(()=>{const mk=(h,w)=>{const t=document.createElement("template");t.innerHTML=h.trim();const e=t.content.firstChild;e.setAttribute("width",w);e.setAttribute("height",w);return e};const c=document.querySelector("#chatB svg"),b=document.querySelector("#bellB svg");if(c)c.replaceWith(mk(FI.chat,27));if(b)b.replaceWith(mk(FI.bell,28))})();
+
 
 /* ---------- v3: Terms & Conditions + mandatory onboarding ---------- */
-const TNC_V="1.0",TNC_DATE="6 November 2026";
-const TNC=[
-["1. About these terms",["RoyalCub Jobs connects people who need work done (clients) with people who offer skills and services (service providers). By creating an account or using the app, you agree to these Terms & Conditions."]],
-["2. Your account",["You must be at least 16 years old. Give accurate details, keep your password private, and use one account per person.","You are responsible for everything done through your account. Tell us straight away if you think someone else is using it."]],
-["3. Posting jobs and services",["Posts must be genuine, lawful and accurate, including the work, rate, place and timing. Do not post anything misleading, discriminatory or illegal.","We may edit, hide or remove posts that break these terms."]],
-["4. Hiring and working",["RoyalCub Jobs is a marketplace. We do not employ service providers and we do not guarantee the quality, safety or availability of any work.","Agreements are made between the client and the service provider. Agree the scope, price and timing before work starts."]],
-["5. Payments and plans",["Unless the app says otherwise, clients pay service providers directly. Prices are shown in rupees (₹).","Any paid plan or feature shows its price before you confirm it."]],
-["6. Respectful conduct",["Do not harass, threaten or discriminate against anyone. Do not send spam, run scams, post fake reviews, share other people’s private details, or try to break or misuse the app."]],
-["7. Messages, reviews and reports",["Use chat for job-related conversations. Reviews must be honest and based on real experience.","If something looks wrong, report it from Help & support. We may review reported content and accounts."]],
-["8. Your information",["We use your name, email, phone number, age, location and activity to run the app, show your profile and keep the community safe.","You choose who can see your profile and when you appear online in Settings, under Privacy."]],
-["9. Staying safe",["Meet in safe, public or well-known places where you can, and be careful before paying anyone in advance. In an emergency, contact your local emergency services first."]],
-["10. Suspension and ending your account",["We may warn, restrict, suspend or ban accounts that break these terms or put others at risk. You can stop using RoyalCub Jobs at any time."]],
-["11. Our responsibility",["RoyalCub Jobs is provided “as is”. To the extent the law allows, we are not responsible for losses that come from work done by other users, missed jobs, or events outside our control. Nothing here limits rights that the law does not allow us to limit."]],
-["12. Changes to these terms",["We may update these terms. When a change matters, we will ask you to agree again. If you keep using the app after an update, you accept the new terms."]],
-["13. Contact and governing law",["Questions about these terms? Send them from Help & support. These terms are governed by the laws of India."]]
-];
-const tncDoc=()=>TNC.map(([h,ps])=>`<h4>${h.replace(/&/g,"&amp;")}</h4>${ps.map(p=>`<p>${p.replace(/&/g,"&amp;")}</p>`).join("")}`).join("");
+const TNC_V="1.0",TNC_DATE="7 November 2026";
+const TNC_PARAS=[
+`<b>About RoyalCub Jobs.</b> RoyalCub Jobs is a marketplace that helps clients find workers and workers find jobs. Every job, price and booking is agreed <b>directly between the client and the worker</b>. We are not their employer, agent or payer, and we do not guarantee any job, rate or result.`,
+`<b>Your account and conduct.</b> You must be 16 or older. Give accurate details, keep your password private, and post only genuine jobs and services. Be honest and respectful: no scams, spam, fake reviews or harassment. Accounts that break these rules may be restricted or removed.`,
+`<b>Safety and liability.</b> RoyalCub Jobs is <b>not liable</b> for the quality, safety, timing or payment of any work, or for any loss or dispute between users. Pay and get paid directly, meet in safe places, and report problems from Help &amp; support. By continuing, you agree to these terms.`];
 const meU=()=>S.users.find(x=>x.email===S.me)||S.users.find(x=>x.name===S.name);
 const needTnc=()=>{const u=meU();return !!u&&(!u.tnc||u.tnc.v!==TNC_V)};
 let onbStep=1;
-function onbGo(n){onbStep=n;render();scrollTo(0,0);setTimeout(()=>{const h=document.querySelector(".obcard h2");if(h){h.setAttribute("tabindex","-1");try{h.focus({preventScroll:true})}catch(e){}}},40)}
+function onbGo(n){onbStep=n;render();scrollTo(0,0);setTimeout(()=>{const h=document.querySelector(".obcard h2,.tcard h2");if(h){h.setAttribute("tabindex","-1");try{h.focus({preventScroll:true})}catch(e){}}},40)}
 function tncCheck(cb){const b=document.getElementById("tncGo");if(b)b.disabled=!cb.checked}
 function tncAccept(){const cb=document.getElementById("tncCk");if(!cb||!cb.checked){toast("Tick the box to agree to the Terms & Conditions");return}
  const u=meU();if(!u)return;u.tnc={v:TNC_V,at:Date.now()};try{log("terms","accepted v"+TNC_V)}catch(e){}
@@ -1331,9 +1456,12 @@ function onbView(){const u=meU()||{name:S.name},fn=esc(String(u.name||"there").s
  const dots=`<div class="obp" role="img" aria-label="Step ${onbStep} of 2"><i class="on"></i><i class="${onbStep>=2?"on":""}"></i></div>`;
  const logo=`<img class="al lg-l" src="${LG.l}" alt="RoyalCub Jobs"><img class="al lg-d" src="${LG.d}" alt="RoyalCub Jobs">`;
  if(onbStep===1)return `<div class="auth"><section class="obcard">${logo}${dots}<h2>Welcome, ${fn}</h2><p class="sub">Here is how RoyalCub Jobs works.</p><ul class="obl">${[[IC.search,"Find skilled people nearby","Browse by field and place, then check profiles and reviews.","#2a8fb8"],[FI.chat,"Talk and agree the price","Chat directly and confirm the work and rate before you start.","#a31d78"],[FI.admin,"Stay protected","Honest reviews and reports keep the community safe.","#1d8a4e"]].map(([i,t,s,c])=>`<li style="--c:${c};--ct:${c}26"><span class="obi" aria-hidden="true">${i}</span><span><b>${t}</b><small>${s}</small></span></li>`).join("")}</ul><button class="btn" onclick="onbGo(2)">Continue</button></section></div>`;
- return `<div class="auth"><section class="obcard">${logo}${dots}<h2>Terms &amp; Conditions</h2><p class="sub">Read and agree to continue. You can read these again from the menu.</p><div class="tdoc" tabindex="0" role="region" aria-label="Terms and Conditions text">${tncDoc()}</div><label class="tbox"><input id="tncCk" type="checkbox" onchange="tncCheck(this)"><span>I have read and agree to the Terms &amp; Conditions.</span></label><button class="btn" id="tncGo" onclick="tncAccept()" disabled>Agree and continue</button><div class="obx"><button class="link" onclick="onbGo(1)">Back</button><button class="link" onclick="outD.showModal()">Log out</button></div></section></div>`}
-function terms(){const u=meU(),at=u&&u.tnc&&u.tnc.at;
- view.innerHTML=`<div class="row"><h2>Terms &amp; Conditions</h2></div><div class="tmeta"><span class="tver">${FI.terms}<b>Version ${TNC_V}</b></span><span>Updated ${TNC_DATE}</span>${at?`<span>You agreed on ${new Date(at).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</span>`:""}</div><div class="tdoc full">${tncDoc()}</div><div class="acts" style="margin-top:16px"><button class="btn alt" onclick="go('support')">Contact support</button></div>`}
+ return tncCard(true)}
+function tncCard(gate){const u=meU(),at=u&&u.tnc&&u.tnc.at,ad=at?new Date(at).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}):"";
+ return `<section class="tcard" aria-labelledby="tncT"><div class="tchd"><span class="tcic" aria-hidden="true">${FI.terms}</span><div class="tcti"><h2 id="tncT">Terms &amp; Conditions</h2><small>Version ${TNC_V} · Updated ${TNC_DATE}</small></div>${gate?`<button class="link" type="button" onclick="outD.showModal()">Log out</button>`:""}</div>
+ <div class="tcbody">${TNC_PARAS.map(t=>`<p class="tcp">${t}</p>`).join("")}</div>${gate?`<label class="tbox"><input id="tncCk" type="checkbox" onchange="tncCheck(this)"><span>I have read and agree to these Terms &amp; Conditions.</span></label>`:`<p class="tcok">${DI.check}You agreed on ${ad}</p>`}</section>
+ <div class="tcft">${gate?`<button class="btn" id="tncGo" type="button" onclick="tncAccept()" disabled>I Agree &amp; Continue</button>`:`<button class="btn" type="button" onclick="go('home')">Back to Home</button>`}</div>`}
+function terms(){const u=meU();view.innerHTML=tncCard(!(u&&u.tnc&&u.tnc.at))}
 
 const NAV=[["home",FI.home,"Home"],["add",FI.add,"Add Post"],["chat",FI.chat,"Chat"],["profile",FI.person,"Profile"]];
 function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
@@ -1493,7 +1621,7 @@ function admTickets(){const x=adm.tix&&S.tix.find(t=>t.id===adm.tix);
 function tixReply(id){const x=S.tix.find(t=>t.id===id),v=ar2.value.trim();if(!v)return;const int=ai.checked;x.thread.push({by:S.name,role:"admin",t:v,ts:Date.now(),internal:int});if(!int){x.unread=1;if(x.status==="open")x.status="in-progress"}log(int?"internal note":"ticket reply",id);save();admin()}
 function tixStatus(id,st){const x=S.tix.find(t=>t.id===id);x.status=st;log("ticket "+st,id);save();admin()}
 
-function go(v){if(!S.out&&v!==S.view){navStack.push(S.view);if(navStack.length>40)navStack.shift()}closeMenu(true);navJump=true;sOpen=false;sMore=false;shut("postD","profD","storyD","addD","pitchD","folD");S.view=v;if(v!=="profile")editP=false;if(v!=="chat")S.thread=null;render();scrollTo(0,0)}
+function go(v){if(v==="add"&&S.view!=="add")at=null;if(!S.out&&v!==S.view){navStack.push(S.view);if(navStack.length>40)navStack.shift()}closeMenu(true);navJump=true;sOpen=false;sMore=false;shut("postD","profD","storyD","addD","pitchD","folD");S.view=v;if(v!=="profile")editP=false;if(v!=="chat")S.thread=null;render();scrollTo(0,0)}
 function readNotes(){S.notes=0;nav();toast("You’re all caught up")}
 function toast(t){const e=document.createElement("div");e.className="toast";e.setAttribute("role","status");e.textContent=t;const ds=[...document.querySelectorAll("dialog[open]")];(ds[ds.length-1]||document.body).append(e);setTimeout(()=>e.remove(),2400)}
 const isAdmin=()=>{const u=S.users.find(x=>x.email===S.me);return !!u&&u.role==="admin"};
@@ -1518,7 +1646,7 @@ function restoreForm(o){const v=document.getElementById("view");if(!v||!o)return
  if(o.v.svRT&&typeof setRT==="function"&&document.getElementById("svRT"))setRT(o.v.svRT);
  if(o.f){const e=document.getElementById(o.f.id);if(e&&v.contains(e)){try{e.focus({preventScroll:true});if(o.f.s!=null)e.setSelectionRange(o.f.s,o.f.e)}catch(x){}}}}
 function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.ts)x.ts=n});const k=L.filter(x=>n-x.ts<864e5);if(k.length===L.length)return false;S.stories=k;try{save()}catch(e){}return true}
-function render(){pruneStories();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
+function render(){pruneStories();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("tncv",!S.out&&!needTnc()&&S.view==="terms");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("fullv",!S.out&&(S.view==="profile"||S.view==="settings"));document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("tnc2",!S.out&&needTnc()&&onbStep===2);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
   if(needTnc()){view.innerHTML=onbView();lastV="";return}
  const VIEWS={home,add,chat,settings,profile,history,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
@@ -1538,7 +1666,7 @@ function addReview(e,n){e.preventDefault();const c=document.querySelector("input
  S.reviews.unshift({id:"rv"+uid(),to:n,by:S.name,r:+c.value,t:document.getElementById("rvt").value.trim(),ts:Date.now()});log("reviewed",n,c.value+" stars");save();toast("Thanks for your review");(ck==="service"?openService:openPost)(cp)}
 const fmtT=t=>{const[h,m]=t.split(":").map(Number),ap=h>=12?"PM":"AM";return (h%12||12)+(m?":"+String(m).padStart(2,"0"):"")+" "+ap};
 function daysText(a){const ix=DAYS.map((d,i)=>a.includes(d)?i:-1).filter(i=>i>=0);if(ix.length===7)return"Every day";if(ix.length>=3&&ix[ix.length-1]-ix[0]===ix.length-1)return DAYS[ix[0]]+"–"+DAYS[ix[ix.length-1]];return ix.map(i=>DAYS[i]).join(", ")}
-const uOf=x=>x&&x.rt==="day"?"day":"hour",uS=x=>x&&x.rt==="day"?"d":"h",qtyTx=(x,n)=>`${n} ${uOf(x)}${n===1?"":"s"}`,qMin=x=>x.rt==="day"?1:(x.hrs||1),qMax=x=>x.rt==="day"?30:12;
+const uOf=x=>RTS[rtk(x)][0],uS=x=>RTS[rtk(x)][1],qtyTx=(x,n)=>`${n} ${uOf(x)}${n===1?"":"s"}`,qMin=x=>rtk(x)==="hour"?(x.hrs||1):1,qMax=x=>({hour:12,day:30,month:12,year:5,project:10})[rtk(x)];
 const rateTx=x=>x.min===x.max?`₹${x.min}`:`₹${x.min}–₹${x.max}`;
 const availTx=x=>`${daysText(x.days)} · ${fmtT(x.from)}–${fmtT(x.to)}`;
 const estTx=(x,h)=>x.min===x.max?`₹${x.min*h}`:`₹${x.min*h}–₹${x.max*h}`;
@@ -1581,7 +1709,7 @@ const hasTok=(f,a)=>a.length>=4?f.includes(a):new RegExp("(^|[^a-z0-9])"+a.repla
 function scoreFields(F,pq){let sc=0;for(const t of pq.tokens){const alt=t.length>3&&t.endsWith("s")?[t,t.slice(0,-1)]:[t];let hit=false;for(const[f,w]of F){if(alt.some(a=>hasTok(f,a))){sc+=w;hit=true}}if(!hit)return-1}return sc}
 function postScore(x,pq){if(pq.none)return-1;if(!pq.tokens.length&&pq.N===null)return 0;
  const c=x.c,ex=EXPL.find(q=>q[0]===x.exp),L=v=>String(v||"").toLowerCase();
- const F=[[L(x.t),5],[L([c,ROLE[c],((CMETA[c]||{}).k||[]).join(" ")].join(" ")),4],[L(x.by+" "+roleOf(x.by)),3],[L([ex&&ex[1],ex&&ex[4].join(" "),x.qual].join(" ")),3],[L(x.d),1],[L([x.start,x.days?daysText(x.days):"",x.rt==="day"?"daily":x.min?"hourly":"",x.per?"per "+x.per:""].join(" ")),1]];
+ const F=[[L(x.t),5],[L([c,ROLE[c],((CMETA[c]||{}).k||[]).join(" ")].join(" ")),4],[L(x.by+" "+roleOf(x.by)),3],[L([ex&&ex[1],ex&&ex[4].join(" "),x.qual].join(" ")),3],[L(x.d),1],[L([x.start,x.days?daysText(x.days):"",x.min?RTS[rtk(x)][2].toLowerCase():"",x.per?"per "+x.per:""].join(" ")),1]];
  let sc=scoreFields(F,pq);if(sc<0)return-1;
  if(pq.N!==null){const y=yearsOf(x);if(!y||!(y[0]>=pq.N||y[1]>pq.N))return-1;sc+=2}return sc}
 function personScore(u,pq){if(pq.none)return-1;if(!pq.tokens.length&&pq.N===null)return 0;const L=v=>String(v||"").toLowerCase(),mine=S.services.filter(x=>x.by===u.name);
@@ -1599,11 +1727,11 @@ function searchModel(){const raw=S.q.trim(),ql=(S.qloc||"").trim().toLowerCase()
 const SLIM=5;
 function results(){const m=searchModel();if(!m)return "";const{raw,ql,cs,ps,ss,pe,tot}=m;
  const pr=u=>{const f=isFol(u.name);return `<div class="prow"><button type="button" class="pbtn" data-n="${esc(u.name)}" onclick="openProfile(this.dataset.n)" aria-label="View profile of ${esc(u.name)}"><span class="av tiny" style="${abg(u.name)}" aria-hidden="true">${ait(u.name)}</span><span><b>${esc(u.name)}</b><small>${esc(roleOf(u.name))} · ${nFollowers(u.name)} follower${nFollowers(u.name)===1?"":"s"}</small></span></button><button type="button" class="btn ${f?"alt":""}" data-n="${esc(u.name)}" aria-pressed="${f}" onclick="toggleFollow(this.dataset.n)">${f?"Following":"Follow"}</button></div>`};
- const jr=j=>`<button type="button" class="mini" onclick="openPost(${j.id})"><span class="tag" style="justify-self:start">${j.c}</span><b>${esc(j.t)}</b><small>${LOC}${esc(j.loc)} · ${PRC}${esc(j.b)}${per(j)} · by ${esc(j.by)}</small></button>`;
- const sr=x=>`<button type="button" class="mini" onclick="openService(${x.id})"><span class="tag" style="justify-self:start">${x.c}</span><b>${esc(x.t)}</b><small>${LOC}${esc(x.loc)} · ${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small> · ${esc(x.by)}, ${esc(roleOf(x.by))}</small></button>`;
+ const jr=j=>`<button type="button" class="mini" onclick="openPost(${j.id})"><span class="tag" style="justify-self:start">${j.c}</span><b>${esc(j.t)}</b><small>${LOC}${esc(j.loc)} · ${mPrice(j.c)}${esc(j.b)}${per(j)} · by ${esc(j.by)}</small></button>`;
+ const sr=x=>`<button type="button" class="mini" onclick="openService(${x.id})"><span class="tag" style="justify-self:start">${x.c}</span><b>${esc(x.t)}</b><small>${LOC}${esc(x.loc)} · ${mPrice(x.c)}${rateTx(x)}<small class="per">per ${uOf(x)}</small> · ${esc(x.by)}, ${esc(roleOf(x.by))}</small></button>`;
  let left=sMore?1e9:SLIM,shownN=0;
  const grp=(t,l,f)=>{const n=Math.min(l.length,left);left-=n;shownN+=n;return n?`<h4 style="margin:8px 0 2px">${t} (${l.length})</h4>${l.slice(0,n).map(f).join("")}`:""};
- const body=tot?grp("People",pe,pr)+grp("Talent Post",ss,sr)+grp("Find Work",ps,jr):`<div class="empty" style="padding:18px">Nothing matched. Try a person’s name or a trade like plumber, driver or electrician.</div>`;
+ const body=tot?grp("People",pe,pr)+grp("Workers",ss,sr)+grp("Job vacancies",ps,jr):`<div class="empty" style="padding:18px">Nothing matched. Try a person’s name or a trade like plumber, driver or electrician.</div>`;
  const more=tot>SLIM?(sMore?`<button type="button" class="vmore" onclick="sMoreSet(false)">Show fewer</button>`:`<button type="button" class="vmore" onclick="sMoreSet(true)">Show ${tot-shownN} more</button>`):"";
  return `<div class="sres" role="region" aria-label="Search results"><div class="sh"><b>${tot} result${tot===1?"":"s"}</b>${raw?` for “${esc(raw)}”`:""}${ql?` in ${LOC}${esc(S.qloc.trim())}`:""}</div>
  ${cs.length?`<div class="chips wrap">${cs.map(c=>`<button type="button" class="chip cic" style="${cTile(c)}" onclick="pickCat('${c}')">${cIcon(c)}${c} · ${S.jobs.filter(j=>j.c===c).length+S.services.filter(x=>x.c===c).length}</button>`).join("")}</div>`:""}
@@ -1655,24 +1783,23 @@ function home(){
  <div id="sres" class="sdd ${sOpen&&searchModel()?"open":""}" aria-live="polite">${sOpen&&searchModel()?results():""}</div>
 </div>
  <div class="row"><h2>Status</h2><span>${String(aus.length).padStart(2,"0")}</span></div>
- <div class="status"><button class="st" onclick="openAdd()" aria-label="Add status poster">${photoOf(S.name)?`<div class="av addt hasph" style="${abg(S.name)}"><span class="plusb" aria-hidden="true">＋</span></div>`:`<div class="av addt">＋</div>`}<b>Add</b></button>${aus.map(n=>{const me=n===S.name,l=S.stories.filter(x=>x.by===n),seen=me||l.every(x=>x.v.includes(S.name)),tot=l.reduce((a,x)=>a+x.v.length,0);
- return `<button class="st" data-n="${esc(n)}" onclick="openStory(this.dataset.n)" aria-label="${me?`Your status, ${tot} views`:`View status of ${esc(n)}`}"><div class="av ring ${seen?"seen":""}" style="${abg(n)}">${ait(n)}</div><b>${me?"You":esc(n.split(" ")[0])}</b>${me?`<small>👁 ${tot}</small>`:""}</button>`}).join("")}</div>
+ <div class="status"><button class="st" onclick="openAdd()" aria-label="Add status poster">${photoOf(S.name)?`<div class="av addt hasph" style="${abg(S.name)}"><span class="plusb" aria-hidden="true">${DI.plus}</span></div>`:`<div class="av addt">${DI.plus}</div>`}<b>Add</b></button>${aus.map(n=>{const me=n===S.name,l=S.stories.filter(x=>x.by===n),seen=me||l.every(x=>x.v.includes(S.name)),tot=l.reduce((a,x)=>a+x.v.length,0);
+ return `<button class="st" data-n="${esc(n)}" onclick="openStory(this.dataset.n)" aria-label="${me?`Your status, ${tot} views`:`View status of ${esc(n)}`}"><div class="av ring ${seen?"seen":""}" style="${abg(n)}">${ait(n)}</div><b>${me?"You":esc(n.split(" ")[0])}</b>${me?`<small>${DI.eye}${tot}</small>`:""}</button>`}).join("")}</div>
  <div class="row"><h2>Categories</h2><span>${String(CATS.length-1).padStart(2,"0")}</span></div>
- <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()">${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" style="${cTile(c)}" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${cIcon(c)}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}<button class="cat other" onclick="openOtherCat()" aria-label="Other, add a new category"><span class="ce" aria-hidden="true">${FI.Other}</span><b>Other</b><small>Add new</small></button></div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
- <div class="seg tabs2" role="group" aria-label="Choose a section: find work or talent posts"><button aria-pressed="${!isS}" onclick="setTab('jobs')">Find Work<small>${jobs.length}</small></button><button aria-pressed="${isS}" onclick="setTab('services')">Talent Post<small>${svcs.length}</small></button></div>
- <div class="row"><h2>${S.cat==="All"?(isS?"Talent posts available":"Work available now"):esc(S.cat)}</h2><span id="pcount">${String((isS?svcs:jobs).length).padStart(2,"0")}</span></div>${S.cat==="All"?"":`<button class="btn alt" style="padding:6px 16px;margin:-4px 0 14px" onclick="toggleCat(S.cat)">Show all posts</button>`}
+ <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()"><button class="cat" style="--c:#6d28d9;--ct:#6d28d926" aria-pressed="${S.cat==='All'}" onclick="pickCat('All')" aria-label="All categories, ${src.length} posts"><span class="ce" aria-hidden="true">${FALL}</span><b>All</b><small>${src.length} post${src.length===1?"":"s"}</small></button>${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" style="${cTile(c)}" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${cIcon(c)}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}</div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
+ <div class="row wkrow"><div class="wkh"><h2>${S.cat==="All"?(isS?"Workers":"Job vacancies"):esc(S.cat)}</h2><span id="pcount">${String((isS?svcs:jobs).length).padStart(2,"0")}</span></div><label class="wksel"><select id="wkSel" aria-label="Choose what to show: workers or job vacancies" onchange="setTab(this.value)"><option value="services" ${isS?"selected":""}>Workers</option><option value="jobs" ${isS?"":"selected"}>Job vacancies</option></select></label></div>${S.cat==="All"?"":`<button class="btn alt" style="padding:6px 16px;margin:-4px 0 14px" onclick="toggleCat(S.cat)">Show all posts</button>`}
  <p class="cnt" style="margin:-4px 0 12px;min-height:0" id="locnote"><span id="syncchip">${syncChip()}</span></p><div class="list" id="plist">${isS?listS(svcs):listHTML(jobs)}</div>`;
  const stl=document.querySelector("#view .status");if(stl)stl.scrollLeft=HS.st;const c=document.getElementById("cats");if(c){c.scrollLeft=HS.cats;const sel=HS.reveal?c.querySelector("[aria-pressed=true]"):null;HS.reveal=0;if(sel){const cr=c.getBoundingClientRect(),sr=sel.getBoundingClientRect();if(sr.left<cr.left)c.scrollLeft+=sr.left-cr.left-8;else if(sr.right>cr.right)c.scrollLeft+=sr.right-cr.right+8}catEdges()}
  if(y0!==null&&Math.abs(scrollY-y0)>2)scrollTo(0,y0)}
 function history(){const h=S.hist;
  view.innerHTML=`<button class="btn alt" style="padding:6px 16px;margin-bottom:14px" onclick="go('profile')">‹ Back</button><div class="row"><h2>Booking history</h2><span>${String(h.length).padStart(2,"0")}</span></div>
- <div class="set hgrid">${h.length?h.map(x=>`<div class="hi"><div class="t"><b>${esc(x.t)}</b><span class="pill ${esc(x.s)}">${esc(x.s)}</span></div><small>${esc(x.who)} · ${esc(x.d)}</small><b style="color:var(--plum)">${esc(x.a)}</b></div>`).join(""):`<div class="empty">No bookings yet. Requests you send will show up here.</div>`}</div>`}
+ <div class="set hgrid">${h.length?h.map(x=>`<div class="hi"><div class="t"><b>${esc(x.t)}</b><span class="pill ${esc(x.s)}">${esc(x.s)}</span></div><small>${esc(x.who)} · ${esc(x.d)}</small><b style="color:var(--plum)">${x.k==="earn"?mEarn():DI.rupee}${esc(x.a)}</b></div>`).join(""):`<div class="empty">No bookings yet. Requests you send will show up here.</div>`}</div>`}
 function svcCard(x){const mine=x.by===S.name,n=x.v.length;
  return `<article class="job" onclick="openService(${x.id})"><div class="jh">${who(x.by,byLine(x.by))}<span class="tag">${x.c}</span></div>
  <h3><button class="lnk">${esc(x.t)}</button></h3>
- <div class="meta"><span>${LOC}${esc(x.loc)}${nearPill(x.loc)}</span><span>${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${CLK}${esc(availTx(x))}</span>${attrSpans(x)}${mine?`<span>👁 ${n} view${n===1?"":"s"}</span>`:""}</div>
- <p>${esc(x.d)}</p><div style="margin-bottom:12px"><span class="pill Completed">Available ${esc(x.start.toLowerCase())}</span></div>
- <div class="acts pm">${mine?`<span class="cnt">${x.b.length} booking${x.b.length===1?"":"s"} received</span>`:`<button class="btn pitchb" onclick="event.stopPropagation();book(${x.id})">Book now</button><button class="msgi" title="Message" aria-label="Message ${esc(x.by)}" data-n="${esc(x.by)}" onclick="event.stopPropagation();msgTo(this.dataset.n)">${IC.chat}</button>`}</div></article>`}
+ <div class="meta"><span>${LOC}${esc(x.loc)}${nearPill(x.loc)}</span><span>${mPrice(x.c)}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${mClock(x.c)}${esc(availTx(x))}</span>${attrSpans(x)}${mine?`<span>${DI.eye}${n} view${n===1?"":"s"}</span><span class="earn">${mEarn()}${earnTx(x)}</span>`:""}</div>
+ <p>${esc(x.d)}</p>${x.start?`<div style="margin-bottom:12px"><span class="pill Completed">${mDate(x.c)}Available ${esc(x.start.toLowerCase())}</span></div>`:""}
+ <div class="acts pm">${mine?`<span class="cnt">${DI.cal}${x.b.length} booking${x.b.length===1?"":"s"} received</span>`:`<button class="btn pitchb" onclick="event.stopPropagation();book(${x.id})">Book now</button>`}</div></article>`}
 const fmtS=t=>new Date(t).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
 const ago=t=>{const x=(Date.now()-t)/1e3;if(x<60)return"Just now";if(x<3600)return Math.floor(x/60)+" min ago";if(x<86400)return Math.floor(x/3600)+" h ago";if(x<604800)return Math.floor(x/86400)+" d ago";return fmtS(t)};
 const rvRow=(x,i)=>`<div class="cm ${i>2?"rv-x hide":""}"><div class="l1"><button class="rvwho" data-n="${esc(x.by)}" onclick="openProfile(this.dataset.n)" aria-label="View profile of ${esc(x.by)}"><span class="av tiny" style="${abg(x.by)}" aria-hidden="true">${ait(x.by)}</span><b>${esc(x.by)}</b></button><small>${fmtS(x.ts)}</small></div><div>${starTx(x.r)}</div>${x.t&&x.t!=="No comment left."?`<span>${esc(x.t)}</span>`:`<span class="cnt">Rated ${x.r} out of 5</span>`}</div>`;
@@ -1691,20 +1818,20 @@ const postShell=o=>{const rl=revOf(o.by).sort((a,b)=>b.ts-a.ts),me=o.by===S.name
 function toggleRev(){const b=document.getElementById("rvm"),x=document.querySelectorAll("#rvl .rv-x"),open=b.getAttribute("aria-expanded")!=="true";x.forEach(e=>e.classList.toggle("hide",!open));b.setAttribute("aria-expanded",open);b.textContent=open?"Show less":`View more (${x.length})`}
 
 /* ---- bookings & price negotiation ---- */
-const BKS={pending:["Awaiting reply","Requested"],accepted:["Accepted","Accepted"],countered:["Counter offer","Countered"],declined:["Declined","Declined"],cancelled:["Withdrawn","Cancelled"]};
+const BKS={pending:["Awaiting reply","Requested"],accepted:["Accepted","Accepted"],countered:["Counter offer","Countered"],declined:["Rejected","Rejected"],cancelled:["Withdrawn","Cancelled"]};
 const bkPrice=(x,b)=>b.mode==="offer"?`₹${b.offer}/${uS(x)} · ₹${b.offer*b.hours} total`:`Listed rate · ${estTx(x,b.hours)}`;
 const bkSync=(x,b)=>{S.hist.forEach(h=>{if(h.bid===b.id){h.s=BKS[b.status][1];h.a=b.mode==="offer"?"₹"+(b.status==="countered"&&b.counter?b.counter:b.offer)*b.hours:estTx(x,b.hours)}})};
 function bkCard(x,b,mine){const st=BKS[b.status]||BKS.pending,me=b.by===S.name,id=`'${x.id}','${b.id}'`;let a="";
- if(mine&&b.status==="pending")a=`<div class="bka"><button class="btn" onclick="bkAct(${id},'paccept')">Accept</button><button class="btn alt" onclick="bkAct(${id},'pdecline')">Decline</button></div><div class="cin"><input id="ct_${b.id}" type="number" min="1" inputmode="numeric" placeholder="Counter ₹/${uS(x)}" aria-label="Counter offer per hour"><button class="btn alt" onclick="bkAct(${id},'pcounter')">Counter</button></div>`;
+ if(mine&&b.status==="pending")a=`<div class="bka"><button class="btn" onclick="bkAct(${id},'paccept')">Accept</button><button class="btn alt" onclick="bkAct(${id},'pdecline')">Reject</button></div><div class="cin"><input id="ct_${b.id}" type="number" min="1" inputmode="numeric" placeholder="Counter ₹/${uS(x)}" aria-label="Counter offer per hour"><button class="btn alt" onclick="bkAct(${id},'pcounter')">Counter</button></div>`;
  if(!mine&&me&&b.status==="countered")a=`<div class="bka"><button class="btn" onclick="bkAct(${id},'caccept')">Accept ₹${b.counter}/${uS(x)}</button><button class="btn alt" onclick="book(${x.id},'${b.id}')">Negotiate</button><button class="btn alt" onclick="bkAct(${id},'cwithdraw')">Withdraw</button></div>`;
  if(!mine&&me&&b.status==="pending")a=`<div class="bka"><button class="btn alt" onclick="bkAct(${id},'cwithdraw')">Withdraw</button></div>`;
- return `<div class="req bk"><div class="l1"><b>${esc(b.by)}${me?" (You)":""}</b><span class="pill ${st[1]}">${st[0]}</span></div><small>${esc(b.date)} · ${qtyTx(x,b.hours)}</small><div>${bkPrice(x,b)}</div>${b.counter&&b.status==="countered"?`<div class="ctr">${mine?"You":esc(x.by)} countered: ₹${b.counter}/${uS(x)} · ₹${b.counter*b.hours} total</div>`:""}${b.note?`<span style="color:var(--mute)">${esc(b.note)}</span>`:""}${a}${mine?`<div class="bka"><button class="btn alt" data-n="${esc(b.by)}" onclick="msgTo(this.dataset.n)">Message</button></div>`:""}</div>`}
+ return `<div class="req bk"><div class="l1"><b>${esc(b.by)}${me?" (You)":""}</b><span class="pill ${st[1]}">${st[0]}</span></div><small>${mDate(x.c)}${esc(b.date)} · ${mClock(x.c)}${qtyTx(x,b.hours)}</small><div>${mine?mEarn():mPrice(x.c)}${bkPrice(x,b)}</div>${b.counter&&b.status==="countered"?`<div class="ctr">${mine?"You":esc(x.by)} countered: ₹${b.counter}/${uS(x)} · ₹${b.counter*b.hours} total</div>`:""}${b.note?`<span style="color:var(--mute)">${esc(b.note)}</span>`:""}${a}${mine?`<div class="bka"><button class="btn alt" data-n="${esc(b.by)}" onclick="msgTo(this.dataset.n)">Message</button></div>`:""}</div>`}
 function openService(id){const x=S.services.find(z=>z.id===id);if(!x)return;cp=id;ck="service";shut("profD","storyD");addView(x);save();
  const mine=x.by===S.name,n=x.v.length,own=x.b.filter(b=>b.by===S.name);
  const bk=mine?(x.b.length?x.b.map(b=>bkCard(x,b,true)).join(""):`<div class="empty" style="padding:18px">No bookings yet.</div>`):(own.length?own.map(b=>bkCard(x,b,false)).join(""):`<p class="cnt" style="margin:0">You haven’t booked yet. Book at the listed rate or make an offer.</p>`);
  postShell({by:x.by,c:x.c,t:x.t,d:x.d,
-  meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(x.loc)}</span><span>${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${CLK}${esc(availTx(x))}</span><span class="pill Completed">Available ${esc(x.start.toLowerCase())}</span>${attrSpans(x)}${x.rt!=="day"&&x.hrs>1?`<span class="pill Requested">Min. ${x.hrs} hours</span>`:""}</div>`,
-  views:mine?`<div class="vw" style="margin:0">👁 ${n} view${n===1?"":"s"}${n?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:"",
+  meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(x.loc)}</span><span>${mPrice(x.c)}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${mClock(x.c)}${esc(availTx(x))}</span>${x.start?`<span class="pill Completed">${mDate(x.c)}Available ${esc(x.start.toLowerCase())}</span>`:""}${attrSpans(x)}${rtk(x)==="hour"&&x.hrs>1?`<span class="pill Requested">Min. ${x.hrs} hours</span>`:""}</div>`,
+  views:mine?`<div class="vw" style="margin:0">${DI.eye}${n} view${n===1?"":"s"}${n?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:"",
   listT:mine?`Bookings (${x.b.length})`:`Your bookings (${own.length})`,list:bk,
   foot:mine?`<button class="btn pitchb" onclick="editPost('service',${x.id})">Edit</button><button class="btn alt dng" onclick="delPost('service',${x.id})">Delete</button><span class="hint">This is your service. Bookings and offers appear above.</span>`:`<button class="btn pitchb" onclick="book(${x.id})">Book now</button><button class="btn alt ico" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">${IC.chat}Message</button><span class="hint">Book, negotiate, message and review in one place</span>`})}
 let bj=null,bmode="listed",bedit=null;
@@ -1713,7 +1840,7 @@ function book(id,bid){bj=S.services.find(z=>z.id===id);if(!bj)return;bedit=bid?b
  bookD.innerHTML=`<form method="dialog" onsubmit="return false" class="bkf">
  <div class="dh"><h3 style="margin:0">Book this professional</h3><button type="button" class="x" aria-label="Close" onclick="bookD.close()">✕</button></div>
  <div class="bkpro"><div class="av sm" style="${abg(bj.by)}" aria-hidden="true">${ait(bj.by)}</div><div><b>${esc(bj.by)}</b><small>${esc(bj.t)}</small></div><span class="pill Completed">${rateTx(bj)}/${uS(bj)}</span></div>
- <div class="two"><label>Date<input id="bd" type="date" required></label><label>${bj.rt==="day"?"Days needed":"Hours needed"}<input id="bh" type="number" inputmode="numeric" min="${qMin(bj)}" max="${qMax(bj)}" value="${bedit?bedit.hours:(bj.rt==="day"?1:Math.max(2,qMin(bj)))}" oninput="bookEst()"></label></div>
+ <div class="two"><label>Date<input id="bd" type="date" required></label><label>${({hour:"Hours needed",day:"Days needed",month:"Months needed",year:"Years needed",project:"Projects needed"})[rtk(bj)]}<input id="bh" type="number" inputmode="numeric" min="${qMin(bj)}" max="${qMax(bj)}" value="${bedit?bedit.hours:(rtk(bj)==="hour"?Math.max(2,qMin(bj)):1)}" oninput="bookEst()"></label></div>
  <div class="neg"><b>Price</b>
   <div class="seg" role="group" aria-label="Pricing option"><button type="button" aria-pressed="${bmode==="listed"}" onclick="setBM('listed')">Listed rate</button><button type="button" aria-pressed="${bmode==="offer"}" onclick="setBM('offer')">Negotiate</button></div>
   <div id="offBox" class="${bmode==="offer"?"":"hide"}"><label>Your offer per ${uOf(bj)} (₹)<input id="bo" type="number" min="1" max="99999" inputmode="numeric" value="${bedit&&bedit.offer?bedit.offer:mid5(bj)}" oninput="bookEst()"></label>
@@ -1726,19 +1853,19 @@ function book(id,bid){bj=S.services.find(z=>z.id===id);if(!bj)return;bedit=bid?b
 function setBM(m){bmode=m;document.querySelectorAll("#bookD .seg button").forEach((b,i)=>b.setAttribute("aria-pressed",(i===0)===(m==="listed")));document.getElementById("offBox").classList.toggle("hide",m!=="offer");bookEst()}
 function setO(v){bo.value=v;bookEst()}
 function bookEst(){const h=Math.max(1,+bh.value||1),o=+bo.value,x=bj,mid=(x.min+x.max)/2;let t,f="";
- if(bmode==="offer"){t=o>0?`Your offer: ₹${o}/${uS(x)} × ${qtyTx(x,h)} = <b>₹${o*h}</b>`:"Enter your offer per hour.";
+ if(bmode==="offer"){t=o>0?`Your offer: ₹${o}/${uS(x)} × ${qtyTx(x,h)} = <b>₹${o*h}</b>`:"Enter your offer per "+uOf(x)+".";
   f=!(o>0)?"":o>=x.max?"At or above the top of their range, so it will very likely be accepted.":o>=mid?"Within their range, so it will likely be accepted or lightly countered.":o>=x.min?"In the lower half of their range. Expect a counter-offer.":`Below their ₹${x.min}/${uS(x)} minimum. They will probably counter at ₹${x.min}.`}
  else t=`Estimated cost: <b>${estTx(x,h)}</b> for ${qtyTx(x,h)}`;
  bookE.innerHTML=t;bookFit.textContent=f;bkGo.textContent=bedit?"Send new offer":bmode==="offer"?"Send offer":"Book now"}
 function bkNotifyUI(x){if(postD.open&&ck==="service"&&cp===x.id)openService(x.id);else if(S.view==="history")history();nav()}
 function sendBook(){const h=+bh.value,o=+bo.value;if(!bd.value){toast("Pick a date");bd.focus();return}const lo=qMin(bj),hi=qMax(bj);if(!(h>=lo&&h<=hi)){toast(`Enter between ${lo} and ${hi} ${uOf(bj)}s`);bh.focus();return}
- if(bmode==="offer"&&!(o>=1&&o<=99999)){toast("Enter a valid offer per hour");bo.focus();return}
+ if(bmode==="offer"&&!(o>=1&&o<=99999)){toast("Enter a valid offer per "+uOf(x));bo.focus();return}
  const dt=new Date(bd.value+"T00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),note=bkN.value.trim(),x=bj;let b=bedit;
  const msg=bmode==="offer"?`Offer: ₹${o}/${uS(x)} for ${qtyTx(x,h)} on ${dt} (your range ₹${x.min}–₹${x.max}/${uS(x)}).`:`Booking request on ${dt}, ${qtyTx(x,h)} at your listed rate.`;
- if(b){Object.assign(b,{date:dt,iso:bd.value,hours:h,note,mode:bmode,offer:bmode==="offer"?o:null,counter:null,status:"pending",rounds:(b.rounds||0)+1});bkSync(x,b);Chat.send(ensure(x.by).id,`Updated ${msg}`)}
+ if(b){Object.assign(b,{date:dt,iso:bd.value,hours:h,note,mode:bmode,offer:bmode==="offer"?o:null,counter:null,status:"pending",rounds:(b.rounds||0)+1});bkSync(x,b);Chat.send(ensure(x.by).id,`Updated ${msg}`+mkTag("bk",x.id,b.id,"pending"))}
  else{b={id:"b"+uid(),by:S.name,date:dt,iso:bd.value,hours:h,note,mode:bmode,offer:bmode==="offer"?o:null,counter:null,status:"pending",rounds:0,ts:Date.now()};x.b.push(b);
-  S.hist.unshift({id:"h"+Date.now(),bid:b.id,t:x.t,who:x.by,d:dt,a:bmode==="offer"?"₹"+o*h:estTx(x,h),s:"Requested"});
-  Chat.send(ensure(x.by).id,`Booking request for “${x.t}”. ${msg}${note?" "+note:""}`)}
+  S.hist.unshift({id:"h"+Date.now(),bid:b.id,t:x.t,who:x.by,d:dt,a:bmode==="offer"?"₹"+o*h:estTx(x,h),s:"Requested",k:"spend"});
+  Chat.send(ensure(x.by).id,`Booking request for “${x.t}”. ${msg}${note?" "+note:""}`+mkTag("bk",x.id,b.id,"pending"))}
  log(bmode==="offer"?"offered":"booked",x.t,bmode==="offer"?`₹${o}/${uS(x)}`:"listed");Notify.add({type:"booking",title:bmode==="offer"?`Offer sent to ${x.by}`:`Booking requested from ${x.by}`,body:`${x.t} · ${dt} · ${bmode==="offer"?"₹"+o+"/"+uS(x):"listed rate"}`,act:{k:"service",id:x.id},read:1});
  bookD.close();save();render();if(postD.open)openService(x.id);toast(bmode==="offer"?"Offer sent to "+x.by:"Booking requested from "+x.by);
  const sid=x.id,bid=b.id;setTimeout(()=>negRespond(sid,bid),3500)}
@@ -1749,30 +1876,30 @@ function negRespond(sid,bid){const x=S.services.find(z=>z.id===sid),b=x&&x.b.fin
   else{b.status="countered";b.counter=c;ttl=`${x.by} sent a counter-offer`;body=`₹${c}/${uS(x)} (you offered ₹${b.offer}/${uS(x)}) · ₹${c*b.hours} total`;peer=`I can do ₹${c}/${uS(x)} for ${qtyTx(x,b.hours)}. Does that work?`}}
  bkSync(x,b);Notify.add({type:"booking",title:ttl,body,act:{k:"service",id:x.id}});Chat.receive({id:"s"+uid(),peer:x.by,t:peer,ts:Date.now(),quiet:1});save();bkNotifyUI(x)}
 function bkAct(sid,bid,act){const x=S.services.find(z=>z.id===+sid),b=x&&x.b.find(q=>q.id===bid);if(!b)return;let ttl,msg;
- if(act==="paccept"){b.status="accepted";ttl=`You accepted ${b.by}’s ${b.mode==="offer"?"offer":"booking"}`;msg=`I accept your ${b.mode==="offer"?"offer of ₹"+b.offer+"/${uS(x)}":"booking"} for ${b.date}.`}
- else if(act==="pdecline"){b.status="declined";ttl=`You declined ${b.by}’s request`;msg=`Sorry, I can’t take this booking.`}
+ if(act==="paccept"){b.status="accepted";ttl=`You accepted ${b.by}’s ${b.mode==="offer"?"offer":"booking"}`;msg=`✅ Accepted: ${x.by} accepted your ${b.mode==="offer"?"offer of ₹"+b.offer+"/"+uS(x):"booking request"} for “${x.t}” on ${b.date}. This chat stays open, so you can confirm the details here.`}
+ else if(act==="pdecline"){b.status="declined";ttl=`You rejected ${b.by}’s request`;msg=`❌ Rejected: ${x.by} rejected your booking request for “${x.t}” on ${b.date}. This chat stays open if you would like to ask a question or send a new request.`}
  else if(act==="pcounter"){const c=+(document.getElementById("ct_"+bid)||{}).value;if(!(c>=1)){toast(`Enter your counter-offer per ${uOf(x)}`);return}b.status="countered";b.counter=c;ttl=`You countered ${b.by} at ₹${c}/${uS(x)}`;msg=`I can do ₹${c}/${uS(x)} for ${qtyTx(x,b.hours)}.`}
  else if(act==="caccept"){b.status="accepted";b.offer=b.counter;b.mode="offer";b.counter=null;ttl=`Booking confirmed with ${x.by}`;msg=`I accept ₹${b.offer}/${uS(x)}. See you on ${b.date}.`}
  else{b.status="cancelled";b.counter=null;ttl=`You withdrew your request to ${x.by}`;msg=`I’m withdrawing my booking request. Thanks!`}
- bkSync(x,b);Notify.add({type:"booking",title:ttl,body:`${x.t} · ${b.date}`,act:{k:"service",id:x.id},read:1});const peer=act[0]==="p"?b.by:x.by;Chat.send(ensure(peer).id,msg);save();render();if(postD.open)openService(x.id);toast(ttl)}
+ bkSync(x,b);Notify.add({type:"booking",title:ttl,body:`${x.t} · ${b.date}`,act:{k:"service",id:x.id},read:1});const peer=act[0]==="p"?b.by:x.by;Chat.send(ensure(peer).id,msg+mkTag("bk",x.id,b.id,({paccept:"accepted",pdecline:"declined",pcounter:"countered",caccept:"accepted",cwithdraw:"cancelled"})[act]||"pending"));save();render();if(postD.open)openService(x.id);toast(ttl)}
 const who=(n,sub,cls="")=>`<button class="who ${cls}" data-n="${esc(n)}" onclick="event.stopPropagation();openProfile(this.dataset.n)" aria-label="View profile of ${esc(n)}"><div class="av sm" style="${abg(n)}">${ait(n)}</div><div><b>${esc(n)}</b><small>${sub}</small></div></button>`;
 function card(j){const mine=j.by===S.name,pitched=j.p.some(p=>p.by===S.name);
  return `<article class="job" onclick="openPost(${j.id})"><div class="jh">${who(j.by,byLine(j.by))}<span class="tag">${j.c}</span></div>
  <h3><button class="lnk">${esc(j.t)}</button></h3>
- <div class="meta"><span>${LOC}${esc(j.loc)}${nearPill(j.loc)}</span><span>${PRC}${esc(j.b)}${per(j)}</span>${attrSpans(j,1)}${mine?`<span>👁 ${nv(j)}</span>`:""}</div>
+ <div class="meta"><span>${LOC}${esc(j.loc)}${nearPill(j.loc)}</span><span>${mPrice(j.c)}${esc(j.b)}${per(j)}</span>${drSpan(j)}${attrSpans(j,1)}${mine?`<span>${DI.eye}${nv(j)}</span>`:""}</div>
  <p>${esc(j.d)}</p><div class="acts pm">
- ${mine?`<span class="cnt">${j.p.length} request${j.p.length===1?"":"s"} received</span>`:`<button class="btn pitchb" ${pitched?"disabled":""} onclick="event.stopPropagation();pitch(${j.id})">${pitched?"Pitch sent":"Pitch for job"}</button><button class="msgi" title="Message" aria-label="Message ${esc(j.by)}" onclick="event.stopPropagation();msgClient(${j.id})">${IC.chat}</button>`}
+ ${mine?`<span class="cnt">${DI.inbox}${j.p.length} request${j.p.length===1?"":"s"} received</span>`:`<button class="btn applyb" ${pitched?"disabled":""} onclick="event.stopPropagation();pitch(${j.id})">${pitched?"Applied":"Apply now"}</button>`}
  </div></article>`}
 
 function openPost(id){const j=S.jobs.find(x=>x.id===id);if(!j)return;cp=id;ck="job";shut("profD","storyD");addView(j);save();
  const mine=j.by===S.name,pitched=j.p.some(p=>p.by===S.name),mineReq=j.p.filter(p=>p.by===S.name);
- const reqs=mine?(j.p.length?j.p.map(p=>`<div class="req"><div><b>${esc(p.by)}</b> · ₹${esc(p.price)} · ${esc(p.start)}</div><span style="color:var(--mute)">${esc(p.msg)}</span><div><button class="btn alt" style="padding:6px 14px" data-n="${esc(p.by)}" onclick="msgTo(this.dataset.n)">Message</button></div></div>`).join(""):`<div class="empty" style="padding:18px">No requests yet.</div>`)
-  :`${mineReq.map(p=>`<div class="req"><div><b>${esc(S.name)}</b> <span class="pill">You</span> · ₹${esc(p.price)} · ${esc(p.start)}</div><span style="color:var(--mute)">${esc(p.msg)}</span></div>`).join("")}${mineReq.length?"":`<p class="cnt" style="margin:0">You haven’t pitched yet.</p>`}`;
+ const reqs=mine?(j.p.length?j.p.map(p=>pitchReq(j,p)).join(""):`<div class="empty" style="padding:18px">No requests yet.</div>`)
+  :`${mineReq.map(p=>`<div class="req"><div><b>${esc(S.name)}</b> <span class="pill">You</span> · ${mEarn()}₹${esc(p.price)} · ${mDate(j.c)}${esc(p.start)} ${pitchPill(p)}</div><span style="color:var(--mute)">${esc(p.msg)}</span></div>`).join("")}${mineReq.length?"":`<p class="cnt" style="margin:0">You haven’t pitched yet.</p>`}`;
  postShell({by:j.by,c:j.c,t:j.t,d:j.d,
-  meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(j.loc)}</span><span>${PRC}${esc(j.b)}${per(j)}</span>${attrSpans(j,1)}</div>`,
-  views:mine?`<div class="vw" style="margin:0">👁 ${nv(j)}${j.v.length?`<small>Viewed by ${j.v.map(esc).join(", ")}</small>`:""}</div>`:"",
+  meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(j.loc)}</span><span>${mPrice(j.c)}${esc(j.b)}${per(j)}</span>${drSpan(j)}${attrSpans(j,1)}</div>`,
+  views:mine?`<div class="vw" style="margin:0">${DI.eye}${nv(j)}${j.v.length?`<small>Viewed by ${j.v.map(esc).join(", ")}</small>`:""}</div>`:"",
   listT:mine?`Requests (${j.p.length})`:`Requests · ${j.p.length} received`,list:reqs,
-  foot:mine?`<button class="btn pitchb" onclick="editPost('job',${j.id})">Edit</button><button class="btn alt dng" onclick="delPost('job',${j.id})">Delete</button><span class="hint">This is your job post. Pitches appear above.</span>`:`<button class="btn pitchb" ${pitched?"disabled":""} onclick="pitch(${j.id})">${pitched?"Pitch sent":"Pitch for Job"}</button><button class="btn alt ico" onclick="msgClient(${j.id})">${IC.chat}Message</button><span class="hint">Review and comment without leaving this page</span>`});
+  foot:mine?`<button class="btn pitchb" onclick="editPost('job',${j.id})">Edit</button><button class="btn alt dng" onclick="delPost('job',${j.id})">Delete</button><span class="hint">This is your job post. Pitches appear above.</span>`:`<button class="btn applyb" ${pitched?"disabled":""} onclick="pitch(${j.id})">${pitched?"Applied":"Apply now"}</button><button class="btn alt ico" onclick="msgClient(${j.id})">${IC.chat}Message</button><span class="hint">Review and comment without leaving this page</span>`});
  if(S.view==="home"&&!S.out)home()}
 
 let profN="";
@@ -1780,8 +1907,8 @@ function openProfile(n){profN=n;shut("postD","storyD");const js=S.jobs.filter(j=
  profD.innerHTML=`<div class="dh"><h3 style="margin:0">${me?"Your profile":"Profile"}</h3><button class="x" aria-label="Close" onclick="profD.close()">✕</button></div>
  <div class="pc"><div class="av" style="${abg(n)}">${ait(n)}</div><h3>${esc(n)}</h3><span class="rolep">${esc(roleOf(n))}${isFol(n)?' · <span class="fpill">Following</span>':""}</span>${userLocs(n)[0]?`<span class="cnt">${LOC}${esc(userLocs(n)[0])}</span>`:""}<span class="cnt">${np} post${np===1?"":"s"} · ${nFollowers(n)} follower${nFollowers(n)===1?"":"s"} · ${folOf(n).length} following</span></div>
  <div class="acts" style="justify-content:center;margin:10px 0">${me?"":`<button class="btn ${isFol(n)?"alt":""}" id="folbtn" data-n="${esc(n)}" aria-pressed="${isFol(n)}" aria-label="${isFol(n)?"You follow "+esc(n)+". Tap to unfollow":"Follow "+esc(n)}" onclick="toggleFollow(this.dataset.n)">${isFol(n)?"✓ Following · Unfollow":"Follow"}</button><button class="btn alt" data-n="${esc(n)}" onclick="msgTo(this.dataset.n)">Message</button><button class="btn alt" data-n="${esc(n)}" onclick="reportUser(this.dataset.n)">Report</button>`}${hasS?`<button class="btn alt" data-n="${esc(n)}" onclick="openStory(this.dataset.n)">View status</button>`:""}</div>
- ${svs.length?`<h4>${me?"Your services":"Services offered"}</h4>${svs.map(x=>`<button class="mini" onclick="openService(${x.id})"><span class="tag" style="justify-self:start">${x.c}</span><b>${esc(x.t)}</b><small>${PRC}${rateTx(x)}<small class="per">per ${uOf(x)}</small> · ${CLK}${esc(daysText(x.days))}${me?` · 👁 ${x.v.length}`:""}</small></button>`).join("")}`:""}
- ${js.length||!svs.length?`<h4>${me?"Your vacancies":"Vacancies by "+fn}</h4>${js.length?js.map(j=>`<button class="mini" onclick="openPost(${j.id})"><span class="tag" style="justify-self:start">${j.c}</span><b>${esc(j.t)}</b><small>${LOC}${esc(j.loc)} · ${PRC}${esc(j.b)}${per(j)}${me?` · 👁 ${nv(j)}`:""}</small></button>`).join(""):`<div class="empty" style="padding:18px">No posts yet.</div>`}`:""}
+ ${svs.length?`<h4>${me?"Your services":"Services offered"}</h4>${svs.map(x=>`<button class="mini" onclick="openService(${x.id})"><span class="tag" style="justify-self:start">${x.c}</span><b>${esc(x.t)}</b><small>${mPrice(x.c)}${rateTx(x)}<small class="per">per ${uOf(x)}</small> · ${mClock(x.c)}${esc(daysText(x.days))}${me?` · ${DI.eye}${x.v.length}`:""}</small></button>`).join("")}`:""}
+ ${js.length||!svs.length?`<h4>${me?"Your vacancies":"Vacancies by "+fn}</h4>${js.length?js.map(j=>`<button class="mini" onclick="openPost(${j.id})"><span class="tag" style="justify-self:start">${j.c}</span><b>${esc(j.t)}</b><small>${LOC}${esc(j.loc)} · ${mPrice(j.c)}${esc(j.b)}${per(j)}${me?` · ${DI.eye}${nv(j)}`:""}</small></button>`).join(""):`<div class="empty" style="padding:18px">No posts yet.</div>`}`:""}
  ${profRevs(n)}`;
  if(!profD.open)profD.showModal()}
 function profRevs(n){const rl=revOf(n).slice().sort((a,b)=>b.ts-a.ts),a=avgR(n);
@@ -1799,7 +1926,7 @@ function showStory(){const l=S.stories.filter(x=>x.by===sv.n);
  sv.i=Math.max(0,Math.min(sv.i,l.length-1));const x=l[sv.i],mine=x.by===S.name;addView(x);save();
  storyD.innerHTML=`<div class="dh">${who(x.by,(l.length>1?`Poster ${sv.i+1} of ${l.length} · `:"")+(mine?"Your status":"Status"))}<button class="x" aria-label="Close" onclick="storyD.close()">✕</button></div>
  <div class="poster" style="background:${BG[x.bg]||BG[0]}">${esc(x.text)}<small class="sexp" data-ts="${x.ts||0}">${expTxt(x.ts)}</small></div>
- ${mine?`<div class="vw">👁 ${nv(x)}${x.v.length?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:""}
+ ${mine?`<div class="vw">${DI.eye}${nv(x)}${x.v.length?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:""}
  <div class="acts" style="margin-top:12px">${l.length>1?`<button class="btn alt" ${sv.i===0?"disabled":""} onclick="stepStory(-1)" aria-label="Previous poster">‹ Prev</button><button class="btn alt" ${sv.i===l.length-1?"disabled":""} onclick="stepStory(1)" aria-label="Next poster">Next ›</button>`:""}
  ${mine?`<button class="btn alt" onclick="delStory('${x.id}')">Delete</button>`:`<button class="btn" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">Message</button>`}</div>`;
  if(S.view==="home"&&!S.out)home()}
@@ -1813,60 +1940,144 @@ function postStory(e){e.preventDefault();if(posting)return;
  try{S.stories.push(o);save();addD.close();stx.value="";if(S.view==="home"&&!S.out)home();toast("Status posted");simView(o)}
  catch(err){console.error(err);S.stories=S.stories.filter(x=>x.id!==o.id);toast("Couldn’t post your status. Please try again.")}
  finally{posting=false}}
+
+/* ---- pitch & booking messages: Accept / Reject / Continue Chat ---- */
+const TAGRE=/\s*⟦rc\|([a-z]+)\|([^|⟧]*)\|([^|⟧]*)\|([a-z]+)⟧\s*$/;
+const clean=t=>String(t==null?"":t).replace(TAGRE,"");
+const tagOf=t=>{const m=String(t||"").match(TAGRE);return m?{k:m[1],a:m[2],b:m[3],s:m[4]}:null};
+const mkTag=(k,a,b,st)=>` ⟦rc|${k}|${a}|${b}|${st}⟧`;
+const pitchPill=p=>p.st==="accepted"?`<span class="pill Accepted">Accepted</span>`:p.st==="rejected"?`<span class="pill Rejected">Rejected</span>`:"";
+function pitchReq(j,p){p.id=p.id||"p"+uid();const st=p.st||"pending";
+ return `<div class="req"><div><b>${esc(p.by)}</b> · ${mPrice(j.c)}₹${esc(p.price)} · ${mDate(j.c)}${esc(p.start)}</div><span style="color:var(--mute)">${esc(p.msg)}</span><div class="bka">${st==="pending"?`<button class="btn" onclick="pitchDecide('${j.id}','${p.id}',true)">Accept</button><button class="btn alt" onclick="pitchDecide('${j.id}','${p.id}',false)">Reject</button>`:pitchPill(p)}<button class="btn alt" data-n="${esc(p.by)}" onclick="msgTo(this.dataset.n)">Continue Chat</button></div></div>`}
+function pitchDecide(jid,pid,acc){const j=S.jobs.find(z=>String(z.id)===String(jid)),p=j&&j.p.find(q=>q.id===pid);
+ if(!j||!p||j.by!==S.name){toast("This request is no longer available");return false}
+ if(p.st&&p.st!=="pending"){toast("You already "+(p.st==="accepted"?"accepted":"rejected")+" this request");return false}
+ p.st=acc?"accepted":"rejected";
+ const msg=acc?`✅ Accepted: ${S.name} accepted your pitch for “${j.t}” (₹${p.price}, ${String(p.start).toLowerCase()}). This chat stays open, so you can sort out the details here.`:`❌ Rejected: ${S.name} rejected your pitch for “${j.t}”. This chat stays open if you would like to ask a question or talk it over.`;
+ Chat.send(ensure(p.by).id,msg+mkTag("pitch",j.id,p.id,p.st));
+ save();Chat.stick=true;render();if(postD.open&&ck==="job"&&cp===j.id)openPost(j.id);toast(acc?"Accepted "+p.by+"’s pitch":"Rejected "+p.by+"’s pitch");return true}
+function actBar(m){const g=tagOf(m.t);if(!g)return"";let st=g.s,own=false,live=false;
+ if(g.k==="pitch"){const j=S.jobs.find(z=>String(z.id)===g.a),p=j&&j.p.find(q=>q.id===g.b);if(p){live=true;own=j.by===S.name;if(g.s==="pending")st=p.st||"pending"}}
+ else if(g.k==="bk"){const x=S.services.find(z=>String(z.id)===g.a),b=x&&x.b.find(q=>q.id===g.b);if(b){live=true;own=x.by===S.name;if(g.s==="pending")st=b.status}}
+ if(st==="declined")st="rejected";
+ const L={pending:"Awaiting reply",accepted:"Accepted",rejected:"Rejected",countered:"Counter offer",cancelled:"Withdrawn"},C={pending:"Requested",accepted:"Accepted",rejected:"Rejected",countered:"Countered",cancelled:"Cancelled"},id=esc(m.id);
+ const decide=g.s==="pending"&&!m.me&&own&&live&&st==="pending";
+ return `<div class="mact">${decide?`<button type="button" class="btn" onclick="chatAct('${id}','accept')">Accept</button><button type="button" class="btn alt" onclick="chatAct('${id}','reject')">Reject</button>`:`<span class="pill ${C[st]||"Requested"}">${L[st]||esc(st)}</span>`}<button type="button" class="btn alt" onclick="chatAct('${id}','continue')">Continue Chat</button></div>`}
+function chatAct(mid,act){const t=S.threads.find(x=>x.id===S.thread);if(!t)return;const m=t.m.find(x=>x.id===mid);if(!m)return;
+ if(act==="continue"){const i=document.getElementById("mi");if(i){i.focus();if(i.scrollIntoView)i.scrollIntoView({block:"nearest"})}return}
+ const g=tagOf(m.t);if(!g)return;Chat.stick=true;
+ if(g.k==="pitch"){pitchDecide(g.a,g.b,act==="accept");return}
+ if(g.k==="bk"){const x=S.services.find(z=>String(z.id)===g.a),b=x&&x.b.find(q=>q.id===g.b);
+  if(!x||!b||x.by!==S.name){toast("This request is no longer available");return}
+  if(b.status!=="pending"){toast("This request has already been handled");return}
+  bkAct(x.id,b.id,act==="accept"?"paccept":"pdecline")}}
+function actSync(text,peer){const g=tagOf(text);if(!g||g.s==="pending")return;
+ if(g.k==="pitch"){const j=S.jobs.find(z=>String(z.id)===g.a),p=j&&j.p.find(q=>q.id===g.b);
+  if(p&&(g.s==="accepted"||g.s==="rejected")&&(!p.st||p.st==="pending")){p.st=g.s;const h=S.hist.find(h=>h.s==="Requested"&&h.who===peer&&h.t===j.t);if(h)h.s=g.s==="accepted"?"Accepted":"Rejected"}}
+ else if(g.k==="bk"){const x=S.services.find(z=>String(z.id)===g.a),b=x&&x.b.find(q=>q.id===g.b);
+  if(b&&["pending","countered"].includes(b.status)&&["accepted","declined","cancelled"].includes(g.s)){b.status=g.s;bkSync(x,b)}}}
 function msgTo(n){shut("postD","profD","storyD","addD","pitchD");openChat(ensure(n).id)}
 
 let pj=null;
 function pitch(id){pj=S.jobs.find(j=>j.id===id);pitchT.textContent=pj.t+" · "+pj.by;pp.value="";pm.value="";pitchD.showModal()}
 function sendPitch(){if(!pp.value||!pm.value.trim()){toast("Add a price and a short message");return}
- pj.p.push({by:S.name,price:pp.value,start:ps.value,msg:pm.value.trim()});
- Chat.send(ensure(pj.by).id,`Pitch sent for “${pj.t}”: ₹${pp.value}, can start ${ps.value.toLowerCase()}.`);
- S.hist.unshift({id:"h"+Date.now(),t:pj.t,who:pj.by,d:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),a:"₹"+pp.value,s:"Requested"});pitchD.close();render();if(postD.open)openPost(pj.id);toast("Request sent to "+pj.by);reply(pj.by)}
+ const pid="p"+uid();pj.p.push({id:pid,st:"pending",by:S.name,price:pp.value,start:ps.value,msg:pm.value.trim()});
+ Chat.send(ensure(pj.by).id,`Pitch sent for “${pj.t}”: ₹${pp.value}, can start ${ps.value.toLowerCase()}.`+mkTag("pitch",pj.id,pid,"pending"));
+ S.hist.unshift({id:"h"+Date.now(),t:pj.t,who:pj.by,d:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),a:"₹"+pp.value,s:"Requested",k:"earn"});pitchD.close();render();if(postD.open)openPost(pj.id);toast("Request sent to "+pj.by);reply(pj.by)}
 function ensure(n){let t=S.threads.find(t=>t.n===n);if(!t){t={id:"t"+uid(),n,on:0,m:[]};S.threads.unshift(t)}return t}
 function msgClient(id){const j=S.jobs.find(j=>j.id===id);shut("postD","profD","storyD","addD","pitchD");openChat(ensure(j.by).id)}
 
 let at=null;
+/* ---------- rate types (hourly, daily, monthly, yearly, freelance / permanent) ---------- */
+const RTS={hour:["hour","h","Hourly"],day:["day","d","Daily"],month:["month","mo","Monthly"],year:["year","yr","Yearly"],project:["project","proj","Freelance"]};
+const rtk=x=>{const r=x&&x.rt;return r==="day"||r==="month"||r==="year"?r:r==="flex"?(x.fx==="perm"?"month":"project"):"hour"};
+const RTP={hour:["200","400"],day:["1500","2500"],month:["25000","40000"],year:["300000","500000"],free:["5000","15000"],perm:["20000","35000"]};
+/* ---------- date range calendar ---------- */
+const DRN={day:"Single day",week:"Week",month:"Month",long:"Long-term"},DRM=["January","February","March","April","May","June","July","August","September","October","November","December"],DRW=["Mo","Tu","We","Th","Fr","Sa","Su"];
+let DR=null;
+const drPad=n=>String(n).padStart(2,"0"),drIso=d=>d.getFullYear()+"-"+drPad(d.getMonth()+1)+"-"+drPad(d.getDate()),drParse=s=>{const[a,b,c]=s.split("-").map(Number);return new Date(a,b-1,c)};
+const drAddD=(s,n)=>{const d=drParse(s);d.setDate(d.getDate()+n);return drIso(d)};
+const drAddM=(s,n)=>{const d=drParse(s),day=d.getDate();d.setMonth(d.getMonth()+n);if(d.getDate()!==day)d.setDate(0);return drIso(d)};
+const drEnd=(t,s)=>!s?"":t==="day"?s:t==="week"?drAddD(s,6):t==="month"?drAddD(drAddM(s,1),-1):"";
+function drTx(d){if(!d||!d.s)return"";const f=(s,y)=>drParse(s).toLocaleDateString("en-GB",y?{day:"numeric",month:"short",year:"numeric"}:{day:"numeric",month:"short"});
+ if(d.t==="day"||(d.e&&d.e===d.s))return f(d.s,1);if(d.t==="long"&&(d.on||!d.e))return "From "+f(d.s,1)+" · ongoing";
+ return f(d.s,d.e&&drParse(d.e).getFullYear()!==drParse(d.s).getFullYear())+" – "+f(d.e,1)}
+const drSpan=j=>j&&j.dr&&j.dr.s?`<span>${mDate(j.c)}${esc(drTx(j.dr))}</span>`:"";
+function drInit(o){const d=o&&o.dr&&o.dr.s?o.dr:null,b=drParse(d?d.s:drIso(new Date()));DR={t:"long",cust:true,s:d?d.s:"",e:d?d.e:"",on:!!(d&&d.on),vm:new Date(b.getFullYear(),b.getMonth(),1)}}
+function jpChange(v){const w=document.getElementById("drwrap");if(!w)return;w.classList.toggle("hide",v!=="choose");if(v==="choose"){if(!DR)drInit();drRender()}}
+function drRender(f){const box=document.getElementById("drbox");if(!box||!DR)return;const t0=drIso(new Date()),y=DR.vm.getFullYear(),m=DR.vm.getMonth(),first=(new Date(y,m,1).getDay()+6)%7,n=new Date(y,m+1,0).getDate(),e=DR.e||DR.s,cells=[];
+ for(let i=0;i<first;i++)cells.push(`<span class="cd blank" aria-hidden="true"></span>`);
+ for(let d=1;d<=n;d++){const s=y+"-"+drPad(m+1)+"-"+drPad(d),past=s<t0,isS=s===DR.s,isE=!!DR.e&&s===DR.e,inr=!!(DR.s&&e&&s>DR.s&&s<e);
+  cells.push(`<button type="button" class="cd${past?" past":""}${s===t0?" today":""}${isS?" s":""}${isE&&!isS?" e":""}${inr?" in":""}" data-d="${s}" ${past?"disabled":""} aria-pressed="${isS||isE||inr}" aria-label="${new Date(y,m,d).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}" onclick="drPick('${s}')" onkeydown="drKey(event,'${s}')">${d}</button>`)}
+ const cur=new Date();const atMin=y<cur.getFullYear()||(y===cur.getFullYear()&&m<=cur.getMonth());
+ const hint={day:"Tap the day the work is needed",week:"Tap the first day. We select 7 days.",month:"Tap the first day. We select one month.",long:DR.s&&!DR.e&&!DR.on?"Now tap the last day":"Tap a start date, then an end date"}[DR.t];
+ box.innerHTML=`${DR.cust?"":`<div class="seg drtype" role="group" aria-label="How long is the work?">${Object.keys(DRN).map(k=>`<button type="button" aria-pressed="${DR.t===k}" onclick="drType('${k}')">${DRN[k]}</button>`).join("")}</div>`}
+ <div class="drsum" aria-live="polite">${DI.cal}<span>${DR.s?`${DRN[DR.t]}: <b>${esc(drTx(Object.assign({},DR,{e:DR.t==="long"?DR.e:drEnd(DR.t,DR.s)})))}</b>`:hint}</span></div>
+ <div class="cal"><div class="calh"><button type="button" id="drp" aria-label="Previous month" ${atMin?"disabled":""} onclick="drNav(-1)">‹</button><b>${DRM[m]} ${y}</b><button type="button" id="drn" aria-label="Next month" onclick="drNav(1)">›</button></div>
+ <div class="calg" role="group" aria-label="${DRM[m]} ${y}">${DRW.map(w=>`<span class="cw" aria-hidden="true">${w}</span>`).join("")}${cells.join("")}</div></div>
+ ${DR.t==="long"?`<label class="tbox drongo"><input type="checkbox" ${DR.on?"checked":""} onchange="drOn(this.checked)"><span>No fixed end date (ongoing)</span></label>`:""}`;
+ if(f){const b=f==="p"||f==="n"?document.getElementById("dr"+f):box.querySelector(`[data-d="${f}"]`);if(b&&!b.disabled)b.focus()}}
+function drType(t){if(!DR)return;const was=DR.t;DR.t=t;if(t==="long"){if(was!=="long")DR.e=""}else{DR.e=drEnd(t,DR.s);DR.on=false}drRender()}
+function drPick(s){if(!DR||s<drIso(new Date()))return;
+ if(DR.t==="long"){if(!DR.s||DR.e||DR.on||s<DR.s){DR.s=s;DR.e=""}else DR.e=s}else{DR.s=s;DR.e=drEnd(DR.t,s)}drRender(s)}
+function drNav(d){if(!DR)return;DR.vm=new Date(DR.vm.getFullYear(),DR.vm.getMonth()+d,1);drRender(d<0?"p":"n")}
+function drOn(c){if(!DR)return;DR.on=c;if(c)DR.e="";drRender()}
+function drKey(e,s){const k={ArrowLeft:-1,ArrowRight:1,ArrowUp:-7,ArrowDown:7}[e.key];if(!k)return;e.preventDefault();const t=drAddD(s,k);if(t<drIso(new Date()))return;const d=drParse(t);if(d.getMonth()!==DR.vm.getMonth()||d.getFullYear()!==DR.vm.getFullYear())DR.vm=new Date(d.getFullYear(),d.getMonth(),1);drRender(t)}
+function drRead(){if(!DR||!DR.s){toast("Pick the dates on the calendar");return null}
+ if(DR.t==="long"&&!DR.on&&!DR.e){toast("Tap an end date, or tick “No fixed end date”");return null}
+ return{t:DR.t,s:DR.s,e:DR.t==="long"?(DR.on?"":DR.e):drEnd(DR.t,DR.s),on:DR.t==="long"&&DR.on}}
+/* ---------- category with an “Other” text field ---------- */
+const catSel=(id,oid,cur)=>{const L=CATS.slice(1),other=!!cur&&!L.includes(cur);return `<div class="catbox"><label>Category<select id="${id}" onchange="catPick('${id}','${oid}')">${L.map(c=>`<option ${cur===c?"selected":""}>${esc(c)}</option>`).join("")}<option value="Other" ${other?"selected":""}>Other</option></select></label><label id="${oid}L" class="${other?"":"hide"}">Your category<input id="${oid}" maxlength="20" autocomplete="off" placeholder="e.g. Photography" value="${other?esc(cur):""}"></label></div>`};
+function catPick(id,oid){const o=document.getElementById(id).value==="Other";document.getElementById(oid+"L").classList.toggle("hide",!o);const i=document.getElementById(oid);i.required=o;if(o)i.focus()}
+function catVal(id,oid){const v=document.getElementById(id).value;if(v!=="Other")return v;const el=document.getElementById(oid),t=el.value.trim();const had=CATS.some(c=>c.toLowerCase()===t.toLowerCase()),c=regCat(t);if(!c){toast("Enter a category name (2 to 20 letters or numbers)");el.focus();return null}if(!had){S.cats=S.cats||[];S.cats.push(c)}return c}
+/* ---------- Add Post: two categories ---------- */
 function setAdd(k){at=k;add()}
-function add(){const k=at||(S.role==="worker"?"service":"job");
- view.innerHTML=`<div class="addhead"><h2>${k==="job"?"Post a vacancy":"Offer your service"}</h2>
- <div class="seg addseg" role="group" aria-label="What do you want to post?"><button aria-pressed="${k==="job"}" onclick="setAdd('job')">Post a vacancy</button><button aria-pressed="${k==="service"}" onclick="setAdd('service')">Offer a service</button></div></div>
- <div class="addcard">${k==="job"?jobForm():svcForm()}</div>`;if(k==="service")setRT("hour")}
-const jobForm=o=>`<form class="pform" onsubmit="${o?"saveEdit(event)":"postJob(event)"}"><label>Job title<input id="jt" required maxlength="70" placeholder="e.g. Install a new water heater" value="${o?esc(o.t):""}"></label>
- <div class="trio"><label>Field<select id="jc">${CATS.slice(1).map(c=>`<option ${o&&o.c===c?"selected":""}>${c}</option>`).join("")}</select></label><label>Budget (₹)<input id="jb" required type="number" inputmode="numeric" enterkeyhint="next" min="1" value="${o?o.b.replace(/\D/g,""):""}"></label>
- <label>Price is for<select id="jp"><option value="day" ${o&&o.per==="day"?"selected":""}>One day</option><option value="week" ${o&&o.per==="week"?"selected":""}>One week</option></select></label></div>
+function add(){const k=at||"job";const pk=(v,ic,t,d)=>`<button type="button" class="pick ${k===v?"on":""}" aria-pressed="${k===v}" onclick="setAdd('${v}')"><span class="pki" aria-hidden="true">${ic}</span><span class="pkt"><b>${t}</b></span></button>`;
+ view.innerHTML=`<div class="addhead"><h2>Add post</h2></div><div class="addpick" role="group" aria-label="What do you want to post?">${pk("job",DI.brief,"Post Vacancies","Hire someone for a job")}${pk("service",DI.talent,"Offer a Service","Get booked for your skills")}</div>
+ <div class="addcard">${k==="job"?jobForm():svcForm()}</div>`;
+ if(k==="job"){drInit();drRender()}else if(k==="service")setRT(document.getElementById("svRT").value)}
+const bRange=o=>{const m=String(o.b||"").replace(/,/g,"").match(/\d+/g)||[];return[o.bmin||m[0]||"",o.bmax||m[1]||m[0]||""]};
+const jobForm=o=>{const[bn,bx]=o?bRange(o):["",""],pr=o&&o.dr&&o.dr.s?"choose":(o&&o.per)||"day";return `<form class="pform" onsubmit="${o?"saveEdit(event)":"postJob(event)"}"><label>Job title<input id="jt" required maxlength="70" placeholder="e.g. Install a new water heater" value="${o?esc(o.t):""}"></label>
+ <label>Job description<textarea id="jd" required placeholder="Describe the work, timing and any tools or certificates needed.">${o?esc(o.d):""}</textarea></label>
+ ${catSel("jc","jco",o&&o.c)}
+ <div class="fgrp"><b class="fl">Budget / price range (₹)</b><div class="trio"><label>From<input id="jbmin" required type="number" inputmode="numeric" min="1" placeholder="800" value="${bn}"></label><label>To<input id="jbmax" required type="number" inputmode="numeric" min="1" placeholder="1200" value="${bx}"></label><label>Duration / Pay Period<select id="jp" onchange="jpChange(this.value)">${[["day","One day"],["week","One week"],["month","One month"],["total","Whole job"],["choose","Choose"]].map(([v,t])=>`<option value="${v}" ${pr===v?"selected":""}>${t}</option>`).join("")}</select></label></div><div id="drwrap" class="${pr==="choose"?"":"hide"}"><div id="drbox" class="dr"></div></div></div>
  <label>Location<input id="jl" required autocomplete="address-level2" list="locdl2" placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label>
- <div class="duo"><label>Experience needed<select id="jx">${expOpts(o&&o.exp,1)}</select></label><label>Qualifications (optional)<input id="jq" maxlength="80" placeholder="e.g. ITI certificate, valid licence" value="${o?esc(o.qual||""):""}"></label></div>
- <label>What needs doing<textarea id="jd" required placeholder="Describe the work, timing and any tools or certificates needed.">${o?esc(o.d):""}</textarea></label>
- <button class="btn" style="justify-self:start">${o?"Save changes":"Publish vacancy"}</button></form>`;
-const svcForm=o=>{const rt=o&&o.rt==="day"?"day":"hour";return `<form class="pform" onsubmit="${o?"saveEdit(event)":"postService(event)"}"><label>Service title<input id="svT" required maxlength="70" placeholder="e.g. Experienced plumber for home repairs" value="${o?esc(o.t):""}"></label>
- <div class="duo"><label>Field<select id="svC">${CATS.slice(1).map(c=>`<option ${o&&o.c===c?"selected":""}>${c}</option>`).join("")}</select></label>
- <div><b style="font-size:14px">How do you charge?</b><div class="seg" id="rtSeg" role="group" aria-label="Rate type" style="margin-top:6px"><button type="button" data-v="hour" aria-pressed="${rt==="hour"}" onclick="setRT('hour')">Hourly</button><button type="button" data-v="day" aria-pressed="${rt==="day"}" onclick="setRT('day')">Daily</button></div><input type="hidden" id="svRT" value="${rt}"></div></div>
- <div class="duo"><label><span id="svMinL">Hourly rate from (₹)</span><input id="svMin" type="number" min="1" required placeholder="200" value="${o?o.min:""}"></label><label><span id="svMaxL">Hourly rate to (₹)</span><input id="svMax" type="number" min="1" required placeholder="400" value="${o?o.max:""}"></label></div>
- <div class="trio"><div id="svHbox"><label>Minimum hours per booking<input id="svH" type="number" min="1" max="12" step="1" inputmode="numeric" value="${o&&o.hrs?o.hrs:1}"></label></div>
-  <label>Available from<input id="svF" type="time" value="${o?o.from:"09:00"}" required></label><label>Available until<input id="svU" type="time" value="${o?o.to:"18:00"}" required></label></div>
- <div><b style="font-size:14px">Available days</b><div class="days" role="group" aria-label="Available days">${DAYS.map(d=>`<label class="dchip"><input type="checkbox" name="sd" value="${d}" ${(o?o.days.includes(d):d!=="Sun")?"checked":""}><span>${d}</span></label>`).join("")}</div></div>
-<div class="duo"><label>Can start<select id="svS">${["Today","This week","Next week"].map(c=>`<option ${o&&o.start===c?"selected":""}>${c}</option>`).join("")}</select></label>
- <label>Location<input id="svL" required placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label></div>
- <div class="duo"><label>Experience level<select id="svX">${expOpts(o&&o.exp,0)}</select></label><label>Qualifications (optional)<input id="svQ" maxlength="80" placeholder="e.g. ITI Plumbing, diploma, licence" value="${o?esc(o.qual||""):""}"></label></div>
- <label>About your service<textarea id="svD" required placeholder="Experience, tools, certificates and anything clients should know.">${o?esc(o.d):""}</textarea></label>
- <button class="btn" style="justify-self:start">${o?"Save changes":"Publish service"}</button></form>`};
-function setRT(v){const i=document.getElementById("svRT");if(!i)return;i.value=v;document.querySelectorAll("#rtSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));const h=v==="hour",w=h?"Hourly":"Daily";
- document.getElementById("svHbox").classList.toggle("hide",!h);document.getElementById("svH").disabled=!h;document.getElementById("svMinL").textContent=w+" rate from (₹)";document.getElementById("svMaxL").textContent=w+" rate to (₹)";
- const mn=document.getElementById("svMin"),mx=document.getElementById("svMax");mn.placeholder=h?"200":"1500";mx.placeholder=h?"400":"2500"}
-function readSvc(){const rt=svRT.value==="day"?"day":"hour",mn=+svMin.value,mx=+svMax.value,hrs=rt==="hour"?+svH.value:null,ds=DAYS.filter(d=>document.querySelector(`input[name=sd][value=${d}]:checked`));
- if(!(mn>=1&&mx>=mn)){toast("The “to” rate must be at least the “from” rate");svMax.focus();return null}
+ <div class="duo"><label>Experience level<select id="jx">${expOpts(o&&o.exp,1)}</select></label><label>Qualifications (optional)<input id="jq" maxlength="80" placeholder="e.g. ITI certificate, valid licence" value="${o?esc(o.qual||""):""}"></label></div>
+ <button class="btn" style="justify-self:start">${o?"Save changes":"Publish vacancy"}</button></form>`};
+const svcForm=o=>{const rt=o&&RTS[rtk(o)]&&o.rt?o.rt:"hour",fx=o&&o.fx==="perm"?"perm":"free";return `<form class="pform" onsubmit="${o?"saveEdit(event)":"postService(event)"}"><label>Service headline<input id="svT" required maxlength="70" placeholder="e.g. Experienced plumber for home repairs" value="${o?esc(o.t):""}"></label>
+ ${catSel("svC","svCo",o&&o.c)}
+ <label>Description<textarea id="svD" required placeholder="Experience, tools, certificates and anything clients should know.">${o?esc(o.d):""}</textarea></label>
+ <input type="hidden" id="svRT" value="${rt}"><input type="hidden" id="svFx" value="${fx}">
+ <div class="fgrp"><b class="fl" id="svPL">Pricing</b><div class="duo"><label><span id="svMinL">Hourly rate from (₹)</span><input id="svMin" type="number" min="1" required placeholder="200" value="${o?o.min:""}"></label><label><span id="svMaxL">Hourly rate to (₹)</span><input id="svMax" type="number" min="1" required placeholder="400" value="${o?o.max:""}"></label></div>
+  <div id="svHbox"><label>Minimum hours per booking<input id="svH" type="number" min="1" max="12" step="1" inputmode="numeric" value="${o&&o.hrs?o.hrs:1}"></label></div></div>
+ <div class="fgrp"><b class="fl">Available hours</b><div class="duo"><label>From<input id="svF" type="time" value="${o?o.from:"09:00"}" required></label><label>To<input id="svU" type="time" value="${o?o.to:"18:00"}" required></label></div>
+  <div class="days" role="group" aria-label="Available days">${DAYS.map(d=>`<label class="dchip"><input type="checkbox" name="sd" value="${d}" ${(o?o.days.includes(d):d!=="Sun")?"checked":""}><span>${d}</span></label>`).join("")}</div></div>
+ <label>Location<input id="svL" required placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label>
+ <div class="duo"><label>Experience<select id="svX">${expOpts(o&&o.exp,0)}</select></label><label>Qualifications (optional)<input id="svQ" maxlength="80" placeholder="e.g. ITI Plumbing, diploma, licence" value="${o?esc(o.qual||""):""}"></label></div>
+ <button class="btn" style="justify-self:start">${o?"Save changes":"Publish"}</button></form>`};
+function setRT(v){const i=document.getElementById("svRT");if(!i)return;if(!RTS[v==="flex"?"project":v])v="hour";i.value=v;document.querySelectorAll("#rtSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
+ const f=v==="flex",fxs=document.getElementById("svFx"),fx=f&&fxs&&fxs.value==="perm"?"perm":"free",w=f?(fx==="perm"?"Monthly salary":"Project fee"):{hour:"Hourly rate",day:"Daily rate",month:"Monthly rate",year:"Yearly package"}[v],ph=RTP[f?fx:v];
+ const fb=document.getElementById("svFxBox");if(fb)fb.classList.toggle("hide",!f);document.getElementById("svHbox").classList.toggle("hide",v!=="hour");document.getElementById("svH").disabled=v!=="hour";
+ document.getElementById("svMinL").textContent=w+" from (₹)";document.getElementById("svMaxL").textContent=w+" to (₹)";document.getElementById("svPL").textContent="Pricing: "+(f?(fx==="perm"?"per month":"per project"):"per "+RTS[v][0]);
+ const mn=document.getElementById("svMin"),mx=document.getElementById("svMax");mn.placeholder=ph[0];mx.placeholder=ph[1]}
+function readSvc(){const rt=RTS[svRT.value==="flex"?"project":svRT.value]?svRT.value:"hour",mn=+svMin.value,mx=+svMax.value,hrs=rt==="hour"?+svH.value:null,ds=DAYS.filter(d=>document.querySelector(`input[name=sd][value=${d}]:checked`));
+ if(!(mn>=1&&mx>=mn)){toast("The “to” price must be at least the “from” price");svMax.focus();return null}
  if(rt==="hour"&&!(Number.isInteger(hrs)&&hrs>=1&&hrs<=12)){toast("Enter minimum hours between 1 and 12");svH.focus();return null}
  if(!ds.length){toast("Pick at least one available day");return null}
  if(svU.value<=svF.value){toast("End time must be after the start time");svU.focus();return null}
- return{c:svC.value,t:svT.value.trim(),rt,min:mn,max:mx,hrs,days:ds,from:svF.value,to:svU.value,start:svS.value,loc:svL.value.trim(),d:svD.value.trim(),exp:svX.value,qual:svQ.value.trim()}}
-function readJob(){const n=Number(jb.value);if(!(n>=1)){toast("Enter a valid budget");jb.focus();return null}return{t:jt.value.trim(),c:jc.value,loc:jl.value.trim(),b:"₹"+n.toLocaleString("en-IN"),per:jp.value,d:jd.value.trim(),exp:jx.value,qual:jq.value.trim()}}
+ const c=catVal("svC","svCo");if(!c)return null;
+ return{c,t:svT.value.trim(),rt,fx:rt==="flex"?(svFx.value==="perm"?"perm":"free"):null,min:mn,max:mx,hrs,days:ds,from:svF.value,to:svU.value,start:"",loc:svL.value.trim(),d:svD.value.trim(),exp:svX.value,qual:svQ.value.trim()}}
+function readJob(){const mn=Number(jbmin.value),mx=Number(jbmax.value);if(!(mn>=1&&mx>=mn)){toast("The “to” budget must be at least the “from” budget");jbmax.focus();return null}
+ const c=catVal("jc","jco");if(!c)return null;let dr=null;if(jp.value==="choose"){dr=drRead();if(!dr)return null}const f=n=>"₹"+n.toLocaleString("en-IN");
+ return{t:jt.value.trim(),c,loc:jl.value.trim(),b:mn===mx?f(mn):f(mn)+"–"+f(mx),bmin:mn,bmax:mx,per:jp.value,d:jd.value.trim(),exp:jx.value,qual:jq.value.trim(),dr}}
 function postService(e){e.preventDefault();const d=readSvc();if(!d)return;const o=Object.assign({id:Date.now(),by:S.name,v:[],b:[]},d);
- S.services.unshift(o);log("posted service",o.t);Notify.add({type:"pro",title:"Your service is live",body:o.t,act:{k:"service",id:o.id},read:1});simView(o);S.tab="services";S.cat="All";toast("Service published");go("home")}
-function postJob(e){e.preventDefault();const d=readJob();if(!d)return;const nj=Object.assign({id:Date.now(),by:S.name,p:[],v:[]},d);S.jobs.unshift(nj);log("posted vacancy",nj.t);simView(nj);S.cat="All";toast("Vacancy published");go("home")}
+ S.services.unshift(o);log("posted service",o.t);Notify.add({type:"pro",title:"Your service is live",body:o.t,act:{k:"service",id:o.id},read:1});simView(o);S.tab="services";S.cat="All";at=null;toast("Service published");go("home")}
+function postJob(e){e.preventDefault();const d=readJob();if(!d)return;const nj=Object.assign({id:Date.now(),by:S.name,p:[],v:[]},d);S.jobs.unshift(nj);log("posted vacancy",nj.t);simView(nj);S.cat="All";S.tab="jobs";at=null;toast("Vacancy published");go("home")}
 /* ---------- edit & delete posts ---------- */
 let ed=null;
 function ownPost(kind,id){const o=(kind==="job"?S.jobs:S.services).find(x=>x.id===id);return o&&o.by===S.name?o:null}
 function editPost(kind,id){const o=ownPost(kind,id);if(!o)return;ed={kind,id};shut("postD","profD","storyD","delD");
- editD.innerHTML=`<div class="dh"><h3 style="margin:0">Edit ${kind==="job"?"vacancy":"service"}</h3><button type="button" class="x" aria-label="Close" onclick="editD.close()">✕</button></div>${kind==="job"?jobForm(o):svcForm(o)}`;editD.showModal();if(kind==="service")setRT(o.rt==="day"?"day":"hour")}
+ editD.innerHTML=`<div class="dh"><h3 style="margin:0">Edit ${kind==="job"?"vacancy":"service"}</h3><button type="button" class="x" aria-label="Close" onclick="editD.close()">✕</button></div>${kind==="job"?jobForm(o):svcForm(o)}`;editD.showModal();if(kind==="service")setRT(o.rt||"hour");else{drInit(o);drRender()}}
 function saveEdit(e){e.preventDefault();if(!ed)return;const o=ownPost(ed.kind,ed.id);if(!o){editD.close();return}const d=ed.kind==="service"?readSvc():readJob();if(!d)return;
  Object.assign(o,d);if(ed.kind==="job")o.per=d.per;log("edited "+ed.kind,o.t);save();editD.close();toast("Post updated");render()}
 function delPost(kind,id){const o=ownPost(kind,id);if(!o)return;shut("postD","editD");const n=kind==="job"?o.p.length:o.b.length,w=kind==="job"?"request":"booking";
@@ -1877,10 +2088,10 @@ function confirmDel(kind,id){const L=kind==="job"?S.jobs:S.services,i=L.findInde
 function openChat(id){Chat.stick=true;S.thread=id;S.view="chat";const t=S.threads.find(t=>t.id===id);t.u=0;if(typeof RT!=="undefined")RT.markRead(t.n);render()}
 function chat(T){const V=T||view,t=S.threads.find(x=>x.id===S.thread);
  const pres=on=>`<i class="pres ${on?"on":""}" aria-hidden="true"></i>`;
- V.innerHTML=`<div class="row"><h2>Messages${unread()?` <span class="nb" role="img" aria-label="${unread()} unread messages" style="vertical-align:middle">${unread()}</span>`:""}</h2>${SB_ON&&typeof RT!=="undefined"&&RT.ok===false?`<span class="cnt" role="status">Chat server not set up yet</span>`:""}</div><div class="chat ${t?"open":""}">
- <div class="threads">${S.threads.length?S.threads.map(x=>{const l=x.m[x.m.length-1];return `<button class="th" ${t&&t.id===x.id?'aria-current="true"':""} onclick="openChat('${x.id}')"><span class="avw"><div class="av" style="${abg(x.n)}">${ait(x.n)}</div>${pres(x.on)}</span><span class="thm"><span class="thr"><b>${esc(x.n)}</b>${l?`<em>${tShort(l.ts)}</em>`:""}</span><span class="thr"><small>${l?(l.me?"You: ":"")+esc(l.t):"Say hello"}</small>${x.u?`<span class="nb" role="img" aria-label="${x.u} unread message${x.u===1?"":"s"}">${x.u>99?"99+":x.u}</span>`:""}</span></span></button>`}).join(""):`<div class="empty">No conversations yet.</div>`}</div>
+ V.innerHTML=`<div class="row chatrow"><h2>Messages</h2>${SB_ON&&typeof RT!=="undefined"&&RT.ok===false?`<span class="cnt" role="status">Chat server not set up yet</span>`:""}${unread()?`<span class="ucirc" role="img" aria-label="${unread()} unread message${unread()===1?"":"s"}">${unread()>99?"99+":unread()}</span>`:""}</div><div class="chat ${t?"open":""}">
+ <div class="threads">${S.threads.length?S.threads.map(x=>{const l=x.m[x.m.length-1];return `<button class="th" ${t&&t.id===x.id?'aria-current="true"':""} onclick="openChat('${x.id}')"><span class="avw"><div class="av" style="${abg(x.n)}">${ait(x.n)}</div>${pres(x.on)}</span><span class="thm"><span class="thr"><b>${esc(x.n)}</b>${l?`<em>${tShort(l.ts)}</em>`:""}</span><span class="thr"><small>${l?(l.me?"You: ":"")+esc(clean(l.t)):"Say hello"}</small>${x.u?`<span class="nb" role="img" aria-label="${x.u} unread message${x.u===1?"":"s"}">${x.u>99?"99+":x.u}</span>`:""}</span></span></button>`}).join(""):`<div class="empty">No conversations yet.</div>`}</div>
  <section class="pane" aria-label="Conversation" data-t="${t?t.id:''}">${t?`${!Net.on?`<div class="cbar" role="status">You’re offline. Messages will send automatically when you reconnect.</div>`:""}<div class="ph"><button class="back" aria-label="Back to conversations" onclick="S.thread=null;Chat.stick=true;render()">‹</button><span class="avw"><div class="av" style="${abg(t.n)}">${ait(t.n)}</div>${pres(t.on)}</span><div class="phn"><b>${esc(t.n)}</b><small class="${t.typing||t.on?"on":""}">${t.typing?"typing…":t.on?"Online":SB_ON?"Offline":""}</small></div><button class="btn alt rep" data-n="${esc(t.n)}" onclick="reportUser(this.dataset.n)" aria-label="Report ${esc(t.n)}">Report</button></div>
- <div class="msgs" id="ms" aria-live="polite">${t.m.map(m=>`<div class="m ${m.me?"me":""}">${esc(m.t)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]:""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span><button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}</span></div>`).join("")}</div>
+ <div class="msgs" id="ms" aria-live="polite">${t.m.map(m=>`<div class="m ${m.me?"me":""}">${esc(clean(m.t))}${actBar(m)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]:""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span><button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}</span></div>`).join("")}</div>
  <form class="send" style="max-width:none" onsubmit="sendMsg(event)"><input id="mi" autocomplete="off" autocapitalize="sentences" enterkeyhint="send" maxlength="1000" aria-label="Message" placeholder="Write a message"><button class="btn" onpointerdown="event.preventDefault()">Send</button></form>`:`<div class="empty" style="margin:auto">Pick a conversation to start chatting.</div>`}</section></div>`;
  const m=V.querySelector("#ms");if(m){if(Chat.stick!==false||Chat.pos==null)m.scrollTop=m.scrollHeight;else m.scrollTop=Math.min(Chat.pos,m.scrollHeight)}}
 function sendMsg(e){e.preventDefault();const i=document.getElementById("mi");if(!i)return;Chat.stick=true;if(Chat.send(S.thread,i.value)){i.value=""}ui();const n=document.getElementById("mi");if(n)n.focus({preventScroll:true})}
@@ -1898,12 +2109,12 @@ const Chat={busy:0,ackMs:4000,max:5,base:800,rt:null,
   const w=S.threads.flatMap(t=>t.m).filter(m=>m.me&&m.st==="sending");clearTimeout(Chat.rt);
   if(w.length&&Net.on)Chat.rt=setTimeout(Chat.flush,Math.max(50,Math.min(...w.map(m=>(m.next||0)-Date.now()))))},
  retry(id){S.threads.forEach(t=>t.m.forEach(m=>{if(m.id===id){m.st="sending";m.tries=0;m.next=0}}));Chat.flush();ui()},
- receipt(id,st){S.threads.forEach(t=>t.m.forEach(m=>{if(m.id===id&&rank[st]>rank[m.st]){m.st=st;if(m.me&&(st==="delivered"||st==="read"))Notify.add({type:"chat",key:"chat:st:"+t.n,title:st==="read"?`${t.n} read your message`:`Message delivered to ${t.n}`,body:m.t.slice(0,90),act:{k:"chat",n:t.n},read:S.view==="chat"&&S.thread===t.id?1:0})}}));save();ui()},
+ receipt(id,st){S.threads.forEach(t=>t.m.forEach(m=>{if(m.id===id&&rank[st]>rank[m.st]){m.st=st;if(m.me&&(st==="delivered"||st==="read"))Notify.add({type:"chat",key:"chat:st:"+t.n,title:st==="read"?`${t.n} read your message`:`Message delivered to ${t.n}`,body:clean(m.t).slice(0,90),act:{k:"chat",n:t.n},read:S.view==="chat"&&S.thread===t.id?1:0})}}));save();ui()},
  typing(n,on){const t=S.threads.find(x=>x.n===n);if(!t)return;t.typing=on;clearTimeout(t.tt);if(on)t.tt=setTimeout(()=>{t.typing=0;ui()},3000);ui()},
  receive(m){if(S.threads.some(t=>t.m.some(x=>x.id===m.id)))return;stubUser(m.peer);const t=ensure(m.peer);t.typing=0;
-  let i=t.m.length;while(i>0&&t.m[i-1].ts>m.ts)i--;t.m.splice(i,0,{id:m.id,t:m.t,ts:m.ts});
+  let i=t.m.length;while(i>0&&t.m[i-1].ts>m.ts)i--;t.m.splice(i,0,{id:m.id,t:m.t,ts:m.ts});try{actSync(m.t,m.peer)}catch(e){}
   const here=S.view==="chat"&&S.thread===t.id&&!document.hidden;
-  if(!here&&!m.read){t.u=(+t.u||0)+1;if(m.quiet){t.qn=(t.qn||0)+1;t.ql=m.t}if(!m.quiet){Notify.add({type:"chat",key:"chat:msg:"+t.n,title:t.u>1?`${t.u} new messages from ${t.n}`:`New message from ${t.n}`,body:m.t.slice(0,90),act:{k:"chat",n:t.n}});toast("New message from "+t.n)}}
+  if(!here&&!m.read){t.u=(+t.u||0)+1;if(m.quiet){t.qn=(t.qn||0)+1;t.ql=m.t}if(!m.quiet){Notify.add({type:"chat",key:"chat:msg:"+t.n,title:t.u>1?`${t.u} new messages from ${t.n}`:`New message from ${t.n}`,body:clean(m.t).slice(0,90),act:{k:"chat",n:t.n}});toast("New message from "+t.n)}}
   save();ui()}};
 /* ---------- Real-time direct messaging. Only real people reply: no bots. Transport: Supabase table rc_msgs (Realtime push + 5 s polling) or, when Supabase isn't configured, a shared mailbox in this browser (other tabs get messages instantly). ---------- */
 const RT={ok:null,err:undefined,at:0,me:"",since:0,first:true,timer:null,ch:null,pch:null,bc:null,
@@ -1992,26 +2203,25 @@ function settings(){
    ${row(FI.edit,"Edit profile","Name, age, email and phone","editP=true;go('profile')")}
    ${row(FI.bell,"Notifications",unreadN()?unreadN()+" unread":"You’re all caught up","go('notifications')")}
    ${row(FI.star,"Subscription plan",(PLANS.find(q=>q.id===S.plan)||PLANS[0]).n+" plan · compare plans","openPlans()")}
-   ${(()=>{const u=S.users.find(x=>x.email===S.me),g=u&&u.gid;return `<div class="srow gstat"><span class="si" aria-hidden="true">${GG}</span><span><b>Google account</b><small>${g?"Linked to "+esc(u.email):"Not linked. Sign in with Google using "+esc(S.profile.email||"your email")+" to link it"}</small></span><span class="pill ${g?"Completed":"Requested"}">${g?"Linked":"Not linked"}</span></div>`})()}
+   ${(()=>{const u=S.users.find(x=>x.email===S.me),g=u&&u.gid;return `<div class="srow gstat"><span class="si" aria-hidden="true">${GG}</span><span><b>Google account</b><small>${g?esc(u.email):"Sign in with Google to link"}</small></span><span class="pill ${g?"Completed":"Requested"}">${g?"Linked":"Not linked"}</span></div>`})()}
    ${row(FI.history,"History","View booking history","go('history')")}
    ${row(FI.support,"Help &amp; support","Contact us or report an issue","go('support')")}
     ${row(FI.terms,"Terms &amp; Conditions","Read the rules for using RoyalCub Jobs","go('terms')")}</section>
   <section class="scard"><h4>Appearance</h4><div class="themes" role="group" aria-label="Theme">${[["light","☀️","Light"],["dark","🌙","Dark"],["auto","🖥️","Auto"]].map(([k,e,l])=>`<button class="tile" aria-pressed="${th===k}" onclick="S.theme='${k}';applyTheme();render()"><span aria-hidden="true">${e}</span>${l}</button>`).join("")}</div></section>
-  <section class="scard"><h4>I am a</h4><div class="roles" role="group" aria-label="Account type">${rt("client","🧑‍💼","Client","Post jobs and review pitches")}${rt("worker","🛠️","Service provider","Find work and pitch for jobs")}</div></section>
+  <section class="scard"><h4>I am a</h4><label class="rsel"><select id="roleSel" aria-label="Account type" onchange="S.role=this.value;save();render()"><option value="client" ${cl?"selected":""}>Client</option><option value="worker" ${cl?"":"selected"}>Service provider</option></select></label></section>
  </div><div class="scol">
   <section class="scard"><h4>Privacy</h4>${tg("vis","Show my profile","Let other users find and view it")}${tg("online","Show when I’m online","Display an online dot on your avatar")}${tg("msgs","Allow messages from anyone","Turn off to limit who can message you")}</section>
-  <section class="scard"><h4>Help</h4><details><summary>How do I post a job?</summary><p>Open Add, fill in the title, field, budget, location and details, then tap Publish.</p></details><details><summary>How do I pitch for a job?</summary><p>Tap Pitch for Job on a post, enter your price and start date, and explain why you’re a good fit.</p></details><details><summary>How do I chat with a client?</summary><p>Tap Message on a post, or open a person’s profile from their name on any post.</p></details><button class="btn alt" onclick="toast('Support request sent. We’ll reply to your email.')">Contact support</button></section>
-  ${row("🚪","Log out","Sign out of this device","outD.showModal()","slog danger")}
+  <section class="scard"><details class="hdrop"><summary><h4>Help</h4></summary><details><summary>How do I post a job?</summary><p>Open Add Post, choose Post Vacancies, fill in the details and tap Publish.</p></details><details><summary>How do I apply for a job?</summary><p>Tap Apply now on a vacancy, enter your price and start date, and say why you’re a good fit.</p></details><details><summary>How do I book a worker?</summary><p>Tap Book now on a worker’s card, pick a date and price, then send the request. Your chat starts from there.</p></details><button class="btn" onclick="go('support')">Connect Support</button></details></section>
+  ${row(FI.logout,"Log out","Sign out of this device","outD.showModal()","slog danger")}
  </div></div></div>`}
 
 function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...S.services].filter(j=>j.by===S.name),
- views=mj.reduce((a,j)=>a+j.v.length,0)+S.stories.filter(x=>x.by===S.name).reduce((a,x)=>a+x.v.length,0),
  reqs=S.hist.filter(h=>h.s==="Requested").length;
  const item=(ic,l,val)=>`<div class="pi"><span class="si" aria-hidden="true">${ic}</span><div><small>${l}</small><b>${val}</b></div></div>`;
  const mrow=(ic,t,sub,a,cl="")=>`<button class="srow ${cl}" onclick="${a}"><span class="si" aria-hidden="true">${ic}</span><span><b>${t}</b><small>${sub}</small></span><span aria-hidden="true">›</span></button>`;
  view.innerHTML=`<div class="row"><h2>My profile</h2></div><div class="prof">
  <div class="pleft"><div class="pban"><div class="avedit"><div class="av" style="${abg(p.name)}">${ait(p.name)}</div><button class="camb" aria-label="Change profile picture" onclick="pickPhoto()">📷</button></div><input id="phf" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onchange="onPhoto(this)"><h3>${esc(p.name)}</h3><span class="rolep">${S.role==="client"?"Client":"Service provider"}</span>${p.email?`<span class="mail">${esc(p.email)}</span>`:""}<div class="phbtns"><button class="btn alt" onclick="pickPhoto()">${photoOf(p.name)?"Change photo":"Upload photo"}</button>${photoOf(p.name)?`<button class="link" onclick="removePhoto()">Remove</button>`:""}</div></div>
- <div class="pst" aria-label="Your activity"><div><b>${mj.length}</b><span>Posts</span></div><div><b>${reqs}</b><span>Requests</span></div><div><b>${views}</b><span>Views</span></div></div>${(()=>{const n=nFollowers(S.name);return `<section class="pcard fsec" aria-label="Followers"><h4>Followers</h4><button type="button" class="srow fcard" onclick="openFollowers()" aria-haspopup="dialog" aria-label="Followers: ${n}. Open the list"><span class="si" aria-hidden="true">👥</span><span><b class="fcount">${n}</b><small>${n===1?"follower":"followers"} · tap to view</small></span><span aria-hidden="true">›</span></button></section>`})()}</div>
+ <div class="pst" aria-label="Your activity"><button type="button" onclick="openPosts()" aria-haspopup="dialog" aria-label="Posts: ${mj.length}. Open"><b>${mj.length}</b><span>Posts</span></button><div><b>${reqs}</b><span>Requests</span></div><button type="button" onclick="openFollowers()" aria-haspopup="dialog" aria-label="Followers: ${nFollowers(S.name)}. Open the list"><b>${nFollowers(S.name)}</b><span>Followers</span></button></div></div>
  <div class="pright">${editP?`<form class="pform pcard" style="padding:16px" onsubmit="saveProfile(event)">
  <div class="two"><label>Full name<input id="pn" required maxlength="40" value="${esc(p.name)}" autocomplete="name"></label>
  <label>Age<input id="pa" type="number" inputmode="numeric" min="16" max="99" required value="${esc(p.age)}"></label></div>
@@ -2021,7 +2231,7 @@ function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...
  <label>Company name or service role (optional)<input id="pt" maxlength="40" value="${esc(p.title||"")}" placeholder="e.g. Plumber or Sharma Constructions"></label>
  <div class="acts"><button class="btn">Save changes</button><button type="button" class="btn alt" onclick="editP=false;render()">Cancel</button></div></form>`
  :`<div class="pcard"><h4>Personal details</h4>${item(IC.person,"Name",v(p.name))}${item(IC.person,"Company / role",esc(roleOf(S.name)))}${item(IC.person,"Age",v(p.age))}${item(IC.mail,"Email ID",v(p.email))}${item(IC.phone,"Phone number",v(p.phone))}</div>
- ${myPosts(mj)}<div class="pmenu">${mrow(IC.edit,"Edit profile","Update your name, email and phone","editP=true;render()")}${mrow(FI.history,"History","View booking history","go('history')")}${mrow(IC.settings,"Settings","Theme, privacy and help","go('settings')")}${mrow(IC.out,"Log out","Sign out of this device","outD.showModal()","danger")}</div>`}</div></div>`}
+ <div class="pmenu">${mrow(IC.edit,"Edit profile","Update your name, email and phone","editP=true;render()")}${mrow(FI.history,"History","View booking history","go('history')")}${mrow(IC.settings,"Settings","Theme, privacy and help","go('settings')")}${mrow(FI.logout,"Log out","Sign out of this device","outD.showModal()","danger")}</div>`}</div></div>`}
 function pickPhoto(){const f=document.getElementById("phf");if(f)f.click()}
 function onPhoto(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
  if(!/^image\/(png|jpe?g|webp|gif)$/.test(f.type)){toast("Choose a PNG, JPG, WebP or GIF image");return}
@@ -2084,6 +2294,8 @@ function doSearch(){closeLocMenu();closeSug();const a=document.activeElement;if(
  sOpen=true;sMore=false;updateSearchUI();const sb=document.getElementById("sbar");if(sb)sb.scrollIntoView({block:"start",behavior:"auto"})}
 document.addEventListener("pointerdown",e=>{const t=e.target.closest?e.target:null;if(!t)return;const m=document.getElementById("locmenu");if(m&&!m.hidden&&!t.closest("#locsf"))closeLocMenu();const s=document.getElementById("nsug");if(s&&!s.hidden&&!t.closest("#namesf"))closeSug()},true);
 
+function openPosts(){if(S.out)return;const nv=S.jobs.filter(j=>j.by===S.name).length,ns=S.services.filter(j=>j.by===S.name).length,n=nv+ns;
+ postsD.innerHTML=`<div class="dh"><h3 style="margin:0">Your posts</h3><button class="x" aria-label="Close" onclick="postsD.close()">✕</button></div><div class="pbig"><b>${n}</b><span>${n===1?"post":"posts"}${n?` · ${nv} vacanc${nv===1?"y":"ies"} · ${ns} service${ns===1?"":"s"}`:""}</span></div><button class="btn" onclick="postsD.close();go('add')">Create a post</button>`;postsD.showModal()}
 function openFollowers(){if(S.out)return;const L=followersOf(S.name);
  folD.innerHTML=`<div class="dh"><h3 style="margin:0">Followers (${L.length})</h3><button class="x" aria-label="Close" onclick="folD.close()">✕</button></div>${L.length?`<div class="flist">${L.map(n=>`<div class="frow"><button type="button" class="fmain" data-n="${esc(n)}" onclick="folProfile(this.dataset.n)" aria-label="View profile of ${esc(n)}"><span class="av sm" style="${abg(n)}" aria-hidden="true">${ait(n)}</span><span><b>${esc(n)}</b><small>${esc(roleOf(n))}</small></span></button><button type="button" class="btn alt" data-n="${esc(n)}" onclick="folMsg(this.dataset.n)" aria-label="Message ${esc(n)}">Message</button></div>`).join("")}</div>`:`<div class="empty" style="padding:18px">No followers yet. When people follow you, they will show up here.</div>`}`;
  if(!folD.open)folD.showModal()}
