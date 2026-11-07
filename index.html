@@ -789,6 +789,31 @@ html:has(body.tncv),html:has(body.tnc2){overflow:hidden}
 .cd.past{opacity:.3;cursor:default}
 .cd:focus-visible,.calh button:focus-visible{outline:3px solid var(--plum2);outline-offset:1px}
 .drongo{margin-top:2px}
+
+/* ===== v7: My profile layout, Posts / Following / Followers ===== */
+@media (min-width:760px){.prof{grid-template-columns:minmax(300px,360px) minmax(0,1fr);gap:20px}}
+@media (min-width:1100px){.prof{grid-template-columns:minmax(320px,400px) minmax(0,1fr);gap:24px}}
+.pcard .pigrid{display:grid;grid-template-columns:minmax(0,1fr)}
+@media (min-width:720px){
+ .pcard .pigrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:4px 0 12px}
+ .pcard .pigrid .pi{background:var(--soft);border:0;border-radius:18px;padding:14px 16px}
+ .pmenu{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:1500px){.pcard .pigrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.pform.pcard .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:1100px){.pform.pcard{padding:22px!important}}
+.pst>button b,.pst>button span{pointer-events:none}
+.pst>button:focus-visible{outline:3px solid var(--plum2);outline-offset:2px}
+#postsD{width:min(480px,94vw);text-align:center}
+.mplist{display:grid;gap:8px;max-height:min(46vh,380px);overflow-y:auto;overscroll-behavior:contain;text-align:left;margin-top:16px}
+.mphd{margin:16px 0 0;text-align:left;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.mprow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;color:var(--ink);cursor:pointer}
+.mprow:hover{border-color:var(--plum2)}.mprow:focus-visible{outline:3px solid var(--plum2);outline-offset:2px}
+.mprow>span:first-child{display:grid;gap:2px;min-width:0;flex:1}
+.mprow b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mprow small{color:var(--mute);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mprow .pill{flex:none}.mprow .chev{flex:none;color:var(--mute);font-size:22px;line-height:1}
+.mphint{margin:10px 0 0;color:var(--mute);font-size:13px;text-align:left}
 </style>
 
 
@@ -2215,13 +2240,12 @@ function settings(){
   ${row(FI.logout,"Log out","Sign out of this device","outD.showModal()","slog danger")}
  </div></div></div>`}
 
-function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...S.services].filter(j=>j.by===S.name),
- reqs=S.hist.filter(h=>h.s==="Requested").length;
+function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...S.services].filter(j=>j.by===S.name);
  const item=(ic,l,val)=>`<div class="pi"><span class="si" aria-hidden="true">${ic}</span><div><small>${l}</small><b>${val}</b></div></div>`;
  const mrow=(ic,t,sub,a,cl="")=>`<button class="srow ${cl}" onclick="${a}"><span class="si" aria-hidden="true">${ic}</span><span><b>${t}</b><small>${sub}</small></span><span aria-hidden="true">›</span></button>`;
  view.innerHTML=`<div class="row"><h2>My profile</h2></div><div class="prof">
  <div class="pleft"><div class="pban"><div class="avedit"><div class="av" style="${abg(p.name)}">${ait(p.name)}</div><button class="camb" aria-label="Change profile picture" onclick="pickPhoto()">📷</button></div><input id="phf" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onchange="onPhoto(this)"><h3>${esc(p.name)}</h3><span class="rolep">${S.role==="client"?"Client":"Service provider"}</span>${p.email?`<span class="mail">${esc(p.email)}</span>`:""}<div class="phbtns"><button class="btn alt" onclick="pickPhoto()">${photoOf(p.name)?"Change photo":"Upload photo"}</button>${photoOf(p.name)?`<button class="link" onclick="removePhoto()">Remove</button>`:""}</div></div>
- <div class="pst" aria-label="Your activity"><button type="button" onclick="openPosts()" aria-haspopup="dialog" aria-label="Posts: ${mj.length}. Open"><b>${mj.length}</b><span>Posts</span></button><div><b>${reqs}</b><span>Requests</span></div><button type="button" onclick="openFollowers()" aria-haspopup="dialog" aria-label="Followers: ${nFollowers(S.name)}. Open the list"><b>${nFollowers(S.name)}</b><span>Followers</span></button></div></div>
+ <div class="pst" role="group" aria-label="Your activity"><button type="button" onclick="openPosts()" aria-haspopup="dialog" aria-label="Posts: ${mj.length}. Open your posts"><b>${mj.length}</b><span>Posts</span></button><button type="button" onclick="openFolList('following')" aria-haspopup="dialog" aria-label="Following: ${followingOf(S.name).length}. Open the list"><b>${followingOf(S.name).length}</b><span>Following</span></button><button type="button" onclick="openFolList('followers')" aria-haspopup="dialog" aria-label="Followers: ${nFollowers(S.name)}. Open the list"><b>${nFollowers(S.name)}</b><span>Followers</span></button></div></div>
  <div class="pright">${editP?`<form class="pform pcard" style="padding:16px" onsubmit="saveProfile(event)">
  <div class="two"><label>Full name<input id="pn" required maxlength="40" value="${esc(p.name)}" autocomplete="name"></label>
  <label>Age<input id="pa" type="number" inputmode="numeric" min="16" max="99" required value="${esc(p.age)}"></label></div>
@@ -2230,7 +2254,7 @@ function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...
  <label>Your location (town or district)<input id="ploc" maxlength="40" list="locdl2" value="${esc(p.loc||"Palakkad")}" placeholder="Palakkad" autocomplete="address-level2"></label>
  <label>Company name or service role (optional)<input id="pt" maxlength="40" value="${esc(p.title||"")}" placeholder="e.g. Plumber or Sharma Constructions"></label>
  <div class="acts"><button class="btn">Save changes</button><button type="button" class="btn alt" onclick="editP=false;render()">Cancel</button></div></form>`
- :`<div class="pcard"><h4>Personal details</h4>${item(IC.person,"Name",v(p.name))}${item(IC.person,"Company / role",esc(roleOf(S.name)))}${item(IC.person,"Age",v(p.age))}${item(IC.mail,"Email ID",v(p.email))}${item(IC.phone,"Phone number",v(p.phone))}</div>
+ :`<div class="pcard"><h4>Personal details</h4><div class="pigrid">${item(IC.person,"Name",v(p.name))}${item(IC.person,"Company / role",esc(roleOf(S.name)))}${item(IC.person,"Age",v(p.age))}${item(IC.mail,"Email ID",v(p.email))}${item(IC.phone,"Phone number",v(p.phone))}</div></div>
  <div class="pmenu">${mrow(IC.edit,"Edit profile","Update your name, email and phone","editP=true;render()")}${mrow(FI.history,"History","View booking history","go('history')")}${mrow(IC.settings,"Settings","Theme, privacy and help","go('settings')")}${mrow(FI.logout,"Log out","Sign out of this device","outD.showModal()","danger")}</div>`}</div></div>`}
 function pickPhoto(){const f=document.getElementById("phf");if(f)f.click()}
 function onPhoto(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
@@ -2241,8 +2265,6 @@ function onPhoto(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
   const u=S.users.find(q=>q.email===S.me);if(!u){toast("Log in to change your picture");return}u.photo=c.toDataURL("image/jpeg",.78);save();toast("Profile picture updated");render();nav()}catch(e){toast("Couldn’t use that image")}};
  img.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t read that image")};img.src=url}
 function removePhoto(){const u=S.users.find(q=>q.email===S.me);if(u){delete u.photo;save();toast("Profile picture removed");render()}}
-function myPosts(mj){const row=o=>{const isS=!!o.min,kind=isS?"service":"job";return `<div class="mp"><button class="mpt" onclick="${isS?"openService":"openPost"}(${o.id})"><b>${esc(o.t)}</b><small>${isS?"Service":"Vacancy"} · ${esc(o.c)} · ${isS?rateTx(o)+" per "+uOf(o):esc(o.b)+per(o)}</small></button><div class="mpa"><button class="btn alt" aria-label="Edit ${esc(o.t)}" onclick="editPost('${kind}',${o.id})">Edit</button><button class="btn alt dng" aria-label="Delete ${esc(o.t)}" onclick="delPost('${kind}',${o.id})">Delete</button></div></div>`};
- return `<div class="pcard" id="myposts"><h4>My posts (${mj.length})</h4>${mj.length?mj.map(row).join(""):`<p class="cnt" style="margin:0">You haven’t posted anything yet.</p><button class="btn" style="justify-self:start;margin-top:10px" onclick="go('add')">Create a post</button>`}</div>`}
 function saveProfile(e){e.preventDefault();const o=S.profile.name,n=pn.value.trim();
  const ne=pe.value.trim().toLowerCase(),ur=S.users.find(x=>x.email===S.me);
  if(S.users.some(x=>x!==ur&&x.email.toLowerCase()===ne)){toast("That email is already registered");return}
@@ -2294,11 +2316,19 @@ function doSearch(){closeLocMenu();closeSug();const a=document.activeElement;if(
  sOpen=true;sMore=false;updateSearchUI();const sb=document.getElementById("sbar");if(sb)sb.scrollIntoView({block:"start",behavior:"auto"})}
 document.addEventListener("pointerdown",e=>{const t=e.target.closest?e.target:null;if(!t)return;const m=document.getElementById("locmenu");if(m&&!m.hidden&&!t.closest("#locsf"))closeLocMenu();const s=document.getElementById("nsug");if(s&&!s.hidden&&!t.closest("#namesf"))closeSug()},true);
 
-function openPosts(){if(S.out)return;const nv=S.jobs.filter(j=>j.by===S.name).length,ns=S.services.filter(j=>j.by===S.name).length,n=nv+ns;
- postsD.innerHTML=`<div class="dh"><h3 style="margin:0">Your posts</h3><button class="x" aria-label="Close" onclick="postsD.close()">✕</button></div><div class="pbig"><b>${n}</b><span>${n===1?"post":"posts"}${n?` · ${nv} vacanc${nv===1?"y":"ies"} · ${ns} service${ns===1?"":"s"}`:""}</span></div><button class="btn" onclick="postsD.close();go('add')">Create a post</button>`;postsD.showModal()}
-function openFollowers(){if(S.out)return;const L=followersOf(S.name);
- folD.innerHTML=`<div class="dh"><h3 style="margin:0">Followers (${L.length})</h3><button class="x" aria-label="Close" onclick="folD.close()">✕</button></div>${L.length?`<div class="flist">${L.map(n=>`<div class="frow"><button type="button" class="fmain" data-n="${esc(n)}" onclick="folProfile(this.dataset.n)" aria-label="View profile of ${esc(n)}"><span class="av sm" style="${abg(n)}" aria-hidden="true">${ait(n)}</span><span><b>${esc(n)}</b><small>${esc(roleOf(n))}</small></span></button><button type="button" class="btn alt" data-n="${esc(n)}" onclick="folMsg(this.dataset.n)" aria-label="Message ${esc(n)}">Message</button></div>`).join("")}</div>`:`<div class="empty" style="padding:18px">No followers yet. When people follow you, they will show up here.</div>`}`;
+function openPosts(){if(S.out)return;
+ const L=[...S.jobs.filter(j=>j.by===S.name).map(o=>({o,k:"job"})),...S.services.filter(j=>j.by===S.name).map(o=>({o,k:"service"}))].sort((a,b)=>b.o.id-a.o.id),nv=L.filter(x=>x.k==="job").length,ns=L.length-nv,n=L.length;
+ const row=({o,k})=>{const isS=k==="service",cnt=isS?(o.b||[]).length:(o.p||[]).length;return `<button type="button" class="mprow" onclick="postsOpen('${k}',${o.id})" aria-label="Open ${esc(o.t)}"><span><b>${esc(o.t)}</b><small>${esc(o.c)} · ${isS?esc(rateTx(o))+" per "+uOf(o):esc(o.b)+" "+per(o).replace(/<[^>]+>/g,"")} · ${cnt} ${isS?"booking":"request"}${cnt===1?"":"s"}</small></span><span class="pill ${isS?"Completed":"Requested"}">${isS?"Service":"Vacancy"}</span><span class="chev" aria-hidden="true">›</span></button>`};
+ postsD.innerHTML=`<div class="dh"><h3 style="margin:0">Your posts</h3><button class="x" aria-label="Close" onclick="postsD.close()">✕</button></div><div class="pbig"><b>${n}</b><span>${n===1?"post":"posts"}${n?` · ${nv} vacanc${nv===1?"y":"ies"} · ${ns} service${ns===1?"":"s"}`:""}</span></div><button class="btn" onclick="postsD.close();go('add')">Create a post</button>
+ ${n?`<h4 class="mphd">Active posts (${n})</h4><div class="mplist">${L.map(row).join("")}</div><p class="mphint">Tap a post to open it. Use Edit on the post page to change it.</p>`:`<p class="mphint" style="text-align:center">You haven’t posted anything yet.</p>`}`;
+ if(!postsD.open)postsD.showModal()}
+function postsOpen(k,id){postsD.close();k==="service"?openService(id):openPost(id)}
+const followingOf=n=>folOf(n).filter(k=>k!==n&&S.users.some(u=>u.name===k)).sort((a,b)=>a.localeCompare(b));
+function openFolList(kind){if(S.out)return;const fo=kind==="following",L=fo?followingOf(S.name):followersOf(S.name),T=fo?"Following":"Followers";folD.setAttribute("aria-label",T);
+ folD.innerHTML=`<div class="dh"><h3 style="margin:0">${T} (${L.length})</h3><button class="x" aria-label="Close" onclick="folD.close()">✕</button></div>${L.length?`<div class="flist">${L.map(n=>`<div class="frow"><button type="button" class="fmain" data-n="${esc(n)}" onclick="folProfile(this.dataset.n)" aria-label="View profile of ${esc(n)}"><span class="av sm" style="${abg(n)}" aria-hidden="true">${ait(n)}</span><span><b>${esc(n)}</b><small>${esc(roleOf(n))}</small></span></button>${fo?`<button type="button" class="btn alt" data-n="${esc(n)}" onclick="folUnf(this.dataset.n)" aria-label="Unfollow ${esc(n)}">Unfollow</button>`:`<button type="button" class="btn alt" data-n="${esc(n)}" onclick="folMsg(this.dataset.n)" aria-label="Message ${esc(n)}">Message</button>`}</div>`).join("")}</div>`:`<div class="empty" style="padding:18px">${fo?"You aren’t following anyone yet. Open a profile and tap Follow.":"No followers yet. When people follow you, they will show up here."}</div>`}`;
  if(!folD.open)folD.showModal()}
+const openFollowers=()=>openFolList("followers"),openFollowing=()=>openFolList("following");
+function folUnf(n){toggleFollow(n);openFolList("following");if(S.view==="profile")render()}
 function folProfile(n){folD.close();openProfile(n)}
 function folMsg(n){folD.close();msgTo(n)}
 const reduce=!!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches);
