@@ -1263,7 +1263,7 @@ const REV0=[["Sam Foster","Meera Nair",5,"Fixed our leak in under an hour. Tidy 
 ["Anna Reed","Rohan Das",5,"Clear instructions and paid on time."],["Anna Reed","Tom Park",4,"Friendly to work with."],["Victor King","Meera Nair",4,"Good job brief, quick replies."],["Victor King","Kabir Anand",5,"Great client, would work again."],
 ["Rahul Menon","Isha Rao",5,"Well organised trip, fair pay."],["Sneha Pillai","Priya Shah",4,"Paint was ready as promised."],["Meena Joseph","Leena Jose",5,"Spotless flat, thank you!"]].map((r,i)=>({id:"rv"+i,to:r[0],by:r[1],r:r[2],t:r[3],ts:Date.now()-(i+2)*864e5}));
 const uid=()=>Math.random().toString(36).slice(2,10);
-const ADMIN={email:"admin@royalcub.com",pw:"Admin@123",name:"Site Admin",phone:"",age:"",cat:"Admin",role:"admin",status:"active",joined:Date.now()-9e8};
+const ADMIN={email:"ajithanandhan96@gmail.com",pw:"Admin@123",name:"Site Admin",phone:"",age:"",cat:"Admin",role:"admin",status:"active",joined:Date.now()-9e8};
 S.reviews=S.reviews||REV0;S.chatStats=S.chatStats||{sent:0,failed:0,retries:0};S.tix=S.tix||[];S.log=S.log||[];
 if(!S.users.some(u=>u.role==="admin"))S.users.push(ADMIN);
 [...S.jobs.map(j=>[j.by,"Client"]),...S.services.map(x=>[x.by,x.c])].forEach(([n,c],i)=>{if(!S.users.some(u=>u.name===n))S.users.push({email:n.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:n,phone:"",age:"",cat:c,role:c==="Client"?"client":"worker",title:"",status:"active",joined:Date.now()-(i+3)*864e5})});
