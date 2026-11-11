@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Search Console: paste your full verification tag here, e.g. <meta name="google-site-verification" content="YOUR_FULL_TOKEN">. The previous tag was cut off and had no closing quote, which broke the head. -->
+<!-- Google Search Console: replace REPLACE_WITH_YOUR_TOKEN with the token from Search Console > Settings > Ownership verification > HTML tag. Keep the closing quote and >. -->
+<meta name="google-site-verification" content="REPLACE_WITH_YOUR_TOKEN">
 <link rel="icon" id="fav" type="image/png">
 <link rel="apple-touch-icon" id="fav2">
 <meta charset="utf-8">
@@ -1117,6 +1118,15 @@ html:has(body.tncv),html:has(body.tnc2){overflow:hidden}
 .obx{display:flex;justify-content:space-between;gap:12px}.obx .link{justify-self:auto}
 @media (prefers-reduced-motion:no-preference){.obcard{animation:rise .45s ease both}}
 </style>
+<style>
+.pubfoot{display:none;border-top:1px solid var(--line);background:var(--bg);color:var(--ink)}
+body.out .pubfoot{display:block}
+.pf-in{max-width:680px;margin:0 auto;padding:28px 20px 40px;font-size:14px;line-height:1.6}
+.pf-in h2{font-size:18px;margin:0 0 8px}.pf-in p{margin:0 0 10px;color:var(--mute)}.pf-in a{color:var(--plum);font-weight:600}
+.pf-links{display:flex;gap:18px;margin-top:6px}
+.plink{margin:0;text-align:center;font-size:12px;color:var(--mute)}.plink a{color:var(--plum);font-weight:600}
+</style>
+<noscript><style>.pubfoot{display:block!important}</style></noscript>
 </head>
 <body>
 <div id="splash" role="presentation" aria-hidden="true" onclick="hideSplash()"><div class="sp-in"><div class="sp-ring"></div><div class="sp-logo"><img id="spl" alt=""></div><p class="sp-tag">Hire fast. Work smart.</p><div class="sp-bar"><i></i></div></div></div>
@@ -1140,6 +1150,12 @@ html:has(body.tncv),html:has(body.tnc2){overflow:hidden}
  <main class="sheet" id="view"></main>
 </div>
 </div>
+<footer class="pubfoot" id="pubFoot"><div class="pf-in">
+<h2>About RoyalCub Jobs</h2>
+<p>RoyalCub Jobs is a local jobs and services marketplace. Clients post vacancies and hire trusted plumbers, electricians, nurses, drivers and other skilled workers nearby. Service providers create a profile, offer their services and chat with clients.</p>
+<p><b>Signing in with Google.</b> We use your Google name and email address only to create your RoyalCub Jobs account and sign you in. We never access your Gmail, Drive, Contacts or Calendar, and we do not sell your data.</p>
+<nav class="pf-links" aria-label="Legal"><a href="privacy.html">Privacy Policy</a></nav>
+</div></footer>
 <nav class="nav" id="botNav" aria-label="Main"></nav>
 <div id="drawerBd" onclick="closeMenu()" aria-hidden="true"></div>
 <aside id="drawer" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true"></aside>
@@ -1263,7 +1279,7 @@ const REV0=[["Sam Foster","Meera Nair",5,"Fixed our leak in under an hour. Tidy 
 ["Anna Reed","Rohan Das",5,"Clear instructions and paid on time."],["Anna Reed","Tom Park",4,"Friendly to work with."],["Victor King","Meera Nair",4,"Good job brief, quick replies."],["Victor King","Kabir Anand",5,"Great client, would work again."],
 ["Rahul Menon","Isha Rao",5,"Well organised trip, fair pay."],["Sneha Pillai","Priya Shah",4,"Paint was ready as promised."],["Meena Joseph","Leena Jose",5,"Spotless flat, thank you!"]].map((r,i)=>({id:"rv"+i,to:r[0],by:r[1],r:r[2],t:r[3],ts:Date.now()-(i+2)*864e5}));
 const uid=()=>Math.random().toString(36).slice(2,10);
-const ADMIN={email:"ajithanandhan96@gmail.com",pw:"Admin@123",name:"Site Admin",phone:"",age:"",cat:"Admin",role:"admin",status:"active",joined:Date.now()-9e8};
+const ADMIN={email:"admin@royalcub.com",pw:"Admin@123",name:"Site Admin",phone:"",age:"",cat:"Admin",role:"admin",status:"active",joined:Date.now()-9e8};
 S.reviews=S.reviews||REV0;S.chatStats=S.chatStats||{sent:0,failed:0,retries:0};S.tix=S.tix||[];S.log=S.log||[];
 if(!S.users.some(u=>u.role==="admin"))S.users.push(ADMIN);
 [...S.jobs.map(j=>[j.by,"Client"]),...S.services.map(x=>[x.by,x.c])].forEach(([n,c],i)=>{if(!S.users.some(u=>u.name===n))S.users.push({email:n.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:n,phone:"",age:"",cat:c,role:c==="Client"?"client":"worker",title:"",status:"active",joined:Date.now()-(i+3)*864e5})});
@@ -1572,7 +1588,7 @@ function authView(){
  ${pwField("rcf","Confirm Password","new-password")}
  <div class="err" id="aerr" role="alert"></div>
  <button class="btn">Create Account</button></form>
- <div class="or"><span>already registered?</span></div><button class="btn alt" onclick="showAuth('login')">Back to Log in</button></div></div>`;
+ <div class="or"><span>already registered?</span></div><button class="btn alt" onclick="showAuth('login')">Back to Log in</button><p class="plink">By creating an account you agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p></div></div>`;
  if(au==="forgot")return `<div class="auth"><div class="acard">${head("Forgot password?",fp.step===1?"Enter your email and we’ll send you a reset code.":`We sent a 6-digit code to <b>${esc(fp.email)}</b>.`)}
  ${fp.step===1?`<form onsubmit="doReset1(event)" novalidate><label>Email ID<input id="fe" type="email" required autocomplete="email" value="${esc(fp.email)}"></label><div class="err" id="aerr" role="alert"></div><button class="btn">Send reset email</button></form>`
  :`${fp.code?`<div class="note">Demo mode: no email server is connected, so your code is <b>${fp.code}</b>.</div>`:""}<form onsubmit="doReset2(event)" novalidate><label>6-digit code<input id="fc" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required></label>${pwField("fn","New password","new-password")}${pwField("fcf","Confirm new password","new-password")}<div class="err" id="aerr" role="alert"></div><button class="btn">Reset password</button></form><button class="link" style="justify-self:center" onclick="showAuth('forgot')">Use a different email</button>`}
@@ -1586,7 +1602,7 @@ function authView(){
   <div class="err" id="aerr" role="alert"></div><button class="btn">Log in</button></form>
   <div class="or"><span>new here?</span></div>
   <button class="btn alt" onclick="showAuth('register')">Create Account</button>
-  <p class="secure">${LOCK} Secure sign-in</p></div></div>`}
+  <p class="secure">${LOCK} Secure sign-in</p><p class="plink">By continuing you agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p></div></div>`}
 
 /* ---------- help & reports (user side) ---------- */
 let supAbout="";
@@ -2231,7 +2247,7 @@ function settings(){
    ${(()=>{const u=S.users.find(x=>x.email===S.me),g=u&&u.gid;return `<div class="srow gstat"><span class="si" aria-hidden="true">${GG}</span><span><b>Google account</b><small>${g?esc(u.email):"Sign in with Google to link"}</small></span><span class="pill ${g?"Completed":"Requested"}">${g?"Linked":"Not linked"}</span></div>`})()}
    ${row(FI.history,"History","View booking history","go('history')")}
    ${row(FI.support,"Help &amp; support","Contact us or report an issue","go('support')")}
-    ${row(FI.terms,"Terms &amp; Conditions","Read the rules for using RoyalCub Jobs","go('terms')")}</section>
+    ${row(FI.terms,"Terms &amp; Conditions","Read the rules for using RoyalCub Jobs","go('terms')")}${row(FI.terms,"Privacy Policy","How RoyalCub Jobs handles your data","window.open('privacy.html','_blank','noopener')")}</section>
   <section class="scard"><h4>Appearance</h4><div class="themes" role="group" aria-label="Theme">${[["light","☀️","Light"],["dark","🌙","Dark"],["auto","🖥️","Auto"]].map(([k,e,l])=>`<button class="tile" aria-pressed="${th===k}" onclick="S.theme='${k}';applyTheme();render()"><span aria-hidden="true">${e}</span>${l}</button>`).join("")}</div></section>
   <section class="scard"><h4>I am a</h4><label class="rsel"><select id="roleSel" aria-label="Account type" onchange="S.role=this.value;save();render()"><option value="client" ${cl?"selected":""}>Client</option><option value="worker" ${cl?"":"selected"}>Service provider</option></select></label></section>
  </div><div class="scol">
