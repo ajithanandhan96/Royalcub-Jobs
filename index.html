@@ -815,6 +815,19 @@ html:has(body.tncv),html:has(body.tnc2){overflow:hidden}
 .mprow small{color:var(--mute);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mprow .pill{flex:none}.mprow .chev{flex:none;color:var(--mute);font-size:22px;line-height:1}
 .mphint{margin:10px 0 0;color:var(--mute);font-size:13px;text-align:left}
+
+/* ===== v6: story replies in chat, application pop-up ===== */
+.srep{display:flex;gap:8px;margin-top:12px}.srep input{flex:1;min-width:0}
+.sq{display:grid;gap:3px;width:100%;text-align:left;color:#fff;border-radius:12px;padding:8px 12px;margin:0 0 8px;border-left:4px solid rgba(255,255,255,.75);font-weight:600;font-size:13px;line-height:1.3;overflow-wrap:anywhere}
+.sq small{font-size:11px;font-weight:700;opacity:.9;letter-spacing:.2px}
+.sq span{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.apt{display:block;font-size:15px;margin-bottom:4px}
+.apl{display:block;font-size:14px}
+.pjob{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:8px 0 4px;display:grid;gap:6px}
+.pjob .pjt{display:grid;gap:2px}.pjob .pjt small{color:var(--mute)}
+.pjob .pjd{margin:0;font-size:14px;color:var(--mute)}
+.pjob .pjc{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px}.pjob .pjc small{color:var(--mute);font-weight:600}
+#pitchF{display:grid;gap:12px}
 </style>
 
 
@@ -1128,6 +1141,13 @@ body.out .pubfoot{display:block}
 .land{width:100%;max-width:900px;margin:0 auto;padding:28px 18px;display:grid;gap:28px;position:relative;z-index:1}
 .lhero{display:grid;gap:14px;justify-items:center;text-align:center}.lhero .al{max-height:64px;width:auto}
 .lhero h1{margin:0;font-size:clamp(28px,6vw,44px);line-height:1.12;letter-spacing:-.02em}.lhero p{margin:0;max-width:56ch;color:var(--mute);font-size:17px;line-height:1.6}
+.pgc{width:min(560px,100%);display:grid;gap:12px;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:24px;padding:22px 20px;box-shadow:var(--sh)}
+.pgc h2{margin:0;font-size:21px}.pgs{margin:0;font-size:15px!important}.pgl{margin:0;padding-left:20px;display:grid;gap:8px;font-size:14.5px;line-height:1.5;color:var(--mute)}.pgl b{color:var(--ink)}
+.pgc .link{justify-self:start}.pgck{display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:16px;background:var(--soft);font-weight:600;font-size:15px;cursor:pointer}
+.pgck input{-webkit-appearance:none;appearance:none;flex:none;width:26px;height:26px;padding:0;margin:0;border:2px solid var(--mute);border-radius:8px;background:var(--bg);display:grid;place-items:center;cursor:pointer}
+.pgck input::after{content:"";width:12px;height:6px;border:solid #fff;border-width:0 0 3px 3px;transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+.pgck input:checked{background:var(--plum);border-color:var(--plum)}.pgck input:checked::after{opacity:1}
+.pgc .btn:disabled{opacity:.45;cursor:not-allowed}.pgfull[hidden]{display:none}.pgfull{display:grid;gap:10px;padding:14px;border-radius:16px;background:var(--soft);scroll-margin-top:12px;font-size:14.5px;line-height:1.55}.pgfull p{margin:0}.pgfull a{color:var(--plum);font-weight:600}
 .lcta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.lcta .btn{min-width:170px}
 .lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .lgrid section{background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:20px}.lgrid h2{margin:0 0 8px;font-size:18px}.lgrid p,.lgrid li{margin:0;color:var(--mute);font-size:15px;line-height:1.55}.lgrid ol{margin:0;padding-left:20px;display:grid;gap:6px}
@@ -1186,14 +1206,17 @@ body.out .pubfoot{display:block}
  <label>Category name<input id="catN" required maxlength="20" minlength="2" autocomplete="off" autocapitalize="words" enterkeyhint="done" placeholder="e.g. Photography"></label>
  <button class="btn" style="justify-self:start">Add category</button></form></dialog>
 <dialog id="admD" aria-label="User profile"></dialog>
-<dialog id="pitchD"><form method="dialog" id="pitchF" onsubmit="return false">
- <h3>Apply for this job</h3><p id="pitchT" style="margin:0 0 6px;color:var(--mute)"></p>
- <div class="two"><label>Your price (₹)<input id="pp" type="number" inputmode="numeric" min="1" required></label><label>Can start<select id="ps"><option>Today</option><option>This week</option><option>Next week</option></select></label></div>
- <label>Why you’re a good fit<textarea id="pm" required placeholder="Years of experience, tools, certificates…"></textarea></label>
- <div class="acts"><button class="btn" onclick="sendPitch()">Apply now</button><button class="btn alt" onclick="pitchD.close()">Cancel</button></div>
+<dialog id="pitchD" aria-label="Apply for this job"><form method="dialog" id="pitchF" onsubmit="return false">
+ <div class="dh"><h3 style="margin:0">Apply for this job</h3><button type="button" class="x" aria-label="Close" onclick="pitchD.close()">✕</button></div>
+ <div id="pitchJ" class="pjob"></div>
+ <label>Your expected compensation (₹)<input id="pp" type="number" inputmode="numeric" min="1" required></label>
+ <label>Start date<input id="ps" type="date" required></label>
+ <label>Why you are a good fit<textarea id="pm" required maxlength="500" placeholder="Years of experience, tools, certificates…"></textarea></label>
+ <div class="acts"><button type="button" class="btn" onclick="sendPitch()">Submit application</button><button type="button" class="btn alt" onclick="pitchD.close()">Cancel</button></div>
 </form></dialog>
 
-<dialog id="outD"><h3>Log out?</h3><p style="color:var(--mute)">You can log back in any time. Your vacancies and chats stay saved.</p><div class="acts"><button class="btn" onclick="outD.close();try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view='home';au='login';save();render()">Log out</button><button class="btn alt" onclick="outD.close()">Stay logged in</button></div></dialog>
+<dialog id="chooseD" aria-labelledby="chT"><h3 id="chT">How would you like to continue?</h3><p style="color:var(--mute)">Thanks for agreeing to the Privacy Policy.</p><div class="acts"><button class="btn" onclick="pgChoose('login')">Login</button><button class="btn alt" onclick="pgChoose('register')">Create Account</button></div></dialog>
+<dialog id="outD"><h3>Log out?</h3><p style="color:var(--mute)">You can log back in any time. Your vacancies and chats stay saved.</p><div class="acts"><button class="btn" onclick="outD.close();try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view='home';au='home';pgReset();save();render()">Log out</button><button class="btn alt" onclick="outD.close()">Stay logged in</button></div></dialog>
 <script>
 (function(){var D=window.HTMLDialogElement&&HTMLDialogElement.prototype;if(D&&typeof D.showModal==="function")return;
  document.documentElement.classList.add("nodlg");var E=HTMLElement.prototype;
@@ -1211,7 +1234,7 @@ const GOOGLE_CLIENT_ID="680277727986-633abodqkvsahq4bfmgj7vgbk2k9b0sp.apps.googl
 const SUPABASE_URL="https://qrwcbshtafkgbeooohyq.supabase.co";
 const SUPABASE_KEY="sb_publishable_D2dwzLCS8YaDbAgqDnkJGw_Jm60zQLO";
 const SB_ON=/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(SUPABASE_URL.trim())&&(SUPABASE_KEY.startsWith("sb_publishable_")||/^eyJ[\w-]+\.[\w-]+\.[\w-]+$/.test(SUPABASE_KEY));
-let sb=null,sbP=null,sbBusy=false,sbSet=null;
+let sb=null,sbP=null,sbBusy=false,sbSet=null,rcRec=false,sbQuiet=0;
 const sbGoogleOn=()=>sbSet||(sbSet=SB_ON?fetch(SUPABASE_URL.trim().replace(/\/$/,"")+"/auth/v1/settings",{headers:{apikey:SUPABASE_KEY}}).then(r=>r.ok?r.json():null).then(j=>!!(j&&j.external&&j.external.google)).catch(()=>false):Promise.resolve(false));
 const loadSB=()=>sbP||(sbP=new Promise((ok,no)=>{if(window.supabase&&supabase.createClient)return ok();const sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js";sc.async=true;sc.onload=ok;sc.onerror=()=>{sbP=null;no(new Error("load"))};document.head.appendChild(sc)}));
 async function sbClient(){if(sb)return sb;await loadSB();sb=supabase.createClient(SUPABASE_URL.trim().replace(/\/$/,""),SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return sb}
@@ -1252,6 +1275,15 @@ const LG={"l": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA58AAADtCAYAAAA4E8
 hlL.src=LG.l;hlD.src=LG.d;slg.src=LG.d;fav.href=LG.i;fav2.href=LG.i;
 const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 let au="home",fp={step:1,email:"",code:"",tries:0};
+const PG_V="2026-11-12";let pgOk=false;try{pgOk=sessionStorage.getItem("rc_pg")===PG_V}catch(e){}
+function pgReset(){pgOk=false;try{sessionStorage.removeItem("rc_pg")}catch(e){}}
+function pgToggle(){const d=document.getElementById("pgMore"),b=document.getElementById("pgMoreB");if(!d||!b)return;const open=d.hidden;d.hidden=!open;b.textContent=open?"View Less":"View More";b.setAttribute("aria-expanded",String(open));
+ if(open)d.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"})}
+function pgCheck(cb){const b=document.getElementById("pgBtn");if(b){b.disabled=!cb.checked;b.setAttribute("aria-disabled",String(!cb.checked))}}
+function pgAgree(){const cb=document.getElementById("pgCk");if(!cb||!cb.checked){toast("Tick the box to agree to the Privacy Policy");return}
+ pgOk=true;try{sessionStorage.setItem("rc_pg",PG_V);localStorage.setItem("rc_privacy",JSON.stringify({v:PG_V,at:Date.now()}))}catch(e){}
+ render();if(!chooseD.open)chooseD.showModal()}
+function pgChoose(k){chooseD.close();showAuth(k)}
 let editP=false,cp=null,ck="job",sv={n:null,i:0};
 let S={services:SERV0,tab:"jobs",role:"client",name:"Arjun Rao",theme:"auto",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[{email:"arjun.rao@example.com",pw:"Arjun@123",name:"Arjun Rao",phone:"+91 98765 43210",age:"28",cat:"Client",role:"client",title:"Rao Home Projects"}],hist:[{id:"h1",t:"Fix leaking kitchen pipe",who:"Anna Reed",d:"12 Oct 2026",a:"₹800",s:"Completed"},{id:"h2",t:"Deep clean 2BHK flat",who:"Meera Nair",d:"28 Sep 2026",a:"₹1,800",s:"Completed"},{id:"h3",t:"Rewire hall switchboard",who:"Victor King",d:"15 Sep 2026",a:"₹1,200",s:"Cancelled"}],cat:"All",view:"home",notes:2,thread:null,
  jobs:[
@@ -1487,11 +1519,25 @@ const earnTx=x=>{const a=(x.b||[]).filter(b=>b.status==="accepted");if(!a.length
 
 
 /* ---------- v3: Terms & Conditions + mandatory onboarding ---------- */
-const TNC_V="1.0",TNC_DATE="7 November 2026";
+const TNC_V="1.0",TNC_DATE="11 November 2026";
 const TNC_PARAS=[
-`<b>About RoyalCub Jobs.</b> RoyalCub Jobs is a marketplace that helps clients find workers and workers find jobs. Every job, price and booking is agreed <b>directly between the client and the worker</b>. We are not their employer, agent or payer, and we do not guarantee any job, rate or result.`,
-`<b>Your account and conduct.</b> You must be 16 or older. Give accurate details, keep your password private, and post only genuine jobs and services. Be honest and respectful: no scams, spam, fake reviews or harassment. Accounts that break these rules may be restricted or removed.`,
-`<b>Safety and liability.</b> RoyalCub Jobs is <b>not liable</b> for the quality, safety, timing or payment of any work, or for any loss or dispute between users. Pay and get paid directly, meet in safe places, and report problems from Help &amp; support. By continuing, you agree to these terms.`];
+`<b>1. About RoyalCub Jobs.</b> RoyalCub Jobs (also written Royal Cub) is a marketplace that helps clients find workers and workers find jobs. Every job, price and booking is agreed <b>directly between the client and the worker</b>. We are not their employer, agent, contractor or payer, and we do not guarantee any job, rate or result.`,
+`<b>2. Accepting these terms.</b> By creating an account or using the app you agree to these Terms &amp; Conditions and to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. If you do not agree, please do not use RoyalCub Jobs. We may update these terms; when we do, we will change the date above and ask you to agree again where the change is important.`,
+`<b>3. Eligibility and your account.</b> You must be 16 or older. You can sign up with your email or with Google. Give accurate details, keep your password and sign-in private, and tell us at once if someone else uses your account. You are responsible for everything done through your account. One person, one account.`,
+`<b>4. Your conduct.</b> Be honest and respectful. Do not post fake or misleading jobs, services or reviews, send spam, scam or harass anyone, share hateful, sexual, violent or illegal content, impersonate others, collect other users&rsquo; data, or try to break, copy or overload the app. Do not use the app for anything unlawful.`,
+`<b>5. Vacancies, services and applications.</b> Clients may post genuine vacancies and workers may list genuine services. When a worker taps <b>Apply for this job</b> they send the poster the job details, the pay they expect, a start date and why they are a good fit. The poster sees &ldquo;Applied for this position&rdquo; in chat and can <b>Approve</b> or <b>Cancel</b> the application. Approval opens the way to continue the chat and agree the details; cancelling ends that application. An approval is not a contract of employment and does not guarantee work or payment.`,
+`<b>6. Bookings and payments.</b> Prices, pay, dates and any extra terms are agreed directly between the users. Unless the app clearly says otherwise, RoyalCub Jobs does not take, hold or guarantee payments. Pay and get paid directly, keep your own records, and settle disputes between yourselves. You are responsible for any taxes, licences, permits and insurance that apply to your work.`,
+`<b>7. Chats and status posters.</b> Messages are between you and the person you write to. A status poster is visible to other logged-in users for 24 hours and then disappears. When you reply to a status, your reply is sent as a chat message that shows which status you replied to. Do not share anything in chats or statuses that you do not want the other person to see or keep.`,
+`<b>8. Your content.</b> You keep ownership of what you post (profile, vacancies, services, statuses, reviews, messages). You give RoyalCub Jobs a free, non-exclusive right to store, display and deliver it within the app so the service can work. You promise you have the right to post it and that it does not break the law or anyone&rsquo;s rights.`,
+`<b>9. Reviews and ratings.</b> Reviews must be genuine, fair and based on real experience. We may remove reviews that are fake, abusive, off-topic or unlawful.`,
+`<b>10. Privacy and your data.</b> How we collect, use, share, protect, keep and delete your data, including the Google name, email and account ID you share when you sign in with Google, is explained in our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. We do not sell your data.`,
+`<b>11. Safety and liability.</b> RoyalCub Jobs is <b>not liable</b> for the quality, safety, timing or payment of any work, or for any loss, injury, damage or dispute between users. Check people&rsquo;s profiles and reviews, meet in safe public places, never pay in advance to someone you do not trust, and report problems from Help &amp; support.`,
+`<b>12. No warranties.</b> The app is provided &ldquo;as is&rdquo; and &ldquo;as available&rdquo;. We try to keep it running and accurate, but we do not promise it will always be available, error-free or free of harmful content posted by users.`,
+`<b>13. Limit of responsibility.</b> To the extent the law allows, RoyalCub Jobs and its owners are not responsible for indirect or consequential loss, lost income or lost opportunities, and our total responsibility to you for any claim is limited to the amount you paid us for the app, which is nothing if you use it for free. Nothing here limits rights you have by law that cannot be limited.`,
+`<b>14. Suspension and ending your account.</b> We may warn, restrict, block or ban an account, remove content, or end access if these terms are broken, if the law requires it, or to protect users. You can stop using the app at any time and can ask us to delete your account from Help &amp; support.`,
+`<b>15. Our rights.</b> The RoyalCub Jobs name, logo, design and software belong to us or our licensors. You may use the app for its intended purpose but may not copy, modify, resell or reverse-engineer it.`,
+`<b>16. Reports, help and contact.</b> To report a user, post, review or problem, or to ask a question about these terms, use <b>Help &amp; support</b> in the app. We will review reports and act where we think it is right.`,
+`<b>17. Governing law.</b> These terms are governed by the laws of India. Any dispute that cannot be settled informally will be handled by the courts of India. By continuing, you confirm that you have read and agree to these terms.`];
 const meU=()=>S.users.find(x=>x.email===S.me)||S.users.find(x=>x.name===S.name);
 const needTnc=()=>{const u=meU();return !!u&&(!u.tnc||u.tnc.v!==TNC_V)};
 let onbStep=1;
@@ -1523,16 +1569,16 @@ const LOCK=SV("M18 8h-1V6a5 5 0 0 0-10 0v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2
 const pwField=(id,l,ac)=>`<label>${l}<div class="pw iw">${LOCK}<input id="${id}" type="password" autocomplete="${ac}" required><button type="button" class="eye" aria-label="Show password" aria-pressed="false" onclick="togglePw('${id}',this)">Show</button></div></label>`;
 const emField=(id,l,ac)=>`<label>${l}<div class="iw">${IC.mail}<input id="${id}" type="email" required autocomplete="${ac}" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com"></div></label>`;
 function togglePw(id,b){const i=document.getElementById(id),sh=i.type==="password";i.type=sh?"text":"password";b.textContent=sh?"Hide":"Show";b.setAttribute("aria-pressed",sh);b.setAttribute("aria-label",(sh?"Hide":"Show")+" password")}
-function showAuth(k){au=k;if(k==="forgot")fp={step:1,email:"",code:"",tries:0};render();setTimeout(()=>{const f=document.querySelector(".acard input,.acard select");if(f)f.focus()},60)}
+function showAuth(k){if(!pgOk&&k!=="recover")k="home";au=k;if(k==="forgot")fp={step:1,email:"",code:"",tries:0};render();setTimeout(()=>{const f=document.querySelector(".acard input,.acard select");if(f)f.focus()},60)}
 function setErr(m,id){document.getElementById("aerr").textContent=m;const f=id&&document.getElementById(id);if(f)f.focus();return false}
 function pwErr(p,c){if(p.length<8)return["Password must be at least 8 characters.",0];if(!/[A-Za-z]/.test(p)||!/\d/.test(p))return["Use at least one letter and one number.",0];if(p!==c)return["Passwords don’t match.",1];return null}
 function swapBoxes(n){S.box=S.box||{};if(S.boxFor===n)return;if(S.boxFor)S.box[S.boxFor]={t:S.threads,n:S.notifs};const b=S.box[n];S.threads=b?b.t:(S.boxFor?[]:S.threads);S.notifs=b?b.n:(S.boxFor?[]:S.notifs);S.boxFor=n;S.thread=null}
 function enter(u,msg){navJump=true;swapBoxes(u.name);S.me=u.email;u.last=Date.now();S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false;HS.st=HS.cats=0;S.view=u.role==="admin"?"admin":"home";S.cat="All";S.q="";S.thread=null;log("login");save();render();scrollTo(0,0);resumeNeg();scheduleNewPro();RT.start();toast(msg||"Welcome back, "+u.name.split(" ")[0])}
 function doLogin(e){e.preventDefault();const em=le.value.trim().toLowerCase(),pw=lp.value;
  if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","le");if(!pw)return setErr("Enter your password.","lp");
- const u=S.users.find(x=>x.email.toLowerCase()===em&&x.pw===pw);if(!u)return setErr("Incorrect email or password.","lp");
+ const u=S.users.find(x=>x.email.toLowerCase()===em&&x.pw===pw);if(!u)return sbLoginFallback(em,pw);
  if(u.status==="banned")return setErr("This account has been banned."+(u.reason?" Reason: "+u.reason:"")+" Contact support if you think this is a mistake.");
- if(u.status==="blocked")return setErr("This account is blocked."+(u.reason?" Reason: "+u.reason:"")+" Contact support to appeal.");enter(u)}
+ if(u.status==="blocked")return setErr("This account is blocked."+(u.reason?" Reason: "+u.reason:"")+" Contact support to appeal.");enter(u);sbEnsure(u,pw)}
 /* ---------- Google sign-in (Google Identity Services) ---------- */
 let gisP=null,gNonces=[],gRaw={};
 const gerr=m=>{const e=document.getElementById("gerr");if(e)e.textContent=m||""};
@@ -1562,8 +1608,9 @@ function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.
  if(u.status==="banned")return gerr("This account has been banned."+(u.reason?" Reason: "+u.reason:""));
  if(u.status==="blocked")return gerr("This account is blocked."+(u.reason?" Reason: "+u.reason:""));
  enter(u,fresh?"Account created with Google. Welcome, "+u.name.split(" ")[0]+"!":linked?"Google account linked. Welcome back!":"Signed in with Google")}
-function sbUserSignIn(u){if(!u||!S.out||sbBusy)return;const m=u.user_metadata||{};googleSignIn({sub:String(m.sub||m.provider_id||u.id),email:u.email||m.email||"",email_verified:true,name:m.full_name||m.name||""})}
-async function sbInit(){if(!SB_ON)return;sbGoogleOn();try{const c=await sbClient();c.auth.onAuthStateChange((ev,ss)=>{if(ev==="SIGNED_IN"&&ss&&ss.user)sbUserSignIn(ss.user)});const {data}=await c.auth.getSession();if(data&&data.session)sbUserSignIn(data.session.user);if(location.hash.includes("access_token")||location.search.includes("code="))history.replaceState(null,"",location.pathname)}catch(e){console.warn("Supabase init failed",e)}}
+function sbUserSignIn(u){if(!u||!S.out||sbBusy||rcRec||sbQuiet||!(u.identities||[]).some(i=>i.provider==="google"))return;const m=u.user_metadata||{};googleSignIn({sub:String(m.sub||m.provider_id||u.id),email:u.email||m.email||"",email_verified:true,name:m.full_name||m.name||""})}
+function showRecover(em){rcRec=true;S.out=true;au="recover";fp={step:1,email:em||"",code:"",tries:0};render()}
+async function sbInit(){if(!SB_ON)return;sbGoogleOn();if(/type=recovery/.test(location.hash))rcRec=true;try{const c=await sbClient();c.auth.onAuthStateChange((ev,ss)=>{if(ev==="PASSWORD_RECOVERY"){showRecover(ss&&ss.user&&ss.user.email);return}if(ev==="SIGNED_IN"&&ss&&ss.user)sbUserSignIn(ss.user)});const {data}=await c.auth.getSession();if(rcRec&&data&&data.session)showRecover(data.session.user.email);else if(data&&data.session)sbUserSignIn(data.session.user);if(location.hash.includes("access_token")||location.search.includes("code="))history.replaceState(null,"",location.pathname)}catch(e){console.warn("Supabase init failed",e)}}
 function fillDemo(){le.value="arjun.rao@example.com";lp.value="Arjun@123";setErr("");lp.focus()}
 function doRegister(e){e.preventDefault();const nm=rn.value.trim(),em=re.value.trim().toLowerCase(),ph=rph.value.trim(),ag=+ra.value,ct=rc.value;
  if(nm.length<2)return setErr("Enter your full name.","rn");
@@ -1573,16 +1620,35 @@ function doRegister(e){e.preventDefault();const nm=rn.value.trim(),em=re.value.t
  if(!(ag>=16&&ag<=99))return setErr("Age must be between 16 and 99.","ra");
  if(!ct)return setErr("Choose a category.","rc");
  const pe=pwErr(rpw.value,rcf.value);if(pe)return setErr(pe[0],pe[1]?"rcf":"rpw");
- const u={email:em,pw:rpw.value,name:nm,phone:ph,age:String(ag),cat:ct,role:ct==="Client"?"client":"worker",title:rt.value.trim()};S.users.push(u);enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!")}
-function doReset1(e){e.preventDefault();const em=fe.value.trim().toLowerCase();if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","fe");
- const u=S.users.find(x=>x.email.toLowerCase()===em);fp={step:2,email:em,code:u?String(100000+(Math.random()*900000|0)):"",tries:0};render();setTimeout(()=>{const f=document.getElementById("fc");if(f)f.focus()},60)}
-function doReset2(e){e.preventDefault();fp.tries++;
- if(fp.tries>5){return setErr("Too many attempts. Please request a new code.")}
- if(!fp.code||fc.value.trim()!==fp.code)return setErr("That code isn’t right.","fc");
- const pe=pwErr(fn.value,fcf.value);if(pe)return setErr(pe[0],pe[1]?"fcf":"fn");
- const u=S.users.find(x=>x.email.toLowerCase()===fp.email);u.pw=fn.value;const em=fp.email;au="login";save();render();le.value=em;lp.focus();toast("Password updated. Log in with your new password.")}
+ const u={email:em,pw:rpw.value,name:nm,phone:ph,age:String(ag),cat:ct,role:ct==="Client"?"client":"worker",title:rt.value.trim()};S.users.push(u);enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!");sbEnsure(u,rpw.value)}
+async function doReset1(e){e.preventDefault();const em=fe.value.trim().toLowerCase();if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","fe");
+ if(!SB_ON)return setErr("Password reset isn’t available right now. Please contact support.");
+ const bt=e.submitter||document.querySelector(".acard .btn");if(bt)bt.disabled=true;
+ try{const c=await sbClient();const {error}=await c.auth.resetPasswordForEmail(em,{redirectTo:location.origin+location.pathname});
+  if(error&&/rate|seconds|too many/i.test(error.message||"")){if(bt)bt.disabled=false;return setErr("Too many requests. Please wait a minute and try again.","fe")}
+  fp={step:2,email:em,code:"",tries:0};render()}
+ catch(x){if(bt)bt.disabled=false;setErr("Couldn’t send the email. Check your connection and try again.","fe")}}
+async function doRecover(e){e.preventDefault();const pe=pwErr(rnw.value,rncf.value);if(pe)return setErr(pe[0],pe[1]?"rncf":"rnw");
+ const bt=e.submitter||document.querySelector(".acard .btn");if(bt)bt.disabled=true;
+ try{const c=await sbClient();const {error}=await c.auth.updateUser({password:rnw.value});
+  if(error){if(bt)bt.disabled=false;return setErr(/different/i.test(error.message||"")?"Choose a password you haven’t used before.":/session|expired|missing/i.test(error.message||"")?"This reset link has expired. Request a new one.":"Couldn’t update the password. Please try again.","rnw")}
+  const em=fp.email,u=S.users.find(x=>x.email.toLowerCase()===em.toLowerCase());if(u)u.pw=rnw.value;
+  sbQuiet++;try{await c.auth.signOut({scope:"local"})}catch(_){}sbQuiet--;
+  rcRec=false;S.out=true;au="home";pgReset();save();render();toast("Password updated. Agree to the Privacy Policy, then log in with your new password.")}
+ catch(x){if(bt)bt.disabled=false;setErr("Couldn’t update the password. Please try again.","rnw")}}
+async function sbEnsure(u,pw){if(!SB_ON||!pw||!u||u.role==="admin"||/@example\.com$/i.test(u.email))return;sbQuiet++;
+ try{const c=await sbClient();const r=await c.auth.signInWithPassword({email:u.email,password:pw});
+  if(r.error&&/invalid login/i.test(r.error.message||""))await c.auth.signUp({email:u.email,password:pw,options:{data:{name:u.name,phone:u.phone,age:u.age,cat:u.cat,role:u.role}}});
+  await c.auth.signOut({scope:"local"})}catch(e){console.warn("Supabase account sync skipped:",e.message)}finally{sbQuiet--}}
+async function sbLoginFallback(em,pw){const bad=()=>setErr("Incorrect email or password.","lp");if(!SB_ON)return bad();sbQuiet++;
+ try{const c=await sbClient();const {data,error}=await c.auth.signInWithPassword({email:em,password:pw});if(error||!data||!data.user)return bad();
+  const m=data.user.user_metadata||{};try{await c.auth.signOut({scope:"local"})}catch(_){}
+  let u=S.users.find(x=>x.email.toLowerCase()===em);
+  if(!u){u={email:em,pw:pw,name:String(m.name||em.split("@")[0]).slice(0,40),phone:m.phone||"",age:String(m.age||""),cat:m.cat||"Client",role:m.role==="worker"?"worker":"client",title:"",status:"active",joined:Date.now()};S.users.push(u)}else u.pw=pw;
+  if(u.status==="banned"||u.status==="blocked")return setErr("This account is "+u.status+". Contact support.");
+  enter(u)}catch(e){bad()}finally{sbQuiet--}}
 function authView(){
- if(au==="home")return `<div class="land"><div class="lhero"><img class="al lg-l" src="${LG.l}" alt="RoyalCub Jobs"><img class="al lg-d" src="${LG.d}" alt="RoyalCub Jobs"><h1>Hire fast. Work smart. Get it done.</h1><p>RoyalCub Jobs connects people who need work done with trusted local professionals, from plumbers and electricians to nurses, drivers and repair shops.</p><div class="lcta"><button class="btn" onclick="showAuth('login')">Log in</button><button class="btn alt" onclick="showAuth('register')">Create account</button></div></div>
+ if(au==="home")return `<div class="land"><div class="lhero"><img class="al lg-l" src="${LG.l}" alt="RoyalCub Jobs"><img class="al lg-d" src="${LG.d}" alt="RoyalCub Jobs"><h1>Hire fast. Work smart. Get it done.</h1><p>RoyalCub Jobs connects people who need work done with trusted local professionals, from plumbers and electricians to nurses, drivers and repair shops.</p>${pgOk?`<div class="lcta"><button class="btn" onclick="showAuth('login')">Log in</button><button class="btn alt" onclick="showAuth('register')">Create account</button></div>`:`<section class="pgc" aria-labelledby="pgT"><h2 id="pgT">Your privacy matters</h2><p class="pgs">Before you log in or create an account, please review how RoyalCub Jobs handles your data.</p><ul class="pgl"><li><b>What we collect:</b> your name, email and phone, age, profile details, and the posts, chats, bookings and reviews you create. With Google sign-in, only your Google name, email and account ID.</li><li><b>How we use it:</b> to run your account, sign you in, connect clients and service providers, and keep the service safe.</li><li><b>Sharing:</b> we never sell your data. It is shared only with other users as you choose, with our service providers (Supabase, Google Sign-In), or when the law requires.</li><li><b>Security:</b> encrypted connections and managed authentication. No online service is perfectly secure.</li><li><b>Your rights:</b> access, correct or delete your data any time.</li></ul><button type="button" class="link" id="pgMoreB" aria-expanded="false" aria-controls="pgMore" onclick="pgToggle()">View More</button><div id="pgMore" class="pgfull" hidden><p><b>Data we collect.</b> Account details (name, email, phone, age, role and category, and a password for email sign-up); optional profile details (photo, location, title); content you create (vacancies, services, status posts, bookings, offers, chat messages, reviews, follows, support requests); settings and basic activity records. With Google sign-in we receive only your Google name, email address (and verified status) and account ID. We do not access Gmail, Drive, Contacts or Calendar, and we do not collect card details.</p><p><b>How we use it.</b> To create your account, sign you in, show your profile and listings, deliver chats and bookings, respond to support, enforce our Terms and protect against fraud and abuse. We do not use your data for third-party advertising.</p><p><b>Google user data.</b> Used only to create and secure your account. Not sold, not shared for advertising, and not used to train AI or machine-learning models. Our use of information from Google APIs follows the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including its Limited Use requirements.</p><p><b>Sharing.</b> We do not sell your data. Your name, photo, location, title, listings, posts and reviews are visible to others per your privacy settings; your email and phone are not published on your profile. We share data only with providers that run the service (Supabase, Google Sign-In), where the law requires, or in a business transfer.</p><p><b>Security.</b> Encrypted HTTPS connections, authentication handled by managed providers, and limited access to data. Some data is kept on your device so the app works smoothly; log out on shared devices.</p><p><b>Retention and your rights.</b> We keep data while your account is active. You can ask to access, correct or delete your data at any time and delete Google-linked data with your account. The service is for people aged 16 and over.</p><p><a href="privacy.html" target="_blank" rel="noopener">Open the full Privacy Policy page</a></p></div><label class="pgck"><input id="pgCk" type="checkbox" onchange="pgCheck(this)"><span>I have read and agree to the Privacy Policy.</span></label><button id="pgBtn" class="btn" type="button" disabled aria-disabled="true" onclick="pgAgree()">Agree</button></section>`}</div>
  <div class="lgrid"><section><h2>For clients</h2><p>Post a vacancy with your budget, location and dates, browse service providers near you, and chat directly to agree the details.</p></section><section><h2>For service providers</h2><p>Create a profile, list the services you offer with your availability and pricing, and get found by clients in your area.</p></section><section><h2>How it works</h2><ol><li>Create a free account as a client or service provider.</li><li>Post a vacancy or offer a service.</li><li>Chat, agree terms and pay each other directly.</li></ol></section></div></div>`;
  const head=(t,sub)=>`<div class="ahead"><img class="al lg-l" src="${LG.l}" alt="RoyalCub Jobs"><img class="al lg-d" src="${LG.d}" alt="RoyalCub Jobs"><h2>${t}</h2><p class="sub">${sub}</p></div>`;
  if(au==="register")return `<div class="auth"><div class="acard">${head("Create your account","Join to hire help or find work near you.")}
@@ -1598,20 +1664,21 @@ function authView(){
  <div class="err" id="aerr" role="alert"></div>
  <button class="btn">Create Account</button></form>
  <div class="or"><span>already registered?</span></div><button class="btn alt" onclick="showAuth('login')">Back to Log in</button><p class="plink">By creating an account you agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p></div></div>`;
- if(au==="forgot")return `<div class="auth"><div class="acard">${head("Forgot password?",fp.step===1?"Enter your email and we’ll send you a reset code.":`We sent a 6-digit code to <b>${esc(fp.email)}</b>.`)}
- ${fp.step===1?`<form onsubmit="doReset1(event)" novalidate><label>Email ID<input id="fe" type="email" required autocomplete="email" value="${esc(fp.email)}"></label><div class="err" id="aerr" role="alert"></div><button class="btn">Send reset email</button></form>`
- :`${fp.code?`<div class="note">Demo mode: no email server is connected, so your code is <b>${fp.code}</b>.</div>`:""}<form onsubmit="doReset2(event)" novalidate><label>6-digit code<input id="fc" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required></label>${pwField("fn","New password","new-password")}${pwField("fcf","Confirm new password","new-password")}<div class="err" id="aerr" role="alert"></div><button class="btn">Reset password</button></form><button class="link" style="justify-self:center" onclick="showAuth('forgot')">Use a different email</button>`}
+ if(!pgOk&&au!=="recover"&&au!=="home")au="home";
+ if(au==="recover")return `<div class="auth"><div class="acard">${head("Set a new password","Choose a new password for <b>"+esc(fp.email||"your account")+"</b>.")}
+ <form onsubmit="doRecover(event)" novalidate>${pwField("rnw","New password","new-password")}<div class="fine">At least 8 characters, with a letter and a number.</div>${pwField("rncf","Confirm new password","new-password")}<div class="err" id="aerr" role="alert"></div><button class="btn">Update password</button></form>
+ <button class="btn alt" onclick="rcRec=false;showAuth('login')">Back to Log in</button></div></div>`;
+ if(au==="forgot")return `<div class="auth"><div class="acard">${head(fp.step===1?"Forgot password?":"Check your email",fp.step===1?"Enter your email and we’ll send you a link to reset your password.":`If an account exists for <b>${esc(fp.email)}</b>, we’ve sent a password reset link. It can be used once and expires soon. Check your spam folder too.`)}
+ ${fp.step===1?`<form onsubmit="doReset1(event)" novalidate><label>Email ID<input id="fe" type="email" required autocomplete="email" value="${esc(fp.email)}"></label><div class="err" id="aerr" role="alert"></div><button class="btn">Send reset link</button></form>`:`<button class="btn" onclick="fp.step=1;render()">Send to a different email</button>`}
  <button class="btn alt" onclick="showAuth('login')">Back to Log in</button></div></div>`;
  return `<div class="auth"><div class="acard">${head("Welcome back","Log in to hire help or find work.")}
-  ${gblock()}
-  <div class="or"><span>or continue with email</span></div>
   <form onsubmit="doLogin(event)" novalidate>${emField("le","Email","email")}
   ${pwField("lp","Password","current-password")}
   <button type="button" class="link" onclick="showAuth('forgot')">Forgot Password?</button>
   <div class="err" id="aerr" role="alert"></div><button class="btn">Log in</button></form>
   <div class="or"><span>new here?</span></div>
   <button class="btn alt" onclick="showAuth('register')">Create Account</button>
-  <p class="secure">${LOCK} Secure sign-in</p><p class="plink">By continuing you agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p><button type="button" class="link" onclick="showAuth('home')">Back to home</button></div></div>`}
+  <p class="secure">${LOCK} Secure sign-in</p><p class="plink">By continuing you agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p></div></div>`}
 
 /* ---------- help & reports (user side) ---------- */
 let supAbout="";
@@ -1641,7 +1708,7 @@ function admin(){const tabs=[["overview","Overview"],["users","Users"],["tickets
  view.innerHTML=`<div class="row"><h2 style="display:flex;align-items:center;gap:10px"><img class="ai" src="${LG.i}" alt="">Admin portal</h2><button class="btn alt" style="padding:6px 16px" onclick="adminOut()">Log out</button></div>
  <div class="seg" style="margin-bottom:16px;overflow-x:auto" role="tablist">${tabs.map(([k,l])=>`<button aria-pressed="${adm.tab===k}" onclick="adm.tab='${k}';adm.tix=null;admin()">${l}${k==="tickets"&&openTix()?` <small>(${openTix()})</small>`:""}</button>`).join("")}</div>
  <div id="adm">${({overview:admOverview,users:admUsers,tickets:admTickets,log:admLog})[adm.tab]()}</div>`}
-function adminOut(){sbOut();S.out=true;S.me=null;S.view="home";au="login";log("admin logout");save();render()}
+function adminOut(){sbOut();S.out=true;S.me=null;S.view="home";au="home";pgReset();log("admin logout");save();render()}
 function admOverview(){const U=S.users.filter(u=>u.role!=="admin"),k=(b,l,sub="")=>`<div class="kpi"><b>${b}</b><span>${l}</span>${sub?`<small>${sub}</small>`:""}</div>`,cs=S.chatStats,msgs=S.threads.reduce((a,t)=>a+t.m.length,0);
  return `<div class="kpis">${k(U.length,"Users",U.filter(u=>u.status==="active").length+" active · "+U.filter(u=>u.status==="blocked").length+" blocked · "+U.filter(u=>u.status==="banned").length+" banned")}${k(S.jobs.length,"Vacancies")}${k(S.services.length,"Professional listings")}${k(S.hist.length,"Requests & bookings")}${k(S.threads.length,"Conversations",msgs+" messages")}${k(openTix(),"Open help & reports",S.tix.length+" total")}${k(cs.failed,"Failed messages",cs.sent?Math.round(cs.failed/cs.sent*100)+"% of "+cs.sent+" sent · "+cs.retries+" retries":"none sent yet")}</div>
  <h4>Recent activity</h4>${logRows(S.log.slice(0,8))}`}
@@ -1933,23 +2000,23 @@ function bkAct(sid,bid,act){const x=S.services.find(z=>z.id===+sid),b=x&&x.b.fin
  else{b.status="cancelled";b.counter=null;ttl=`You withdrew your request to ${x.by}`;msg=`I’m withdrawing my booking request. Thanks!`}
  bkSync(x,b);Notify.add({type:"booking",title:ttl,body:`${x.t} · ${b.date}`,act:{k:"service",id:x.id},read:1});const peer=act[0]==="p"?b.by:x.by;Chat.send(ensure(peer).id,msg+mkTag("bk",x.id,b.id,({paccept:"accepted",pdecline:"declined",pcounter:"countered",caccept:"accepted",cwithdraw:"cancelled"})[act]||"pending"));save();render();if(postD.open)openService(x.id);toast(ttl)}
 const who=(n,sub,cls="")=>`<button class="who ${cls}" data-n="${esc(n)}" onclick="event.stopPropagation();openProfile(this.dataset.n)" aria-label="View profile of ${esc(n)}"><div class="av sm" style="${abg(n)}">${ait(n)}</div><div><b>${esc(n)}</b><small>${sub}</small></div></button>`;
-function card(j){const mine=j.by===S.name,pitched=j.p.some(p=>p.by===S.name);
+function card(j){const mine=j.by===S.name,pitched=j.p.some(p=>p.by===S.name&&p.st!=="rejected");
  return `<article class="job" onclick="openPost(${j.id})"><div class="jh">${who(j.by,byLine(j.by))}<span class="tag">${j.c}</span></div>
  <h3><button class="lnk">${esc(j.t)}</button></h3>
  <div class="meta"><span>${LOC}${esc(j.loc)}${nearPill(j.loc)}</span><span>${mPrice(j.c)}${esc(j.b)}${per(j)}</span>${drSpan(j)}${attrSpans(j,1)}${mine?`<span>${DI.eye}${nv(j)}</span>`:""}</div>
  <p>${esc(j.d)}</p><div class="acts pm">
- ${mine?`<span class="cnt">${DI.inbox}${j.p.length} request${j.p.length===1?"":"s"} received</span>`:`<button class="btn applyb" ${pitched?"disabled":""} onclick="event.stopPropagation();pitch(${j.id})">${pitched?"Applied":"Apply now"}</button>`}
+ ${mine?`<span class="cnt">${DI.inbox}${j.p.length} request${j.p.length===1?"":"s"} received</span>`:`<button class="btn applyb" ${pitched?"disabled":""} onclick="event.stopPropagation();pitch(${j.id})">${pitched?"Applied":"Apply for this job"}</button>`}
  </div></article>`}
 
 function openPost(id){const j=S.jobs.find(x=>x.id===id);if(!j)return;cp=id;ck="job";shut("profD","storyD");addView(j);save();
- const mine=j.by===S.name,pitched=j.p.some(p=>p.by===S.name),mineReq=j.p.filter(p=>p.by===S.name);
+ const mine=j.by===S.name,pitched=j.p.some(p=>p.by===S.name&&p.st!=="rejected"),mineReq=j.p.filter(p=>p.by===S.name);
  const reqs=mine?(j.p.length?j.p.map(p=>pitchReq(j,p)).join(""):`<div class="empty" style="padding:18px">No requests yet.</div>`)
   :`${mineReq.map(p=>`<div class="req"><div><b>${esc(S.name)}</b> <span class="pill">You</span> · ${mEarn()}₹${esc(p.price)} · ${mDate(j.c)}${esc(p.start)} ${pitchPill(p)}</div><span style="color:var(--mute)">${esc(p.msg)}</span></div>`).join("")}${mineReq.length?"":`<p class="cnt" style="margin:0">You haven’t pitched yet.</p>`}`;
  postShell({by:j.by,c:j.c,t:j.t,d:j.d,
   meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(j.loc)}</span><span>${mPrice(j.c)}${esc(j.b)}${per(j)}</span>${drSpan(j)}${attrSpans(j,1)}</div>`,
   views:mine?`<div class="vw" style="margin:0">${DI.eye}${nv(j)}${j.v.length?`<small>Viewed by ${j.v.map(esc).join(", ")}</small>`:""}</div>`:"",
   listT:mine?`Requests (${j.p.length})`:`Requests · ${j.p.length} received`,list:reqs,
-  foot:mine?`<button class="btn pitchb" onclick="editPost('job',${j.id})">Edit</button><button class="btn alt dng" onclick="delPost('job',${j.id})">Delete</button><span class="hint">This is your job post. Pitches appear above.</span>`:`<button class="btn applyb" ${pitched?"disabled":""} onclick="pitch(${j.id})">${pitched?"Applied":"Apply now"}</button><button class="btn alt ico" onclick="msgClient(${j.id})">${IC.chat}Message</button><span class="hint">Review and comment without leaving this page</span>`});
+  foot:mine?`<button class="btn pitchb" onclick="editPost('job',${j.id})">Edit</button><button class="btn alt dng" onclick="delPost('job',${j.id})">Delete</button><span class="hint">This is your job post. Pitches appear above.</span>`:`<button class="btn applyb" ${pitched?"disabled":""} onclick="pitch(${j.id})">${pitched?"Applied":"Apply for this job"}</button><button class="btn alt ico" onclick="msgClient(${j.id})">${IC.chat}Message</button><span class="hint">Review and comment without leaving this page</span>`});
  if(S.view==="home"&&!S.out)home()}
 
 let profN="";
@@ -1971,14 +2038,16 @@ function expTxt(ts){const rem=864e5-(Date.now()-(ts||Date.now()));if(rem<=0)retu
  return h>=24?"Disappears in 24 hours":h>0?"Disappears in "+h+"h"+(mm?" "+mm+"m":""):"Disappears in "+mm+"m"}
 function tickStory(){if(!storyD.open)return;const e=storyD.querySelector(".sexp");if(!e)return;const t=+e.dataset.ts;if(t&&Date.now()-t>=864e5){pruneStories();showStory()}else e.textContent=expTxt(t)}
 setInterval(tickStory,20000);
-function showStory(){const l=S.stories.filter(x=>x.by===sv.n);
+function showStory(){const l=S.stories.filter(x=>x.by===sv.n),sk=document.getElementById("srx"),skv=sk&&storyD.contains(sk)?sk.value:"",skid=sk?sk.dataset.sid:"",skf=!!sk&&document.activeElement===sk;
  if(!l.length){storyD.close();if(S.view==="home")home();return}
  sv.i=Math.max(0,Math.min(sv.i,l.length-1));const x=l[sv.i],mine=x.by===S.name;addView(x);save();
  storyD.innerHTML=`<div class="dh">${who(x.by,(l.length>1?`Poster ${sv.i+1} of ${l.length} · `:"")+(mine?"Your status":"Status"))}<button class="x" aria-label="Close" onclick="storyD.close()">✕</button></div>
  <div class="poster" style="background:${BG[x.bg]||BG[0]}">${esc(x.text)}<small class="sexp" data-ts="${x.ts||0}">${expTxt(x.ts)}</small></div>
  ${mine?`<div class="vw">${DI.eye}${nv(x)}${x.v.length?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:""}
+ ${mine?"":`<form class="srep" onsubmit="sendStoryReply(event,'${x.id}')"><input id="srx" data-sid="${esc(x.id)}" maxlength="500" autocomplete="off" enterkeyhint="send" aria-label="Reply to ${esc(x.by)}’s status" placeholder="Reply to ${esc(x.by.split(" ")[0])}’s status…"><button class="btn">Send</button></form>`}
  <div class="acts" style="margin-top:12px">${l.length>1?`<button class="btn alt" ${sv.i===0?"disabled":""} onclick="stepStory(-1)" aria-label="Previous poster">‹ Prev</button><button class="btn alt" ${sv.i===l.length-1?"disabled":""} onclick="stepStory(1)" aria-label="Next poster">Next ›</button>`:""}
  ${mine?`<button class="btn alt" onclick="delStory('${x.id}')">Delete</button>`:`<button class="btn" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">Message</button>`}</div>`;
+ {const n=document.getElementById("srx");if(n&&skv&&n.dataset.sid===skid){n.value=skv;if(skf)n.focus({preventScroll:true})}}
  if(S.view==="home"&&!S.out)home()}
 function delStory(id){S.stories=S.stories.filter(x=>x.id!==id);save();toast("Status deleted");showStory()}
 function openAdd(){stx.value="";document.querySelector('input[name=sb][value="0"]').checked=true;addD.showModal()}
@@ -1993,26 +2062,43 @@ function postStory(e){e.preventDefault();if(posting)return;
 
 /* ---- pitch & booking messages: Accept / Reject / Continue Chat ---- */
 const TAGRE=/\s*⟦rc\|([a-z]+)\|([^|⟧]*)\|([^|⟧]*)\|([a-z]+)⟧\s*$/;
-const clean=t=>String(t==null?"":t).replace(TAGRE,"");
+const raw=t=>String(t==null?"":t).replace(TAGRE,"");
+const QRE=/^⟪st\|([A-Za-z0-9_-]*)\|(\d{1,2})\|([^⟫]*)⟫\s*/;
+const qOf=t=>{const m=raw(t).match(QRE);return m?{id:m[1],bg:+m[2],s:m[3]}:null};
+const qBody=t=>raw(t).replace(QRE,"");
+const clean=t=>raw(t).replace(QRE,"↩ ").replace(/ ¦ /g," · ");
+function fmtMsg(t){const b=qBody(t);
+ if(b.startsWith("Applied for this position")){const p=b.split(" ¦ "),fit=p.slice(4).join(" ¦ ");return `<b class="apt">${esc(p[0])}</b>${p.slice(1,4).map(x=>`<span class="apl">${esc(x)}</span>`).join("")}${fit?`<span class="apl">${esc(fit)}</span>`:""}`}
+ return esc(b.replace(/ ¦ /g," · "))}
+function qCard(m,t){const q=qOf(m.t);if(!q)return"";const lbl=m.me?`You replied to ${esc(t.n)}’s status`:`${esc(t.n)} replied to your status`;
+ return `<button type="button" class="sq" data-sid="${esc(q.id)}" style="background:${BG[q.bg]||BG[0]}" onclick="sqOpen(this.dataset.sid)" aria-label="${lbl}. Open this status"><small>↩ ${lbl}</small><span>${esc(q.s)}</span></button>`}
+function sqOpen(id){const i=S.stories.findIndex(x=>x.id===id);if(i<0){toast("This status has expired");return}const n=S.stories[i].by;shut("postD","profD");sv={n,i:S.stories.filter(x=>x.by===n).findIndex(x=>x.id===id)};showStory();if(!storyD.open)storyD.showModal()}
+function sendStoryReply(e,id){e.preventDefault();const i=document.getElementById("srx"),v=(i&&i.value||"").trim(),x=S.stories.find(z=>z.id===id);
+ if(!x){toast("This status has expired");return}if(x.by===S.name)return;
+ if(!v){toast("Write a reply first");if(i)i.focus();return}
+ const sn=String(x.text||"").replace(/[|⟪⟫⟦]/g," ").replace(/\s+/g," ").trim(),snip=sn.length>80?sn.slice(0,79)+"…":sn,sid=String(x.id).replace(/[^A-Za-z0-9_-]/g,"");
+ const body=v.replace(/[⟦⟧⟪⟫]/g,"");
+ if(!Chat.send(ensure(x.by).id,`⟪st|${sid}|${(+x.bg||0)%100}|${snip}⟫ ${body}`))return;
+ storyD.close();openChat(ensure(x.by).id);toast("Reply sent to "+x.by)}
 const tagOf=t=>{const m=String(t||"").match(TAGRE);return m?{k:m[1],a:m[2],b:m[3],s:m[4]}:null};
 const mkTag=(k,a,b,st)=>` ⟦rc|${k}|${a}|${b}|${st}⟧`;
-const pitchPill=p=>p.st==="accepted"?`<span class="pill Accepted">Accepted</span>`:p.st==="rejected"?`<span class="pill Rejected">Rejected</span>`:"";
+const pitchPill=p=>p.st==="accepted"?`<span class="pill Accepted">Approved</span>`:p.st==="rejected"?`<span class="pill Cancelled">Cancelled</span>`:"";
 function pitchReq(j,p){p.id=p.id||"p"+uid();const st=p.st||"pending";
- return `<div class="req"><div><b>${esc(p.by)}</b> · ${mPrice(j.c)}₹${esc(p.price)} · ${mDate(j.c)}${esc(p.start)}</div><span style="color:var(--mute)">${esc(p.msg)}</span><div class="bka">${st==="pending"?`<button class="btn" onclick="pitchDecide('${j.id}','${p.id}',true)">Accept</button><button class="btn alt" onclick="pitchDecide('${j.id}','${p.id}',false)">Reject</button>`:pitchPill(p)}<button class="btn alt" data-n="${esc(p.by)}" onclick="msgTo(this.dataset.n)">Continue Chat</button></div></div>`}
+ return `<div class="req"><div><b>${esc(p.by)}</b> · ${mPrice(j.c)}₹${esc(p.price)} · ${mDate(j.c)}${esc(p.start)}</div><span style="color:var(--mute)">${esc(p.msg)}</span><div class="bka">${st==="pending"?`<button class="btn" onclick="pitchDecide('${j.id}','${p.id}',true)">Approve</button><button class="btn alt" onclick="pitchDecide('${j.id}','${p.id}',false)">Cancel</button>`:pitchPill(p)}${st==="accepted"?`<button class="btn alt" data-n="${esc(p.by)}" onclick="msgTo(this.dataset.n)">Continue Chat</button>`:""}</div></div>`}
 function pitchDecide(jid,pid,acc){const j=S.jobs.find(z=>String(z.id)===String(jid)),p=j&&j.p.find(q=>q.id===pid);
  if(!j||!p||j.by!==S.name){toast("This request is no longer available");return false}
- if(p.st&&p.st!=="pending"){toast("You already "+(p.st==="accepted"?"accepted":"rejected")+" this request");return false}
+ if(p.st&&p.st!=="pending"){toast("You already "+(p.st==="accepted"?"approved":"cancelled")+" this application");return false}
  p.st=acc?"accepted":"rejected";
- const msg=acc?`✅ Accepted: ${S.name} accepted your pitch for “${j.t}” (₹${p.price}, ${String(p.start).toLowerCase()}). This chat stays open, so you can sort out the details here.`:`❌ Rejected: ${S.name} rejected your pitch for “${j.t}”. This chat stays open if you would like to ask a question or talk it over.`;
+ const msg=acc?`✅ Approved: ${S.name} approved your application for “${j.t}” (₹${p.price}, start ${p.start}). You can continue the chat here to sort out the details.`:`❌ Application cancelled: ${S.name} cancelled your application for “${j.t}”.`;
  Chat.send(ensure(p.by).id,msg+mkTag("pitch",j.id,p.id,p.st));
- save();Chat.stick=true;render();if(postD.open&&ck==="job"&&cp===j.id)openPost(j.id);toast(acc?"Accepted "+p.by+"’s pitch":"Rejected "+p.by+"’s pitch");return true}
+ save();Chat.stick=true;render();if(postD.open&&ck==="job"&&cp===j.id)openPost(j.id);toast(acc?"Approved "+p.by+"’s application":"Cancelled "+p.by+"’s application");if(acc)setTimeout(()=>{const i=document.getElementById("mi");if(i&&S.view==="chat")i.focus({preventScroll:true})},80);return true}
 function actBar(m){const g=tagOf(m.t);if(!g)return"";let st=g.s,own=false,live=false;
  if(g.k==="pitch"){const j=S.jobs.find(z=>String(z.id)===g.a),p=j&&j.p.find(q=>q.id===g.b);if(p){live=true;own=j.by===S.name;if(g.s==="pending")st=p.st||"pending"}}
  else if(g.k==="bk"){const x=S.services.find(z=>String(z.id)===g.a),b=x&&x.b.find(q=>q.id===g.b);if(b){live=true;own=x.by===S.name;if(g.s==="pending")st=b.status}}
  if(st==="declined")st="rejected";
- const L={pending:"Awaiting reply",accepted:"Accepted",rejected:"Rejected",countered:"Counter offer",cancelled:"Withdrawn"},C={pending:"Requested",accepted:"Accepted",rejected:"Rejected",countered:"Countered",cancelled:"Cancelled"},id=esc(m.id);
+ const isP=g.k==="pitch",L={pending:"Awaiting reply",accepted:isP?"Approved":"Accepted",rejected:isP?"Cancelled":"Rejected",countered:"Counter offer",cancelled:"Withdrawn"},C={pending:"Requested",accepted:"Accepted",rejected:isP?"Cancelled":"Rejected",countered:"Countered",cancelled:"Cancelled"},id=esc(m.id);
  const decide=g.s==="pending"&&!m.me&&own&&live&&st==="pending";
- return `<div class="mact">${decide?`<button type="button" class="btn" onclick="chatAct('${id}','accept')">Accept</button><button type="button" class="btn alt" onclick="chatAct('${id}','reject')">Reject</button>`:`<span class="pill ${C[st]||"Requested"}">${L[st]||esc(st)}</span>`}<button type="button" class="btn alt" onclick="chatAct('${id}','continue')">Continue Chat</button></div>`}
+ return `<div class="mact">${decide?`<button type="button" class="btn" onclick="chatAct('${id}','accept')">${isP?"Approve":"Accept"}</button><button type="button" class="btn alt" onclick="chatAct('${id}','reject')">${isP?"Cancel":"Reject"}</button>`:`<span class="pill ${C[st]||"Requested"}">${L[st]||esc(st)}</span>`}${!isP||st==="accepted"?`<button type="button" class="btn alt" onclick="chatAct('${id}','continue')">Continue Chat</button>`:""}</div>`}
 function chatAct(mid,act){const t=S.threads.find(x=>x.id===S.thread);if(!t)return;const m=t.m.find(x=>x.id===mid);if(!m)return;
  if(act==="continue"){const i=document.getElementById("mi");if(i){i.focus();if(i.scrollIntoView)i.scrollIntoView({block:"nearest"})}return}
  const g=tagOf(m.t);if(!g)return;Chat.stick=true;
@@ -2021,19 +2107,31 @@ function chatAct(mid,act){const t=S.threads.find(x=>x.id===S.thread);if(!t)retur
   if(!x||!b||x.by!==S.name){toast("This request is no longer available");return}
   if(b.status!=="pending"){toast("This request has already been handled");return}
   bkAct(x.id,b.id,act==="accept"?"paccept":"pdecline")}}
-function actSync(text,peer){const g=tagOf(text);if(!g||g.s==="pending")return;
+function pitchFromMsg(text,peer,g){const j=S.jobs.find(z=>String(z.id)===g.a);if(!j||j.by!==S.name||(j.p||[]).some(q=>q.id===g.b))return;const b=qBody(text).split(" ¦ ");if(b[0]!=="Applied for this position"||b.length<5)return;
+ j.p.push({id:g.b,st:"pending",by:peer,price:b[2].replace(/^Compensation:\s*₹/,""),start:b[3].replace(/^Start date:\s*/,""),msg:b.slice(4).join(" ¦ ").replace(/^Why I’m a good fit:\s*/,"")})}
+function actSync(text,peer){const g=tagOf(text);if(g&&g.k==="pitch"&&g.s==="pending")try{pitchFromMsg(text,peer,g)}catch(e){}if(!g||g.s==="pending")return;
  if(g.k==="pitch"){const j=S.jobs.find(z=>String(z.id)===g.a),p=j&&j.p.find(q=>q.id===g.b);
-  if(p&&(g.s==="accepted"||g.s==="rejected")&&(!p.st||p.st==="pending")){p.st=g.s;const h=S.hist.find(h=>h.s==="Requested"&&h.who===peer&&h.t===j.t);if(h)h.s=g.s==="accepted"?"Accepted":"Rejected"}}
+  if(p&&(g.s==="accepted"||g.s==="rejected")&&(!p.st||p.st==="pending")){p.st=g.s;const h=S.hist.find(h=>h.s==="Requested"&&h.who===peer&&h.t===j.t);if(h)h.s=g.s==="accepted"?"Accepted":"Cancelled"}}
  else if(g.k==="bk"){const x=S.services.find(z=>String(z.id)===g.a),b=x&&x.b.find(q=>q.id===g.b);
   if(b&&["pending","countered"].includes(b.status)&&["accepted","declined","cancelled"].includes(g.s)){b.status=g.s;bkSync(x,b)}}}
 function msgTo(n){shut("postD","profD","storyD","addD","pitchD");openChat(ensure(n).id)}
 
 let pj=null;
-function pitch(id){pj=S.jobs.find(j=>j.id===id);pitchT.textContent=pj.t+" · "+pj.by;pp.value="";pm.value="";pitchD.showModal()}
-function sendPitch(){if(!pp.value||!pm.value.trim()){toast("Add a price and a short message");return}
- const pid="p"+uid();pj.p.push({id:pid,st:"pending",by:S.name,price:pp.value,start:ps.value,msg:pm.value.trim()});
- Chat.send(ensure(pj.by).id,`Pitch sent for “${pj.t}”: ₹${pp.value}, can start ${ps.value.toLowerCase()}.`+mkTag("pitch",pj.id,pid,"pending"));
- S.hist.unshift({id:"h"+Date.now(),t:pj.t,who:pj.by,d:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),a:"₹"+pp.value,s:"Requested",k:"earn"});pitchD.close();render();if(postD.open)openPost(pj.id);toast("Request sent to "+pj.by);reply(pj.by)}
+function pitch(id){pj=S.jobs.find(j=>j.id===id);if(!pj)return;const j=pj,td=drIso(new Date());
+ pitchJ.innerHTML=`<div class="pjt"><span class="tag" style="justify-self:start">${esc(j.c)}</span><b>${esc(j.t)}</b><small>Posted by ${esc(j.by)}</small></div>${j.d?`<p class="pjd">${esc(String(j.d).slice(0,240))}${String(j.d).length>240?"…":""}</p>`:""}<div class="meta" style="margin:0"><span>${LOC}${esc(j.loc)}</span>${drSpan(j)}${attrSpans(j,1)}</div><div class="pjc"><small>Compensation offered</small><b>${mPrice(j.c)}${esc(j.b)}${per(j)}</b></div>`;
+ let mn=td,mx="";if(j.dr&&j.dr.s){if(j.dr.s>mn)mn=j.dr.s;if(j.dr.t==="day")mx=j.dr.s;else if(j.dr.e&&!j.dr.on)mx=j.dr.e;if(mx&&mx<mn)mx=""}
+ pp.value=(()=>{const n=String(j.b).replace(/[^\d.]/g,"");return /^\d+(\.\d+)?$/.test(n)?n:""})();ps.min=mn;if(mx)ps.max=mx;else ps.removeAttribute("max");ps.value=mn;pm.value="";pitchD.showModal()}
+function sendPitch(){const fit=pm.value.replace(/[⟦⟧⟪⟫]/g,"").trim();
+ if(!pj){return}
+ if(!pp.value||+pp.value<=0){toast("Add your expected compensation");pp.focus();return}
+ if(!ps.value){toast("Pick a start date");ps.focus();return}
+ if((ps.min&&ps.value<ps.min)||(ps.max&&ps.value>ps.max)){toast("Choose a start date within the job dates");ps.focus();return}
+ if(!fit){toast("Tell them why you are a good fit");pm.focus();return}
+ if(pj.p.some(p=>p.by===S.name&&p.st!=="rejected")){toast("You have already applied for this job");pitchD.close();return}
+ const sd=drParse(ps.value).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),pid="p"+uid(),jt=String(pj.t).replace(/ ¦ /g," ").replace(/[⟦⟧⟪⟫]/g,"");
+ pj.p.push({id:pid,st:"pending",by:S.name,price:pp.value,start:sd,iso:ps.value,msg:fit});
+ if(!Chat.send(ensure(pj.by).id,`Applied for this position ¦ Job: “${jt}” ¦ Compensation: ₹${pp.value} ¦ Start date: ${sd} ¦ Why I’m a good fit: ${fit}`+mkTag("pitch",pj.id,pid,"pending"))){pj.p=pj.p.filter(q=>q.id!==pid);return}
+ S.hist.unshift({id:"h"+Date.now(),t:pj.t,who:pj.by,d:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),a:"₹"+pp.value,s:"Requested",k:"earn"});pitchD.close();render();if(postD.open)openPost(pj.id);toast("Application sent to "+pj.by)}
 function ensure(n){let t=S.threads.find(t=>t.n===n);if(!t){t={id:"t"+uid(),n,on:0,m:[]};S.threads.unshift(t)}return t}
 function msgClient(id){const j=S.jobs.find(j=>j.id===id);shut("postD","profD","storyD","addD","pitchD");openChat(ensure(j.by).id)}
 
@@ -2141,7 +2239,7 @@ function chat(T){const V=T||view,t=S.threads.find(x=>x.id===S.thread);
  V.innerHTML=`<div class="row chatrow"><h2>Messages</h2>${SB_ON&&typeof RT!=="undefined"&&RT.ok===false?`<span class="cnt" role="status">Chat server not set up yet</span>`:""}${unread()?`<span class="ucirc" role="img" aria-label="${unread()} unread message${unread()===1?"":"s"}">${unread()>99?"99+":unread()}</span>`:""}</div><div class="chat ${t?"open":""}">
  <div class="threads">${S.threads.length?S.threads.map(x=>{const l=x.m[x.m.length-1];return `<button class="th" ${t&&t.id===x.id?'aria-current="true"':""} onclick="openChat('${x.id}')"><span class="avw"><div class="av" style="${abg(x.n)}">${ait(x.n)}</div>${pres(x.on)}</span><span class="thm"><span class="thr"><b>${esc(x.n)}</b>${l?`<em>${tShort(l.ts)}</em>`:""}</span><span class="thr"><small>${l?(l.me?"You: ":"")+esc(clean(l.t)):"Say hello"}</small>${x.u?`<span class="nb" role="img" aria-label="${x.u} unread message${x.u===1?"":"s"}">${x.u>99?"99+":x.u}</span>`:""}</span></span></button>`}).join(""):`<div class="empty">No conversations yet.</div>`}</div>
  <section class="pane" aria-label="Conversation" data-t="${t?t.id:''}">${t?`${!Net.on?`<div class="cbar" role="status">You’re offline. Messages will send automatically when you reconnect.</div>`:""}<div class="ph"><button class="back" aria-label="Back to conversations" onclick="S.thread=null;Chat.stick=true;render()">‹</button><span class="avw"><div class="av" style="${abg(t.n)}">${ait(t.n)}</div>${pres(t.on)}</span><div class="phn"><b>${esc(t.n)}</b><small class="${t.typing||t.on?"on":""}">${t.typing?"typing…":t.on?"Online":SB_ON?"Offline":""}</small></div><button class="btn alt rep" data-n="${esc(t.n)}" onclick="reportUser(this.dataset.n)" aria-label="Report ${esc(t.n)}">Report</button></div>
- <div class="msgs" id="ms" aria-live="polite">${t.m.map(m=>`<div class="m ${m.me?"me":""}">${esc(clean(m.t))}${actBar(m)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]:""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span><button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}</span></div>`).join("")}</div>
+ <div class="msgs" id="ms" aria-live="polite">${t.m.map(m=>`<div class="m ${m.me?"me":""}">${qCard(m,t)}${fmtMsg(m.t)}${actBar(m)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]:""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span><button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}</span></div>`).join("")}</div>
  <form class="send" style="max-width:none" onsubmit="sendMsg(event)"><input id="mi" autocomplete="off" autocapitalize="sentences" enterkeyhint="send" maxlength="1000" aria-label="Message" placeholder="Write a message"><button class="btn" onpointerdown="event.preventDefault()">Send</button></form>`:`<div class="empty" style="margin:auto">Pick a conversation to start chatting.</div>`}</section></div>`;
  const m=V.querySelector("#ms");if(m){if(Chat.stick!==false||Chat.pos==null)m.scrollTop=m.scrollHeight;else m.scrollTop=Math.min(Chat.pos,m.scrollHeight)}}
 function sendMsg(e){e.preventDefault();const i=document.getElementById("mi");if(!i)return;Chat.stick=true;if(Chat.send(S.thread,i.value)){i.value=""}ui();const n=document.getElementById("mi");if(n)n.focus({preventScroll:true})}
@@ -2309,7 +2407,7 @@ function openMenu(){renderMenu();const d=document.getElementById("drawer"),b=doc
 function closeMenu(quiet){const d=document.getElementById("drawer");if(!d||!d.classList.contains("open"))return;const b=document.getElementById("drawerBd"),mb=document.getElementById("menuB");d.classList.remove("open");b.classList.remove("open");d.setAttribute("aria-hidden","true");if(mb)mb.setAttribute("aria-expanded","false");document.body.style.overflow="";if(!quiet&&menuOpener&&menuOpener.focus)try{menuOpener.focus({preventScroll:true})}catch(e){}}
 function toggleMenu(){const d=document.getElementById("drawer");d&&d.classList.contains("open")?closeMenu():openMenu()}
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeMenu();closeLocMenu()}});
-function updateBack(){const b=document.getElementById("backB");if(!b)return;b.hidden=S.out?(au==="login"):(S.view==="home")}
+function updateBack(){const b=document.getElementById("backB");if(!b)return;b.hidden=S.out?(au==="login"||au==="home"):(S.view==="home")}
 function goBack(){const ds=[...document.querySelectorAll("dialog[open]")];if(ds.length){ds[ds.length-1].close();return}
  if(S.out){if(au!=="login")showAuth("login");return}
  if(S.view==="chat"&&S.thread){S.thread=null;render();return}
