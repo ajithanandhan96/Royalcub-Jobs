@@ -154,7 +154,7 @@ dialog h3{margin:0 0 4px;font-size:20px}
 }
 
 /* splash */
-#splash{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,var(--plum),var(--plum2));display:grid;place-items:center;color:#fff;transition:opacity .5s ease,transform .5s ease;cursor:pointer}
+#splash{position:fixed;inset:0;z-index:200;background:#050751;display:grid;place-items:center;color:#fff;transition:opacity .5s ease,transform .5s ease;cursor:pointer}
 #splash.leave{opacity:0;transform:scale(1.05);pointer-events:none}
 .sp-in{position:relative;display:grid;justify-items:center;gap:22px;padding:24px}
 .sp-ring{position:absolute;top:50%;left:50%;width:200px;height:200px;margin:-130px 0 0 -100px;border-radius:50%;border:3px solid rgba(255,255,255,.55);opacity:0;animation:ring 1.8s .6s ease-out infinite}
@@ -1151,6 +1151,9 @@ body.out .pubfoot{display:block}
 .lcta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.lcta .btn{min-width:170px}
 .lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .lgrid section{background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:20px}.lgrid h2{margin:0 0 8px;font-size:18px}.lgrid p,.lgrid li{margin:0;color:var(--mute);font-size:15px;line-height:1.55}.lgrid ol{margin:0;padding-left:20px;display:grid;gap:6px}
+/* mobile: hide the header tagline, tighten spacing (desktop keeps it) */
+@media (max-width:767px){.hero p,.hero h1{display:none!important}.hero{padding-bottom:40px}.top{min-height:44px}.tncv .hero,.tnc2 .hero{padding-bottom:30px!important}}
+.sbar .sbox{grid-template-columns:minmax(0,1fr)!important}.sbar .sbox .namesf{grid-column:auto!important}
 </style>
 <noscript><style>.pubfoot{display:block!important}</style></noscript>
 </head>
@@ -1285,7 +1288,7 @@ function pgAgree(){const cb=document.getElementById("pgCk");if(!cb||!cb.checked)
  render();if(!chooseD.open)chooseD.showModal()}
 function pgChoose(k){chooseD.close();showAuth(k)}
 let editP=false,cp=null,ck="job",sv={n:null,i:0};
-let S={services:SERV0,tab:"jobs",role:"client",name:"Arjun Rao",theme:"auto",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[{email:"arjun.rao@example.com",pw:"Arjun@123",name:"Arjun Rao",phone:"+91 98765 43210",age:"28",cat:"Client",role:"client",title:"Rao Home Projects"}],hist:[{id:"h1",t:"Fix leaking kitchen pipe",who:"Anna Reed",d:"12 Oct 2026",a:"₹800",s:"Completed"},{id:"h2",t:"Deep clean 2BHK flat",who:"Meera Nair",d:"28 Sep 2026",a:"₹1,800",s:"Completed"},{id:"h3",t:"Rewire hall switchboard",who:"Victor King",d:"15 Sep 2026",a:"₹1,200",s:"Cancelled"}],cat:"All",view:"home",notes:2,thread:null,
+let S={services:SERV0,tab:"jobs",role:"client",name:"",theme:"light",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[],hist:[{id:"h1",t:"Fix leaking kitchen pipe",who:"Anna Reed",d:"12 Oct 2026",a:"₹800",s:"Completed"},{id:"h2",t:"Deep clean 2BHK flat",who:"Meera Nair",d:"28 Sep 2026",a:"₹1,800",s:"Completed"},{id:"h3",t:"Rewire hall switchboard",who:"Victor King",d:"15 Sep 2026",a:"₹1,200",s:"Cancelled"}],cat:"All",view:"home",notes:2,thread:null,
  jobs:[
  {id:1,t:"Fix leaking kitchen pipe",c:"Plumbing",loc:"Downtown",b:"₹800",per:"day",by:"Anna Reed",d:"Pipe under the sink drips constantly. Need someone to replace the joint and check the seals today or tomorrow.",p:[],v:VW.slice(0,5)},
  {id:2,t:"Rewire garage sockets",c:"Electrical",loc:"Northside",b:"₹2,500",per:"week",by:"Victor King",d:"Four sockets and a new breaker panel in a detached garage. Certified electrician only.",p:[],v:VW.slice(1,4)},
@@ -1318,10 +1321,7 @@ const REV0=[["Sam Foster","Meera Nair",5,"Fixed our leak in under an hour. Tidy 
 ["Anna Reed","Rohan Das",5,"Clear instructions and paid on time."],["Anna Reed","Tom Park",4,"Friendly to work with."],["Victor King","Meera Nair",4,"Good job brief, quick replies."],["Victor King","Kabir Anand",5,"Great client, would work again."],
 ["Rahul Menon","Isha Rao",5,"Well organised trip, fair pay."],["Sneha Pillai","Priya Shah",4,"Paint was ready as promised."],["Meena Joseph","Leena Jose",5,"Spotless flat, thank you!"]].map((r,i)=>({id:"rv"+i,to:r[0],by:r[1],r:r[2],t:r[3],ts:Date.now()-(i+2)*864e5}));
 const uid=()=>Math.random().toString(36).slice(2,10);
-const ADMIN={email:"admin@royalcub.com",pw:"Admin@123",name:"Site Admin",phone:"",age:"",cat:"Admin",role:"admin",status:"active",joined:Date.now()-9e8};
 S.reviews=S.reviews||REV0;S.chatStats=S.chatStats||{sent:0,failed:0,retries:0};S.tix=S.tix||[];S.log=S.log||[];
-if(!S.users.some(u=>u.role==="admin"))S.users.push(ADMIN);
-[...S.jobs.map(j=>[j.by,"Client"]),...S.services.map(x=>[x.by,x.c])].forEach(([n,c],i)=>{if(!S.users.some(u=>u.name===n))S.users.push({email:n.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:n,phone:"",age:"",cat:c,role:c==="Client"?"client":"worker",title:"",status:"active",joined:Date.now()-(i+3)*864e5})});
 S.users.forEach(u=>{u.status=u.status||"active";u.joined=u.joined||Date.now()-5*864e5});
 S.threads.forEach(t=>t.m.forEach(m=>{if(!m.id)m.id="m"+uid();if(!m.ts)m.ts=Date.now();if(m.me&&!m.st)m.st="read"}));
 const live=n=>{const u=S.users.find(x=>x.name===n);return !u||u.status==="active"};
@@ -1353,12 +1353,12 @@ const NEWPROS=[{id:111,by:"Nisha Verma",c:"Cleaning",t:"Move-in and move-out cle
 {id:112,by:"Suresh Babu",c:"Electrical",t:"Electrician for solar, inverter and CCTV setup",min:300,max:450,days:WK,from:"09:00",to:"18:00",start:"This week",loc:"Lakeview",d:"Rooftop solar wiring, inverter installs and CCTV cabling with a 6-month warranty.",v:[],b:[]},
 {id:113,by:"Maya Thomas",c:"Nursing",t:"Night-shift nurse for elderly and post-op care",min:350,max:450,days:ALL,from:"20:00",to:"23:00",start:"Next week",loc:"Citywide",d:"Registered nurse with ICU experience. Medication, vitals and overnight support.",v:[],b:[]}];
 let npT=null;
-function scheduleNewPro(){clearTimeout(npT);if(S.out)return;npT=setTimeout(()=>{if(S.out)return;const q=NEWPROS.find(x=>!S.services.some(z=>z.id===x.id));if(!q)return;S.services.unshift(JSON.parse(JSON.stringify(q)));applyA(S.services[0],1);
+function scheduleNewPro(){clearTimeout(npT);return;if(S.out)return;npT=setTimeout(()=>{if(S.out)return;const q=NEWPROS.find(x=>!S.services.some(z=>z.id===x.id));if(!q)return;S.services.unshift(JSON.parse(JSON.stringify(q)));applyA(S.services[0],1);
  if(!S.users.some(u=>u.name===q.by))S.users.push({email:q.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:q.by,phone:"",age:"",cat:q.c,role:"worker",title:"",status:"active",joined:Date.now()});
  Notify.add({type:"pro",title:`New professional: ${q.by}`,body:`${q.t} · ${q.loc} · ₹${q.min}–₹${q.max}/h`,act:{k:"service",id:q.id}});
  const ae=document.activeElement;if(S.view==="home"&&!document.querySelector("dialog[open]")&&!(ae&&/INPUT|TEXTAREA/.test(ae.tagName))){if(HS.busy)pendR=true;else home()}scheduleNewPro()},CFG.newProMs)}
 function resumeNeg(){S.services.forEach(x=>x.b.forEach(b=>{if(!b.id)b.id="b"+uid();if(!b.status)b.status="pending";if(!b.mode)b.mode="listed";if(b.status==="pending"&&b.by===S.name&&!S.out)setTimeout(()=>negRespond(x.id,b.id),2500)}))}
-S.notifs=S.notifs||seedNotifs();S.plan=S.plan||"free";S.nf=S.nf||"all";
+S.notifs=S.notifs||[];S.plan=S.plan||"free";S.nf=S.nf||"all";
 const EXPL=[["fresher","Fresher (0–1 yr)",0,1,["fresher","beginner","entry level","entry-level","trainee","new"]],["1-3","1–3 years",1,3,["junior"]],["3-5","3–5 years",3,5,["intermediate","mid-level","mid level"]],["5-10","5–10 years",5,10,["senior","experienced"]],["10+","10+ years",10,99,["expert","veteran","master","highly experienced"]]];
 const expOpts=(v,job)=>[["",job?"Any":"Not set"],...EXPL].map(e=>`<option value="${e[0]}" ${v===e[0]?"selected":""}>${e[1]}</option>`).join("");
 const expTx=x=>{const e=EXPL.find(q=>q[0]===(x&&x.exp));return e?e[1]:""};
@@ -1376,7 +1376,10 @@ const SEED4=[
 {id:406,by:"Anitha Das",c:"Printing",t:"Digital printing, flex banners and photocopy",min:150,max:400,days:WK,from:"09:00",to:"18:30",start:"Today",loc:"Ottapalam",d:"Flex banners, visiting cards, flyers, binding and colour photocopy. Design help available.",exp:"3-5",qual:"Diploma in Graphic Design",v:[],b:[]},
 {id:407,by:"Rajesh Pillai",c:"Workshop",t:"Bike and scooter service workshop with free pickup",min:250,max:500,days:WK,from:"08:30",to:"19:00",start:"Today",loc:"Chittur",d:"Periodic service, brake and clutch work, engine tune-ups and denting. Pickup and drop within 5 km.",exp:"5-10",qual:"ITI Motor Mechanic",v:[],b:[]},
 {id:408,by:"Mini Sebastian",c:"Tailoring",t:"Boutique blouse stitching and school uniforms",min:200,max:450,days:WK,from:"10:00",to:"17:30",start:"This week",loc:"Ottapalam",d:"Designer blouses, saree falls, bridal wear and uniforms. Fittings by appointment.",exp:"1-3",qual:"Tailoring and embroidery certificate",v:[],b:[]}];
-S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.fol=S.fol||{};S.services=S.services||SERV0;S.tab="services";SEED2.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.jobs.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.svc.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(x)});SEED4.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(JSON.parse(JSON.stringify(x)));if(!(S.users||[]).some(u=>u.name===x.by))(S.users=S.users||[]).push({email:x.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:x.by,phone:"",age:"",cat:x.c,role:"worker",title:SEED4T[x.by]||"",loc:x.loc.split(",").pop().trim(),status:"active",joined:Date.now()-5*864e5})});S.services.forEach(x=>applyA(x,1));S.jobs.forEach(x=>applyA(x,0));S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=j.v||(j.by===S.name?[]:VW.slice(0,2+j.id%4))});
+S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.fol=S.fol||{};S.services=S.services||SERV0;S.tab="services";SEED2.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.jobs.forEach(j=>{if(!S.jobs.some(x=>x.id===j.id))S.jobs.push(j)});SEED3.svc.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(x)});SEED4.forEach(x=>{if(!S.services.some(z=>z.id===x.id))S.services.push(JSON.parse(JSON.stringify(x)));});S.services.forEach(x=>applyA(x,1));S.jobs.forEach(x=>applyA(x,0));S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=j.v||(j.by===S.name?[]:VW.slice(0,2+j.id%4))});
+const DEMO_NAMES=new Set(["Arjun Rao","Site Admin"].concat(["Anna Reed","Victor King","Hana Kim","Dev Bose",...SERV0.map(x=>x.by),...SEED2.map(j=>j.by),...SEED3.jobs.map(j=>j.by),...SEED3.svc.map(x=>x.by),...SEED4.map(x=>x.by),...NEWPROS.map(x=>x.by)]));
+S.users=(S.users||[]).filter(u=>!(u&&!u.gid&&((u.email==="admin@royalcub.com"&&u.pw==="Admin@123")||(/@example\.com$/i.test(u.email||"")&&DEMO_NAMES.has(u.name)))));
+S.notifs=(S.notifs||[]).filter(n=>!["n1","n2","n3","n4"].includes(n.id)||!/Go Pro for 50%|New professional: Kiran Rao|Anna Reed read your message|Latha Raman/.test(n.title||""));
 /* ---------- Shared content: posts, services and stories are visible to every logged-in user (Supabase table rc_content; run supabase_setup.sql once) ---------- */
 const CK=[["job","jobs"],["service","services"],["story","stories"]];
 let cT=null,cBusy=false,cOff=!SB_ON,cHash={},cState=SB_ON?"wait":"local",cOffAt=0;
@@ -1433,8 +1436,8 @@ async function cSync(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOff
 function cSched(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||S.out)return;clearTimeout(cT);cT=setTimeout(()=>{cT=null;cSync()},900)}
 setInterval(()=>{if(!document.hidden)cSync()},20000);setInterval(()=>{if(!S.out&&pruneStories()&&!document.querySelector("dialog[open]")&&!typingNow())render()},60000);addEventListener("focus",cSync);
 const save=()=>{try{localStorage.setItem("rcj",JSON.stringify(S))}catch(e){}cSched()};
-S.profile=S.profile||{name:S.name,age:"28",email:"arjun.rao@example.com",phone:"+91 98765 43210"};
-function applyTheme(){S.theme==="light"||S.theme==="dark"?document.documentElement.dataset.theme=S.theme:delete document.documentElement.dataset.theme}applyTheme();
+S.profile=S.profile||{name:S.name,age:"",email:"",phone:""};
+function applyTheme(){if(S.theme!=="dark")S.theme="light";document.documentElement.dataset.theme=S.theme}applyTheme();
 const SV=d=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="${d}"/></svg>`;
 const IC={home:SV("M12 2.6 2 11.4h3V21h5.5v-6h3v6H19v-9.6h3z"),
  add:SV("M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z"),
@@ -1588,7 +1591,7 @@ async function initGoogle(){const slot=document.getElementById("gbtn");if(!slot|
  try{await loadGIS()}catch(e){if(document.getElementById("gbtn")===slot){const why=location.protocol==="file:"?"Google sign-in can’t run from a local file. Open the site from its https:// address (or http://localhost).":!navigator.onLine?"You appear to be offline. Reconnect and try again.":"Couldn’t reach Google. Check your connection, and turn off any ad-blocker or privacy shield that blocks accounts.google.com.";slot.innerHTML=(SB_ON?`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`:"")+`<button type="button" class="gbtn" style="margin-top:8px" onclick="gerr('');initGoogle()">Retry Google sign-in</button>`;gerr(why)}return}
  if(document.getElementById("gbtn")!==slot)return;
  const a=new Uint8Array(16);crypto.getRandomValues(a);const raw=[...a].map(x=>x.toString(16).padStart(2,"0")).join("");let gNonce=raw;try{gNonce=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw)))].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){}if(document.getElementById("gbtn")!==slot)return;gRaw[gNonce]=raw;gNonces.push(gNonce);if(gNonces.length>8)delete gRaw[gNonces.shift()];
- const dark=S.theme==="dark"||(S.theme!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);
+ const dark=S.theme==="dark";
  google.accounts.id.initialize({client_id:CFG.googleClientId,callback:onGoogleCred,nonce:gNonce,ux_mode:"popup",auto_select:false,cancel_on_tap_outside:true,use_fedcm_for_prompt:true,use_fedcm_for_button:true,itp_support:true});
  slot.innerHTML="";google.accounts.id.renderButton(slot,{type:"standard",theme:dark?"filled_black":"outline",size:"large",text:"continue_with",shape:"pill",logo_alignment:"left",width:Math.min(400,Math.max(200,Math.floor(slot.clientWidth||320)))});gerr("");setTimeout(()=>{if(document.getElementById("gbtn")===slot&&!slot.querySelector("iframe,[role=button]"))gFallback(slot,"Google’s button didn’t load. ")},3000)}
 function gFallback(slot,pre){slot.innerHTML=(SB_ON?`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`:"")+`<button type="button" class="gbtn" style="margin-top:8px" onclick="gerr('');initGoogle()">Retry Google sign-in</button>`;gerr((pre||"")+"Make sure "+location.origin+" is listed under Authorized JavaScript origins for your Google client, and that no ad-blocker is blocking accounts.google.com.")}
@@ -1611,7 +1614,6 @@ function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.
 function sbUserSignIn(u){if(!u||!S.out||sbBusy||rcRec||sbQuiet||!(u.identities||[]).some(i=>i.provider==="google"))return;const m=u.user_metadata||{};googleSignIn({sub:String(m.sub||m.provider_id||u.id),email:u.email||m.email||"",email_verified:true,name:m.full_name||m.name||""})}
 function showRecover(em){rcRec=true;S.out=true;au="recover";fp={step:1,email:em||"",code:"",tries:0};render()}
 async function sbInit(){if(!SB_ON)return;sbGoogleOn();if(/type=recovery/.test(location.hash))rcRec=true;try{const c=await sbClient();c.auth.onAuthStateChange((ev,ss)=>{if(ev==="PASSWORD_RECOVERY"){showRecover(ss&&ss.user&&ss.user.email);return}if(ev==="SIGNED_IN"&&ss&&ss.user)sbUserSignIn(ss.user)});const {data}=await c.auth.getSession();if(rcRec&&data&&data.session)showRecover(data.session.user.email);else if(data&&data.session)sbUserSignIn(data.session.user);if(location.hash.includes("access_token")||location.search.includes("code="))history.replaceState(null,"",location.pathname)}catch(e){console.warn("Supabase init failed",e)}}
-function fillDemo(){le.value="arjun.rao@example.com";lp.value="Arjun@123";setErr("");lp.focus()}
 function doRegister(e){e.preventDefault();const nm=rn.value.trim(),em=re.value.trim().toLowerCase(),ph=rph.value.trim(),ag=+ra.value,ct=rc.value;
  if(nm.length<2)return setErr("Enter your full name.","rn");
  if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","re");
@@ -1834,12 +1836,13 @@ function personScore(u,pq){if(pq.none)return-1;if(!pq.tokens.length&&pq.N===null
  const F=[[L(u.name),6],[L(roleOf(u.name)+" "+(u.title||"")+" "+(u.cat||"")+" "+(ROLE[u.cat]||"")),4],[L(att),2]];
  let sc=scoreFields(F,pq);if(sc<0)return-1;
  if(pq.N!==null){if(!mine.some(x=>{const y=yearsOf(x);return y&&(y[0]>=pq.N||y[1]>pq.N)}))return-1;sc+=2}return sc}
-function searchModel(){const raw=S.q.trim(),ql=(S.qloc||"").trim().toLowerCase(),inL=l=>!ql||locIn(l,ql);
- if(!raw&&!ql)return null;
- const pq=parseQ(raw),q=raw.toLowerCase(),cs=raw?catsFor(raw):[];
+function searchModel(){const raw=S.q.trim();if(!raw)return null;
+ const lw=locWords(),lt=raw.toLowerCase().split(/[\s,;]+/).map(t=>t.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g,"")).filter(t=>t&&!STOPW.has(t)&&lw.has(t)),
+  ql=lt.map(t=>t[0].toUpperCase()+t.slice(1)).join(", "),inL=l=>!lt.length||lt.some(t=>locIn(l,t));
+ let pq=parseQ(raw);if(pq.none&&lt.length)pq={tokens:[],N:pq.N,none:false};const q=raw.toLowerCase(),cs=raw?catsFor(raw):[];
  const rank=(L,f)=>L.map(x=>[x,f(x)]).filter(r=>r[1]>=0).sort((a,b)=>b[1]-a[1]).map(r=>r[0]);
  const ps=rank(S.jobs.filter(j=>live(j.by)&&inL(j.loc)),j=>postScore(j,pq)),ss=rank(S.services.filter(x=>live(x.by)&&inL(x.loc)),x=>postScore(x,pq)),
-  pe=rank(S.users.filter(u=>u.name&&u.name!==S.name&&u.role!=="admin"&&live(u.name)&&(!ql||userLocs(u.name).some(inL))),u=>personScore(u,pq)).slice(0,20);
+  pe=rank(S.users.filter(u=>u.name&&u.name!==S.name&&u.role!=="admin"&&live(u.name)&&(!lt.length||userLocs(u.name).some(inL))),u=>personScore(u,pq)).slice(0,20);
  return{raw,q,ql,cs,pq,ps,ss,pe,tot:ps.length+ss.length+pe.length}}
 const SLIM=5;
 function results(){const m=searchModel();if(!m)return "";const{raw,ql,cs,ps,ss,pe,tot}=m;
@@ -1848,9 +1851,9 @@ function results(){const m=searchModel();if(!m)return "";const{raw,ql,cs,ps,ss,p
  const sr=x=>`<button type="button" class="mini" onclick="openService(${x.id})"><span class="tag" style="justify-self:start">${x.c}</span><b>${esc(x.t)}</b><small>${LOC}${esc(x.loc)} · ${mPrice(x.c)}${rateTx(x)}<small class="per">per ${uOf(x)}</small> · ${esc(x.by)}, ${esc(roleOf(x.by))}</small></button>`;
  let left=sMore?1e9:SLIM,shownN=0;
  const grp=(t,l,f)=>{const n=Math.min(l.length,left);left-=n;shownN+=n;return n?`<h4 style="margin:8px 0 2px">${t} (${l.length})</h4>${l.slice(0,n).map(f).join("")}`:""};
- const body=tot?grp("People",pe,pr)+grp("Workers",ss,sr)+grp("Job vacancies",ps,jr):`<div class="empty" style="padding:18px">Nothing matched. Try a person’s name or a trade like plumber, driver or electrician.</div>`;
+ const body=tot?grp("People",pe,pr)+grp("Workers",ss,sr)+grp("Job vacancies",ps,jr):`<div class="empty" style="padding:18px">Nothing matched. Try a person’s name, a designation like plumber or driver, or a place.</div>`;
  const more=tot>SLIM?(sMore?`<button type="button" class="vmore" onclick="sMoreSet(false)">Show fewer</button>`:`<button type="button" class="vmore" onclick="sMoreSet(true)">Show ${tot-shownN} more</button>`):"";
- return `<div class="sres" role="region" aria-label="Search results"><div class="sh"><b>${tot} result${tot===1?"":"s"}</b>${raw?` for “${esc(raw)}”`:""}${ql?` in ${LOC}${esc(S.qloc.trim())}`:""}</div>
+ return `<div class="sres" role="region" aria-label="Search results"><div class="sh"><b>${tot} result${tot===1?"":"s"}</b>${raw?` for “${esc(raw)}”`:""}${ql?` in ${LOC}${esc(ql)}`:""}</div>
  ${cs.length?`<div class="chips wrap">${cs.map(c=>`<button type="button" class="chip cic" style="${cTile(c)}" onclick="pickCat('${c}')">${cIcon(c)}${c} · ${S.jobs.filter(j=>j.c===c).length+S.services.filter(x=>x.c===c).length}</button>`).join("")}</div>`:""}
  ${body}${more}</div>`}
 const UPI='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>';
@@ -1892,8 +1895,7 @@ function home(){
  const jobs=shown(),svcs=shownS(),aus=authors(),isS=S.tab==="services",src=isS?S.services:S.jobs;
  view.innerHTML=`<div class="sbar ${(S.q.trim()||(S.qloc||"").trim()||sOpen)?"act":""}" id="sbar" role="search">
  <div class="sbox">
- <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Search name, role, skill…" aria-label="Search by name, role, skill, experience or qualification" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
- <div class="sf locsf" id="locsf"><span class="sfi" aria-hidden="true">${LOC}</span><input id="qloc" type="text" value="${esc(S.qloc||"")}" oninput="setQL(this.value);openLocMenu(true)" onfocus="openLocMenu()" onclick="openLocMenu()" onkeydown="sKey(event)" placeholder="Search by Location" aria-label="Search by location" aria-controls="locmenu" autocomplete="off" enterkeyhint="search"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="setQL('');openLocMenu(true)" aria-label="Clear location">✕</button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" tabindex="-1" hidden></div></div>
+ <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Search name, designation or location…" aria-label="Search by name, designation or location" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
  
 </div>
  <div class="sact" id="sact">${searchActHTML(searchModel())}</div>
@@ -2340,7 +2342,7 @@ addEventListener("online",()=>Net.set(true));addEventListener("offline",()=>Net.
 setTimeout(()=>Chat.flush(),0)
 
 function settings(){
- const P=S.priv,th=S.theme||"auto",pr=S.profile,nm=pr.name||S.name,cl=S.role==="client";
+ const P=S.priv,th=S.theme==="dark"?"dark":"light",pr=S.profile,nm=pr.name||S.name,cl=S.role==="client";
  const row=(ic,t,sub,a,c2="")=>`<button class="srow ${c2}" onclick="${a}"><span class="si" aria-hidden="true">${ic}</span><span><b>${t}</b><small>${sub}</small></span><span aria-hidden="true">›</span></button>`;
  const tg=(k,l,s)=>`<label class="tgl"><span>${l}<small>${s}</small></span><input type="checkbox" role="switch" ${P[k]?"checked":""} onchange="S.priv.${k}=this.checked;save()"></label>`;
  const rt=(v,e,t,s)=>`<button class="rtile" aria-pressed="${S.role===v}" onclick="S.role='${v}';render()"><span class="si" aria-hidden="true">${e}</span><span><b>${t}</b><small>${s}</small></span><span class="chk" aria-hidden="true">✓</span></button>`;
@@ -2352,10 +2354,9 @@ function settings(){
    ${row(FI.bell,"Notifications",unreadN()?unreadN()+" unread":"You’re all caught up","go('notifications')")}
    ${row(FI.star,"Subscription plan",(PLANS.find(q=>q.id===S.plan)||PLANS[0]).n+" plan · compare plans","openPlans()")}
    ${(()=>{const u=S.users.find(x=>x.email===S.me),g=u&&u.gid;return `<div class="srow gstat"><span class="si" aria-hidden="true">${GG}</span><span><b>Google account</b><small>${g?esc(u.email):"Sign in with Google to link"}</small></span><span class="pill ${g?"Completed":"Requested"}">${g?"Linked":"Not linked"}</span></div>`})()}
-   ${row(FI.history,"History","View booking history","go('history')")}
    ${row(FI.support,"Help &amp; support","Contact us or report an issue","go('support')")}
     ${row(FI.terms,"Terms &amp; Conditions","Read the rules for using RoyalCub Jobs","go('terms')")}${row(FI.terms,"Privacy Policy","How RoyalCub Jobs handles your data","window.open('privacy.html','_blank','noopener')")}</section>
-  <section class="scard"><h4>Appearance</h4><div class="themes" role="group" aria-label="Theme">${[["light","☀️","Light"],["dark","🌙","Dark"],["auto","🖥️","Auto"]].map(([k,e,l])=>`<button class="tile" aria-pressed="${th===k}" onclick="S.theme='${k}';applyTheme();render()"><span aria-hidden="true">${e}</span>${l}</button>`).join("")}</div></section>
+  <section class="scard"><h4>Appearance</h4><div class="themes" role="group" aria-label="Theme">${[["light","☀️","White"],["dark","🌙","Black"]].map(([k,e,l])=>`<button class="tile" aria-pressed="${th===k}" onclick="S.theme='${k}';applyTheme();render()"><span aria-hidden="true">${e}</span>${l}</button>`).join("")}</div></section>
   <section class="scard"><h4>I am a</h4><label class="rsel"><select id="roleSel" aria-label="Account type" onchange="S.role=this.value;save();render()"><option value="client" ${cl?"selected":""}>Client</option><option value="worker" ${cl?"":"selected"}>Service provider</option></select></label></section>
  </div><div class="scol">
   <section class="scard"><h4>Privacy</h4>${tg("vis","Show my profile","Let other users find and view it")}${tg("online","Show when I’m online","Display an online dot on your avatar")}${tg("msgs","Allow messages from anyone","Turn off to limit who can message you")}</section>
@@ -2398,7 +2399,7 @@ function saveProfile(e){e.preventDefault();const o=S.profile.name,n=pn.value.tri
 /* ---------- fixes: hamburger drawer, back arrow, location dropdown ---------- */
 const navStack=[];
 function menuItems(){const un=unreadN(),ch=unread();const it=(v,ic,l,b,c)=>`<button class="dwi" style="--c:${c};--ct:${c}26" ${S.view===v?'aria-current="page"':''} onclick="go('${v}')"><i aria-hidden="true">${ic}</i>${l}${b?`<span class="dwb">${b}</span>`:""}</button>`;
- return it("home",FI.home,"Home",0,"#a31d78")+it("add",FI.add,"Add Post",0,"#1d8a4e")+it("chat",FI.chat,"Chat",ch||"","#2a8fb8")+it("notifications",FI.bell,"Notifications",un||"","#e08a00")+it("settings",FI.settings,"Settings",0,"#5c6bc0")+it("history",FI.history,"Booking history",0,"#7a4f8a")+it("support",FI.support,"Help &amp; support",0,"#12a6b8")+it("terms",FI.terms,"Terms &amp; Conditions",0,"#3b5b99")+(isAdmin()?it("admin",FI.admin,"Admin",0,"#546e7a"):"")}
+ return it("home",FI.home,"Home",0,"#a31d78")+it("add",FI.add,"Add Post",0,"#1d8a4e")+it("chat",FI.chat,"Chat",ch||"","#2a8fb8")+it("notifications",FI.bell,"Notifications",un||"","#e08a00")+it("history",FI.history,"History",0,"#7a4f8a")+it("settings",FI.settings,"Settings",0,"#5c6bc0")+it("support",FI.support,"Help &amp; support",0,"#12a6b8")+it("terms",FI.terms,"Terms &amp; Conditions",0,"#3b5b99")+(isAdmin()?it("admin",FI.admin,"Admin",0,"#546e7a"):"")}
 function renderMenu(){const d=document.getElementById("drawer");if(!d)return;
  if(S.out){d.innerHTML=`<div class="dwtop"><div class="dwp" style="padding-right:56px"><span class="dwn"><b>Welcome</b><small>Log in to hire help or find work</small></span></div><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div><button class="dwi" style="--c:#1d8a4e;--ct:#1d8a4e26" onclick="closeMenu(true);showAuth('login')"><i aria-hidden="true">${FI.login}</i>Log in</button><button class="dwi" style="--c:#a31d78;--ct:#a31d7826" onclick="closeMenu(true);showAuth('register')"><i aria-hidden="true">${FI.register}</i>Create account</button>`;return}
  d.innerHTML=`<div class="dwtop"><button class="dwp" ${S.view==="profile"?'aria-current="page"':''} onclick="editP=false;go('profile')" aria-label="Open my profile"><span class="av" style="${abg(S.name)}">${ait(S.name)}</span><span class="dwn"><b>${esc(S.name)}</b><span class="rolep">${S.role==="client"?"Client":"Service Provider"}</span><small>View profile</small></span><span class="dwgo" aria-hidden="true">${CHR}</span></button><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div>${menuItems()}<div class="dwsp"></div><button class="dwi danger" style="--c:#ff3b30;--ct:#ff3b3026" onclick="closeMenu(true);outD.showModal()"><i aria-hidden="true">${FI.logout}</i>Log out</button>`}
@@ -2431,11 +2432,12 @@ function nameSug(){const s=document.getElementById("nsug");if(!s)return;const q=
  if(m){m.pe.forEach(u=>C.push({s:sc(u.name,0),k:"p",n:u.name,t:u.name,sub:roleOf(u.name)}));
   m.ss.forEach(x=>C.push({s:sc(x.t,3),k:"s",id:x.id,c:x.c,t:x.t,sub:"Talent · "+x.c+" · "+x.by}));
   m.ps.forEach(j=>C.push({s:sc(j.t,6),k:"j",id:j.id,c:j.c,t:j.t,sub:"Work · "+j.c+" · "+j.by}))}
- const L=C.sort((a,b)=>a.s-b.s).slice(0,3);
- s.innerHTML=L.length?L.map(r=>`<button type="button" role="option" data-k="${r.k}" data-n="${esc(r.n||"")}" data-id="${r.id||""}" onclick="sugPick(this.dataset.k,this.dataset.n,this.dataset.id)">${r.k==="p"?`<span class="av sm" style="${abg(r.n)}" aria-hidden="true">${ait(r.n)}</span>`:`<span class="sugi" style="${cTile(r.c)}" aria-hidden="true">${cIcon(r.c)}</span>`}<span><b>${esc(r.t)}</b><small>${esc(r.sub)}</small></span></button>`).join("")+`<button type="button" class="nsall" onclick="doSearch()">See all results</button>`:`<div class="nsn">No results found</div>`;s.hidden=false}
-function sugPick(k,n,id){closeSug();if(k==="p")openProfile(n);else if(k==="s")openService(+id);else openPost(+id)}
+ allPlaces().filter(l=>l.toLowerCase().includes(q)).slice(0,2).forEach(l=>C.push({s:sc(l,2),k:"l",n:l,t:l,sub:"Location"}));
+ const L=C.sort((a,b)=>a.s-b.s).slice(0,4);
+ s.innerHTML=L.length?L.map(r=>`<button type="button" role="option" data-k="${r.k}" data-n="${esc(r.n||"")}" data-id="${r.id||""}" onclick="sugPick(this.dataset.k,this.dataset.n,this.dataset.id)">${r.k==="l"?`<span class="sugi" aria-hidden="true">${LOC}</span>`:r.k==="p"?`<span class="av sm" style="${abg(r.n)}" aria-hidden="true">${ait(r.n)}</span>`:`<span class="sugi" style="${cTile(r.c)}" aria-hidden="true">${cIcon(r.c)}</span>`}<span><b>${esc(r.t)}</b><small>${esc(r.sub)}</small></span></button>`).join("")+`<button type="button" class="nsall" onclick="doSearch()">See all results</button>`:`<div class="nsn">No results found</div>`;s.hidden=false}
+function sugPick(k,n,id){closeSug();if(k==="l"){S.q=n;const i=document.getElementById("q");if(i)i.value=n;save();doSearch();return}if(k==="p")openProfile(n);else if(k==="s")openService(+id);else openPost(+id)}
 function doSearch(){closeLocMenu();closeSug();const a=document.activeElement;if(a&&a!==document.body&&a.blur)a.blur();
- if(!searchModel()){sOpen=false;updateSearchUI();toast("Type a name or choose a location, then tap Search");return}
+ if(!searchModel()){sOpen=false;updateSearchUI();toast("Type a name, designation or location to search");return}
  sOpen=true;sMore=false;updateSearchUI();const sb=document.getElementById("sbar");if(sb)sb.scrollIntoView({block:"start",behavior:"auto"})}
 document.addEventListener("pointerdown",e=>{const t=e.target.closest?e.target:null;if(!t)return;const m=document.getElementById("locmenu");if(m&&!m.hidden&&!t.closest("#locsf"))closeLocMenu();const s=document.getElementById("nsug");if(s&&!s.hidden&&!t.closest("#namesf"))closeSug()},true);
 
