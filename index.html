@@ -1153,6 +1153,27 @@ html:has(body.tncv),html:has(body.tnc2){overflow:hidden}
 body.out .nav,body.tncv .nav,body.onb .nav,body.tnc2 .nav{display:none!important}
 body.out .sheet{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))!important}
 .sact:empty,.upb{display:none!important}.rbtn svg{display:none!important}
+/* ===== compact home: smaller Status / Categories so Workers sit higher ===== */
+#q::placeholder,#qloc::placeholder{font-size:clamp(11.5px,3.3vw,13.5px)!important}
+#q,#qloc{text-overflow:ellipsis}
+.sbar{margin-bottom:8px!important}
+.sbar~.row:not(.wkrow){margin-bottom:8px}
+.sbar~.row:not(.wkrow) h2{font-size:15px!important;font-weight:700}
+.sbar~.row:not(.wkrow) span{font-size:12px!important}
+.sbar~.status{gap:10px;padding:4px 6px;margin:-4px -6px 8px}
+.sbar~.status .st{width:56px!important;font-size:11px}
+.sbar~.status .av{width:48px!important;height:48px!important;border-radius:15px;font-size:15px;margin-bottom:4px}
+.sbar~.status .av.ring{box-shadow:inset 0 0 0 2px var(--plum2),inset 0 0 0 4px var(--bg)}
+.sbar~.status .av.ring.seen{box-shadow:inset 0 0 0 2px var(--line),inset 0 0 0 4px var(--bg)}
+.sbar~.status .st b{font-size:11px}
+.sbar~.status .st small{font-size:10px}
+.sbar~.catwrap{margin-bottom:10px}
+.cats{gap:8px;padding:2px}
+.cats .cat{width:72px!important;padding:8px 4px 7px!important;gap:0!important;border-radius:14px}
+.cats .cat .ce{width:34px!important;height:34px!important;border-radius:11px!important;margin-bottom:3px!important}
+.cats .cat .ce svg{width:20px!important;height:20px!important}
+.cats .cat b{font-size:11.5px!important;line-height:1.2;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cats .cat small{font-size:9.5px!important;line-height:1.2}
 </style>
 </head>
 <body>
