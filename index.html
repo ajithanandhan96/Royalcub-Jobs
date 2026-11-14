@@ -1132,11 +1132,6 @@ html:has(body.tncv),html:has(body.tnc2){overflow:hidden}
 @media (prefers-reduced-motion:no-preference){.obcard{animation:rise .45s ease both}}
 </style>
 <style>
-.pubfoot{display:none;border-top:1px solid var(--line);background:var(--bg);color:var(--ink)}
-body.out .pubfoot{display:block}
-.pf-in{max-width:680px;margin:0 auto;padding:28px 20px 40px;font-size:14px;line-height:1.6}
-.pf-in h2{font-size:18px;margin:0 0 8px}.pf-in p{margin:0 0 10px;color:var(--mute)}.pf-in a{color:var(--plum);font-weight:600}
-.pf-links{display:flex;gap:18px;margin-top:6px}
 .plink{margin:0;text-align:center;font-size:12px;color:var(--mute)}.plink a{color:var(--plum);font-weight:600}
 .land{width:100%;max-width:900px;margin:0 auto;padding:28px 18px;display:grid;gap:28px;position:relative;z-index:1}
 .lhero{display:grid;gap:14px;justify-items:center;text-align:center}.lhero .al{max-height:64px;width:auto}
@@ -1154,8 +1149,10 @@ body.out .pubfoot{display:block}
 /* mobile: hide the header tagline, tighten spacing (desktop keeps it) */
 @media (max-width:767px){.hero p,.hero h1{display:none!important}.hero{padding-bottom:40px}.top{min-height:44px}.tncv .hero,.tnc2 .hero{padding-bottom:30px!important}}
 .sbar .sbox{grid-template-columns:minmax(0,1fr)!important}.sbar .sbox .namesf{grid-column:auto!important}
+/* ===== no bottom nav on Login / Sign-up and Terms & Conditions screens ===== */
+body.out .nav,body.tncv .nav,body.onb .nav,body.tnc2 .nav{display:none!important}
+body.out .sheet{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))!important}
 </style>
-<noscript><style>.pubfoot{display:block!important}</style></noscript>
 </head>
 <body>
 <div id="splash" role="presentation" aria-hidden="true" onclick="hideSplash()"><div class="sp-in"><div class="sp-ring"></div><div class="sp-logo"><img id="spl" alt=""></div><p class="sp-tag">Hire fast. Work smart.</p><div class="sp-bar"><i></i></div></div></div>
@@ -1179,13 +1176,6 @@ body.out .pubfoot{display:block}
  <main class="sheet" id="view"></main>
 </div>
 </div>
-<footer class="pubfoot" id="pubFoot"><div class="pf-in">
-<h2>About RoyalCub Jobs</h2>
-<p>RoyalCub Jobs is a local jobs and services marketplace. Clients post vacancies and hire trusted plumbers, electricians, nurses, drivers and other skilled workers nearby. Service providers create a profile, offer their services and chat with clients.</p>
-<p><b>Signing in with Google.</b> When you choose &ldquo;Continue with Google&rdquo;, RoyalCub Jobs accesses only your Google <b>name, email address (and whether it is verified) and Google account ID</b>. We use them solely to create your RoyalCub Jobs account, sign you in and keep your account secure. We never access your Gmail, Drive, Contacts or Calendar, we do not sell or share your Google data, and we do not use it for advertising or to train AI or machine-learning models.</p>
-<p>RoyalCub Jobs&rsquo; use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
-<nav class="pf-links" aria-label="Legal"><a href="privacy.html">Privacy Policy</a></nav>
-</div></footer>
 <nav class="nav" id="botNav" aria-label="Main"></nav>
 <div id="drawerBd" onclick="closeMenu()" aria-hidden="true"></div>
 <aside id="drawer" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true"></aside>
@@ -1218,8 +1208,8 @@ body.out .pubfoot{display:block}
  <div class="acts"><button type="button" class="btn" onclick="sendPitch()">Submit application</button><button type="button" class="btn alt" onclick="pitchD.close()">Cancel</button></div>
 </form></dialog>
 
-<dialog id="chooseD" aria-labelledby="chT"><h3 id="chT">How would you like to continue?</h3><p style="color:var(--mute)">Thanks for agreeing to the Privacy Policy.</p><div class="acts"><button class="btn" onclick="pgChoose('login')">Login</button><button class="btn alt" onclick="pgChoose('register')">Create Account</button></div></dialog>
 <dialog id="outD"><h3>Log out?</h3><p style="color:var(--mute)">You can log back in any time. Your vacancies and chats stay saved.</p><div class="acts"><button class="btn" onclick="outD.close();try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view='home';au='home';pgReset();save();render()">Log out</button><button class="btn alt" onclick="outD.close()">Stay logged in</button></div></dialog>
+<dialog id="exitD" aria-labelledby="exT"><h3 id="exT">Exit RoyalCub Jobs?</h3><p style="color:var(--mute)">Are you sure you want to leave the app?</p><div class="acts"><button class="btn" id="exYes" type="button" onclick="exitApp()">Exit</button><button class="btn alt" id="exNo" type="button" onclick="exitD.close()">Stay</button></div></dialog>
 <script>
 (function(){var D=window.HTMLDialogElement&&HTMLDialogElement.prototype;if(D&&typeof D.showModal==="function")return;
  document.documentElement.classList.add("nodlg");var E=HTMLElement.prototype;
@@ -1285,8 +1275,7 @@ function pgToggle(){const d=document.getElementById("pgMore"),b=document.getElem
 function pgCheck(cb){const b=document.getElementById("pgBtn");if(b){b.disabled=!cb.checked;b.setAttribute("aria-disabled",String(!cb.checked))}}
 function pgAgree(){const cb=document.getElementById("pgCk");if(!cb||!cb.checked){toast("Tick the box to agree to the Privacy Policy");return}
  pgOk=true;try{sessionStorage.setItem("rc_pg",PG_V);localStorage.setItem("rc_privacy",JSON.stringify({v:PG_V,at:Date.now()}))}catch(e){}
- render();if(!chooseD.open)chooseD.showModal()}
-function pgChoose(k){chooseD.close();showAuth(k)}
+ render()}
 let editP=false,cp=null,ck="job",sv={n:null,i:0};
 let S={services:SERV0,tab:"jobs",role:"client",name:"",theme:"light",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[],hist:[{id:"h1",t:"Fix leaking kitchen pipe",who:"Anna Reed",d:"12 Oct 2026",a:"₹800",s:"Completed"},{id:"h2",t:"Deep clean 2BHK flat",who:"Meera Nair",d:"28 Sep 2026",a:"₹1,800",s:"Completed"},{id:"h3",t:"Rewire hall switchboard",who:"Victor King",d:"15 Sep 2026",a:"₹1,200",s:"Cancelled"}],cat:"All",view:"home",notes:2,thread:null,
  jobs:[
@@ -1584,17 +1573,18 @@ function doLogin(e){e.preventDefault();const em=le.value.trim().toLowerCase(),pw
  if(u.status==="blocked")return setErr("This account is blocked."+(u.reason?" Reason: "+u.reason:"")+" Contact support to appeal.");enter(u);sbEnsure(u,pw)}
 /* ---------- Google sign-in (Google Identity Services) ---------- */
 let gisP=null,gNonces=[],gRaw={};
+const gLabel=()=>au==="register"?"Sign up with Google":"Log in with Google";
 const gerr=m=>{const e=document.getElementById("gerr");if(e)e.textContent=m||""};
-const gblock=()=>`<div class="gwrap"><div id="gbtn" class="gslot">${CFG.googleClientId?`<div class="gload">Loading Google…</div>`:`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`}</div><div class="err" id="gerr" role="alert"></div></div>`;
+const gblock=()=>`<div class="gwrap"><div id="gbtn" class="gslot">${CFG.googleClientId?`<div class="gload">Loading Google…</div>`:`<button type="button" class="gbtn" onclick="googleLogin()">${GG}${gLabel()}</button>`}</div><div class="err" id="gerr" role="alert"></div></div>`;
 const loadGIS=()=>gisP||(gisP=new Promise((ok,no)=>{if(window.google&&google.accounts&&google.accounts.id)return ok();const sc=document.createElement("script");sc.src="https://accounts.google.com/gsi/client";sc.async=true;sc.defer=true;let done=false;const tm=setTimeout(()=>{if(!done){done=true;gisP=null;sc.remove();no(new Error("timeout"))}},8000);sc.onload=()=>{if(!done){done=true;clearTimeout(tm);ok()}};sc.onerror=()=>{if(!done){done=true;clearTimeout(tm);gisP=null;no(new Error("load"))}};document.head.appendChild(sc)}));
 async function initGoogle(){const slot=document.getElementById("gbtn");if(!slot||!CFG.googleClientId)return;
- try{await loadGIS()}catch(e){if(document.getElementById("gbtn")===slot){const why=location.protocol==="file:"?"Google sign-in can’t run from a local file. Open the site from its https:// address (or http://localhost).":!navigator.onLine?"You appear to be offline. Reconnect and try again.":"Couldn’t reach Google. Check your connection, and turn off any ad-blocker or privacy shield that blocks accounts.google.com.";slot.innerHTML=(SB_ON?`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`:"")+`<button type="button" class="gbtn" style="margin-top:8px" onclick="gerr('');initGoogle()">Retry Google sign-in</button>`;gerr(why)}return}
+ try{await loadGIS()}catch(e){if(document.getElementById("gbtn")===slot){const why=location.protocol==="file:"?"Google sign-in can’t run from a local file. Open the site from its https:// address (or http://localhost).":!navigator.onLine?"You appear to be offline. Reconnect and try again.":"Couldn’t reach Google. Check your connection, and turn off any ad-blocker or privacy shield that blocks accounts.google.com.";slot.innerHTML=(SB_ON?`<button type="button" class="gbtn" onclick="googleLogin()">${GG}${gLabel()}</button>`:"")+`<button type="button" class="gbtn" style="margin-top:8px" onclick="gerr('');initGoogle()">Retry Google sign-in</button>`;gerr(why)}return}
  if(document.getElementById("gbtn")!==slot)return;
  const a=new Uint8Array(16);crypto.getRandomValues(a);const raw=[...a].map(x=>x.toString(16).padStart(2,"0")).join("");let gNonce=raw;try{gNonce=[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw)))].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){}if(document.getElementById("gbtn")!==slot)return;gRaw[gNonce]=raw;gNonces.push(gNonce);if(gNonces.length>8)delete gRaw[gNonces.shift()];
  const dark=S.theme==="dark";
  google.accounts.id.initialize({client_id:CFG.googleClientId,callback:onGoogleCred,nonce:gNonce,ux_mode:"popup",auto_select:false,cancel_on_tap_outside:true,use_fedcm_for_prompt:true,use_fedcm_for_button:true,itp_support:true});
- slot.innerHTML="";google.accounts.id.renderButton(slot,{type:"standard",theme:dark?"filled_black":"outline",size:"large",text:"continue_with",shape:"pill",logo_alignment:"left",width:Math.min(400,Math.max(200,Math.floor(slot.clientWidth||320)))});gerr("");setTimeout(()=>{if(document.getElementById("gbtn")===slot&&!slot.querySelector("iframe,[role=button]"))gFallback(slot,"Google’s button didn’t load. ")},3000)}
-function gFallback(slot,pre){slot.innerHTML=(SB_ON?`<button type="button" class="gbtn" onclick="googleLogin()">${GG}Continue with Google</button>`:"")+`<button type="button" class="gbtn" style="margin-top:8px" onclick="gerr('');initGoogle()">Retry Google sign-in</button>`;gerr((pre||"")+"Make sure "+location.origin+" is listed under Authorized JavaScript origins for your Google client, and that no ad-blocker is blocking accounts.google.com.")}
+ slot.innerHTML="";google.accounts.id.renderButton(slot,{type:"standard",theme:dark?"filled_black":"outline",size:"large",text:au==="register"?"signup_with":"signin_with",shape:"pill",logo_alignment:"left",width:Math.min(400,Math.max(200,Math.floor(slot.clientWidth||320)))});gerr("");setTimeout(()=>{if(document.getElementById("gbtn")===slot&&!slot.querySelector("iframe,[role=button]"))gFallback(slot,"Google’s button didn’t load. ")},3000)}
+function gFallback(slot,pre){slot.innerHTML=(SB_ON?`<button type="button" class="gbtn" onclick="googleLogin()">${GG}${gLabel()}</button>`:"")+`<button type="button" class="gbtn" style="margin-top:8px" onclick="gerr('');initGoogle()">Retry Google sign-in</button>`;gerr((pre||"")+"Make sure "+location.origin+" is listed under Authorized JavaScript origins for your Google client, and that no ad-blocker is blocking accounts.google.com.")}
 async function googleLogin(){if(SB_ON){gerr("");try{const c=await sbClient();const {error}=await c.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname}});if(error)throw error}catch(e){gerr("Couldn’t start Google sign-in. Check your connection and that Google is enabled in Supabase.")}return}gerr(CFG.googleClientId?"Google is still loading. Try again in a moment.":"Google sign-in needs a Google client ID. Set SUPABASE_URL (recommended) or GOOGLE_CLIENT_ID in the site script, or log in with email.")}
 function decodeJwt(t){const q=String(t).split(".");if(q.length!==3)throw new Error("Invalid Google response.");const b=q[1].replace(/-/g,"+").replace(/_/g,"/");return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b+"=".repeat((4-b.length%4)%4)),c=>c.charCodeAt(0))))}
 function checkGoogleClaims(c,server){if(!c||!c.sub||!c.email)return"Google didn’t return an email for this account.";
@@ -1603,7 +1593,7 @@ function checkGoogleClaims(c,server){if(!c||!c.sub||!c.email)return"Google didn�
 async function onGoogleCred(resp){try{if(!resp||!resp.credential)throw new Error("Google sign-in was cancelled.");let c,server=false;
  if(CFG.googleVerifyUrl){const rs=await fetch(CFG.googleVerifyUrl,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({credential:resp.credential,nonce:(()=>{try{return decodeJwt(resp.credential).nonce}catch(e){return""}})()})});if(!rs.ok)throw new Error("Google sign-in couldn’t be verified. Try again.");c=await rs.json();server=true}
  else{c=decodeJwt(resp.credential);{const b0=checkGoogleClaims(c,false);if(b0)throw new Error(b0)}if(await sbGoogleOn()){sbBusy=true;try{const cl=await sbClient();const {error}=await cl.auth.signInWithIdToken({provider:"google",token:resp.credential,nonce:gRaw[c.nonce]});if(error)throw new Error(/audience|client.?id/i.test(error.message||"")?"Google sign-in works, but Supabase rejected this app’s Google Client ID. Add it under Authentication › Providers › Google › Client IDs in Supabase.":"Supabase couldn’t verify this Google sign-in: "+error.message)}finally{}server=false}else try{console.warn("RoyalCub: Google ID token checked in the browser only. Set RC_CONFIG.googleVerifyUrl to verify the signature on your server before production use.")}catch(e){}}
- const bad=checkGoogleClaims(c,server);if(bad)throw new Error(bad);googleSignIn(c);if(S.out)sbOut()}catch(e){gerr(e.message||"Google sign-in failed. Please try again.")}finally{setTimeout(()=>{sbBusy=false},600);try{const n=decodeJwt(resp.credential).nonce;gNonces=gNonces.filter(x=>x!==n);delete gRaw[n]}catch(e){}}}
+ const bad=checkGoogleClaims(c,server);if(bad)throw new Error(bad);googleSignIn(c);if(S.out)sbOut()}catch(e){const m=e.message||"Google sign-in failed. Please try again.";gerr(m);if(S.out)setTimeout(()=>initGoogle().then(()=>gerr(m)),0)}finally{setTimeout(()=>{sbBusy=false},600);try{const n=decodeJwt(resp.credential).nonce;gNonces=gNonces.filter(x=>x!==n);delete gRaw[n]}catch(e){}}}
 function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.gid&&x.gid===c.sub),linked=false,fresh=false;
  if(!u){u=S.users.find(x=>x.email.toLowerCase()===em);if(u){if(u.gid&&u.gid!==c.sub)return gerr("This email is already linked to a different Google account.");u.gid=c.sub;linked=true}}
  if(u&&u.email.toLowerCase()!==em&&!linked){if(S.users.some(x=>x!==u&&x.email.toLowerCase()===em))return gerr("That Google email is already used by another account.");u.email=em}
@@ -1654,7 +1644,7 @@ function authView(){
  <div class="lgrid"><section><h2>For clients</h2><p>Post a vacancy with your budget, location and dates, browse service providers near you, and chat directly to agree the details.</p></section><section><h2>For service providers</h2><p>Create a profile, list the services you offer with your availability and pricing, and get found by clients in your area.</p></section><section><h2>How it works</h2><ol><li>Create a free account as a client or service provider.</li><li>Post a vacancy or offer a service.</li><li>Chat, agree terms and pay each other directly.</li></ol></section></div></div>`;
  const head=(t,sub)=>`<div class="ahead"><img class="al lg-l" src="${LG.l}" alt="RoyalCub Jobs"><img class="al lg-d" src="${LG.d}" alt="RoyalCub Jobs"><h2>${t}</h2><p class="sub">${sub}</p></div>`;
  if(au==="register")return `<div class="auth"><div class="acard">${head("Create your account","Join to hire help or find work near you.")}
- ${gblock()}<div class="or"><span>or sign up with email</span></div>
+ 
  <form onsubmit="doRegister(event)" novalidate>
  <div class="two"><label>Name<input id="rn" required maxlength="40" autocomplete="name"></label><label>Age<input id="ra" type="number" inputmode="numeric" min="16" max="99" required></label></div>
  <label>Email ID<input id="re" type="email" required autocomplete="email"></label>
@@ -1674,6 +1664,7 @@ function authView(){
  ${fp.step===1?`<form onsubmit="doReset1(event)" novalidate><label>Email ID<input id="fe" type="email" required autocomplete="email" value="${esc(fp.email)}"></label><div class="err" id="aerr" role="alert"></div><button class="btn">Send reset link</button></form>`:`<button class="btn" onclick="fp.step=1;render()">Send to a different email</button>`}
  <button class="btn alt" onclick="showAuth('login')">Back to Log in</button></div></div>`;
  return `<div class="auth"><div class="acard">${head("Welcome back","Log in to hire help or find work.")}
+  
   <form onsubmit="doLogin(event)" novalidate>${emField("le","Email","email")}
   ${pwField("lp","Password","current-password")}
   <button type="button" class="link" onclick="showAuth('forgot')">Forgot Password?</button>
@@ -1768,7 +1759,7 @@ function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.t
 function render(){pruneStories();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("tncv",!S.out&&!needTnc()&&S.view==="terms");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("fullv",!S.out&&(S.view==="profile"||S.view==="settings"));document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("tnc2",!S.out&&needTnc()&&onbStep===2);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
   if(needTnc()){view.innerHTML=onbView();lastV="";return}
- const VIEWS={home,add,chat,settings,profile,history,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
+ const VIEWS={home,add,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
 
 function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u.title;if(u.role==="worker"&&ROLE[u.cat])return ROLE[u.cat]}
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
@@ -1910,7 +1901,7 @@ function home(){
  <p class="cnt" style="margin:-4px 0 12px;min-height:0" id="locnote"><span id="syncchip">${syncChip()}</span></p><div class="list" id="plist">${isS?listS(svcs):listHTML(jobs)}</div>`;
  const stl=document.querySelector("#view .status");if(stl)stl.scrollLeft=HS.st;const c=document.getElementById("cats");if(c){c.scrollLeft=HS.cats;const sel=HS.reveal?c.querySelector("[aria-pressed=true]"):null;HS.reveal=0;if(sel){const cr=c.getBoundingClientRect(),sr=sel.getBoundingClientRect();if(sr.left<cr.left)c.scrollLeft+=sr.left-cr.left-8;else if(sr.right>cr.right)c.scrollLeft+=sr.right-cr.right+8}catEdges()}
  if(y0!==null&&Math.abs(scrollY-y0)>2)scrollTo(0,y0)}
-function history(){const h=S.hist;
+function historyView(){const h=S.hist;
  view.innerHTML=`<button class="btn alt" style="padding:6px 16px;margin-bottom:14px" onclick="go('profile')">‹ Back</button><div class="row"><h2>Booking history</h2><span>${String(h.length).padStart(2,"0")}</span></div>
  <div class="set hgrid">${h.length?h.map(x=>`<div class="hi"><div class="t"><b>${esc(x.t)}</b><span class="pill ${esc(x.s)}">${esc(x.s)}</span></div><small>${esc(x.who)} · ${esc(x.d)}</small><b style="color:var(--plum)">${x.k==="earn"?mEarn():DI.rupee}${esc(x.a)}</b></div>`).join(""):`<div class="empty">No bookings yet. Requests you send will show up here.</div>`}</div>`}
 function svcCard(x){const mine=x.by===S.name,n=x.v.length;
@@ -1976,7 +1967,7 @@ function bookEst(){const h=Math.max(1,+bh.value||1),o=+bo.value,x=bj,mid=(x.min+
   f=!(o>0)?"":o>=x.max?"At or above the top of their range, so it will very likely be accepted.":o>=mid?"Within their range, so it will likely be accepted or lightly countered.":o>=x.min?"In the lower half of their range. Expect a counter-offer.":`Below their ₹${x.min}/${uS(x)} minimum. They will probably counter at ₹${x.min}.`}
  else t=`Estimated cost: <b>${estTx(x,h)}</b> for ${qtyTx(x,h)}`;
  bookE.innerHTML=t;bookFit.textContent=f;bkGo.textContent=bedit?"Send new offer":bmode==="offer"?"Send offer":"Book now"}
-function bkNotifyUI(x){if(postD.open&&ck==="service"&&cp===x.id)openService(x.id);else if(S.view==="history")history();nav()}
+function bkNotifyUI(x){if(postD.open&&ck==="service"&&cp===x.id)openService(x.id);else if(S.view==="history")historyView();nav()}
 function sendBook(){const h=+bh.value,o=+bo.value;if(!bd.value){toast("Pick a date");bd.focus();return}const lo=qMin(bj),hi=qMax(bj);if(!(h>=lo&&h<=hi)){toast(`Enter between ${lo} and ${hi} ${uOf(bj)}s`);bh.focus();return}
  if(bmode==="offer"&&!(o>=1&&o<=99999)){toast("Enter a valid offer per "+uOf(x));bo.focus();return}
  const dt=new Date(bd.value+"T00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),note=bkN.value.trim(),x=bj;let b=bedit;
@@ -2408,13 +2399,35 @@ function openMenu(){renderMenu();const d=document.getElementById("drawer"),b=doc
 function closeMenu(quiet){const d=document.getElementById("drawer");if(!d||!d.classList.contains("open"))return;const b=document.getElementById("drawerBd"),mb=document.getElementById("menuB");d.classList.remove("open");b.classList.remove("open");d.setAttribute("aria-hidden","true");if(mb)mb.setAttribute("aria-expanded","false");document.body.style.overflow="";if(!quiet&&menuOpener&&menuOpener.focus)try{menuOpener.focus({preventScroll:true})}catch(e){}}
 function toggleMenu(){const d=document.getElementById("drawer");d&&d.classList.contains("open")?closeMenu():openMenu()}
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeMenu();closeLocMenu()}});
-function updateBack(){const b=document.getElementById("backB");if(!b)return;b.hidden=S.out?(au==="login"||au==="home"):(S.view==="home")}
+function updateBack(){const b=document.getElementById("backB");if(!b)return;b.hidden=S.out?(au==="home"):(S.view==="home")}
 function goBack(){const ds=[...document.querySelectorAll("dialog[open]")];if(ds.length){ds[ds.length-1].close();return}
- if(S.out){if(au!=="login")showAuth("login");return}
+ const dr=document.getElementById("drawer");if(dr&&dr.classList.contains("open")){closeMenu();return}
+ const lm=document.getElementById("locmenu");if(lm&&!lm.hidden){closeLocMenu();return}
+ if(S.out){if(au==="login")showAuth("home");else if(au!=="home")showAuth("login");return}
  if(S.view==="chat"&&S.thread){S.thread=null;render();return}
  let p=navStack.pop();while(p&&p===S.view)p=navStack.pop();
  if(!p||p==="admin"&&!isAdmin())p="home";
  navJump=true;sOpen=false;S.view=p;if(p!=="profile")editP=false;if(p!=="chat")S.thread=null;render();scrollTo(0,0)}
+/* ---------- Device / browser Back button ----------
+   One press  -> previous screen (closes an open dialog, menu or chat first).
+   Two or three quick presses (within BK.win ms) -> "Exit app?" confirmation.
+   A history "guard" entry keeps Back inside the app. Browsers only honour pushed history entries after the
+   user has touched the page, so the guard is armed on the first tap/key press. */
+const BK={armed:false,exiting:false,win:500,t:[]};
+const canGoBack=()=>{if(document.querySelector("dialog[open]"))return true;const dr=document.getElementById("drawer");if(dr&&dr.classList.contains("open"))return true;const lm=document.getElementById("locmenu");if(lm&&!lm.hidden)return true;return S.out?au!=="home":S.view!=="home"};
+function backPress(){const now=Date.now();BK.t=BK.t.filter(x=>now-x<BK.win);BK.t.push(now);
+ const ex=document.getElementById("exitD");
+ if(ex.open){if(BK.t.length>1)return;ex.close();return}
+ if(BK.t.length>=2){closeMenu(true);const lm=document.getElementById("locmenu");if(lm&&!lm.hidden)closeLocMenu();ex.showModal();const n=document.getElementById("exNo");if(n)n.focus({preventScroll:true});return}
+ if(canGoBack())goBack();else toast("Double-tap back to exit")}
+function exitApp(){const ex=document.getElementById("exitD");BK.exiting=true;ex.close();try{window.close()}catch(e){}
+ setTimeout(()=>{try{history.go(-2)}catch(e){}},50);
+ setTimeout(()=>{if(document.visibilityState==="visible"){BK.exiting=false;toast("You can now close this tab or use your device’s Home button.")}},900)}
+function armBack(){if(BK.armed)return;BK.armed=true;["pointerdown","touchstart","keydown","click"].forEach(e=>removeEventListener(e,armBack,true));
+ try{history.replaceState({rcBase:1},"",location.href);history.pushState({rcGuard:1},"",location.href)}catch(e){BK.armed=false}}
+["pointerdown","touchstart","keydown","click"].forEach(e=>addEventListener(e,armBack,{capture:true,passive:true}));
+try{if(navigator.userActivation&&navigator.userActivation.hasBeenActive)armBack()}catch(e){}
+addEventListener("popstate",()=>{if(!BK.armed||BK.exiting)return;try{history.pushState({rcGuard:1},"",location.href)}catch(e){}backPress()});
 const allPlaces=()=>{const seen=new Set(),out=[];[...S.jobs.map(j=>j.loc),...S.services.map(x=>x.loc),...S.users.map(u=>u.loc)].forEach(l=>{l=String(l||"").trim();const k=l.toLowerCase();if(l&&!seen.has(k)){seen.add(k);out.push(l)}});return out.sort((x,y)=>x.localeCompare(y))};
 function closeLocMenu(){const m=document.getElementById("locmenu"),i=document.getElementById("qloc");if(m&&!m.hidden)m.hidden=true;if(i)i.setAttribute("aria-expanded","false")}
 function openLocMenu(force){const m=document.getElementById("locmenu"),i=document.getElementById("qloc");if(!m)return;
