@@ -1200,6 +1200,14 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .m .mimg{display:block;max-width:100%;width:240px;max-height:260px;object-fit:cover;border-radius:12px;cursor:zoom-in;margin-bottom:4px}
 .imgd{padding:0;border:0;background:transparent;max-width:96vw;max-height:92vh;overflow:visible}.imgd::backdrop{background:rgba(0,0,0,.75)}
 .imgd img{display:block;max-width:96vw;max-height:90vh;border-radius:12px}
+#delAccD .btn.danger{background:#c0261c;border-color:#c0261c;color:#fff}#delAccD .btn:disabled{opacity:.6}
+/* ===== photo messages: expiry note, long-press menu, replies ===== */
+.m .mimg{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;touch-action:manipulation}
+.imgnote{display:block;font-size:11px;opacity:.8;margin:2px 0 6px;line-height:1.3}.imgexp{display:block;font-style:italic;opacity:.8}
+.rq{display:block;border-left:3px solid currentColor;background:rgba(127,127,127,.18);padding:4px 8px;margin-bottom:6px;border-radius:6px;font-size:12.5px;opacity:.95;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rq b{display:block;font-size:12px}
+.repbar span{display:block}.repbar b{display:block;color:var(--ink)}.repbar small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70vw}
+.imenu{position:fixed;z-index:2000;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.28);padding:6px}
+.imenu button{background:none;border:0;font:inherit;font-weight:700;color:var(--ink);padding:11px 18px;min-height:44px;border-radius:10px;cursor:pointer}.imenu button:hover,.imenu button:focus-visible{background:var(--soft)}
 </style>
 </head>
 <body>
@@ -1256,6 +1264,7 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
  <div class="acts"><button type="button" class="btn" onclick="sendPitch()">Submit application</button><button type="button" class="btn alt" onclick="pitchD.close()">Cancel</button></div>
 </form></dialog>
 
+<dialog id="delAccD" aria-labelledby="delAccT"><h3 id="delAccT">Delete account permanently?</h3><p style="color:var(--mute)">Are you sure? Your profile, vacancies, services, status stories and chats will be deleted for good. This can’t be undone.</p><div class="acts"><button type="button" id="delAccGo" class="btn danger" onclick="deleteAccount()">Yes, delete my account</button><button type="button" class="btn alt" onclick="delAccD.close()">Cancel</button></div></dialog>
 <dialog id="outD"><h3>Log out?</h3><p style="color:var(--mute)">You can log back in any time. Your vacancies and chats stay saved.</p><div class="acts"><button class="btn" onclick="outD.close();try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view='home';au='home';pgReset();save();render()">Log out</button><button class="btn alt" onclick="outD.close()">Stay logged in</button></div></dialog>
 <dialog id="exitD" aria-labelledby="exT"><h3 id="exT">Exit RoyalCub Jobs?</h3><p style="color:var(--mute)">Are you sure you want to leave the app?</p><div class="acts"><button class="btn" id="exYes" type="button" onclick="exitApp()">Exit</button><button class="btn alt" id="exNo" type="button" onclick="exitD.close()">Stay</button></div></dialog>
 <script>
@@ -2126,10 +2135,13 @@ const TAGRE=/\s*⟦rc\|([a-z]+)\|([^|⟧]*)\|([^|⟧]*)\|([a-z]+)⟧\s*$/;
 const raw=t=>String(t==null?"":t).replace(TAGRE,"");
 const QRE=/^⟪st\|([A-Za-z0-9_-]*)\|(\d{1,2})\|([^⟫]*)⟫\s*/;
 const qOf=t=>{const m=raw(t).match(QRE);return m?{id:m[1],bg:+m[2],s:m[3]}:null};
-const qBody=t=>raw(t).replace(QRE,"");
-const clean=t=>raw(t).replace(QRE,"↩ ").replace(/^⟦img\|[^⟧]*⟧\s*/,"Photo ").replace(/ ¦ /g," · ");
-function fmtMsg(t){const b=qBody(t);
- {const im=b.match(/^⟦img\|(data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+)⟧\s*([\s\S]*)$/);if(im)return `<img class="mimg" src="${im[1]}" alt="Photo" loading="lazy" onclick="viewImg(this.src)">${im[2]?`<span class="apl">${esc(im[2])}</span>`:""}`}
+const RPE=/^⟪rp\|([^|⟫]*)\|([^⟫]*)⟫\s*/;
+const qBody=t=>raw(t).replace(QRE,"").replace(RPE,"");
+const clean=t=>raw(t).replace(QRE,"↩ ").replace(RPE,"↩ ").replace(/^⟦img-expired⟧/,"Photo expired").replace(/^⟦img\|[^⟧]*⟧\s*/,"Photo ").replace(/ ¦ /g," · ");
+function fmtMsg(t){const rq=raw(t).match(RPE);return (rq?`<span class="rq"><b>${esc(rq[1])}</b>${esc(rq[2])}</span>`:"")+fmtMsg0(t)}
+function fmtMsg0(t){const b=qBody(t);
+ if(b.trim()==="⟦img-expired⟧")return `<span class="imgexp">This image has expired and was removed.</span>`;
+ {const im=b.match(/^⟦img\|(data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+)⟧\s*([\s\S]*)$/);if(im)return `<img class="mimg" src="${im[1]}" alt="Photo. Press and hold to reply." loading="lazy" tabindex="0" draggable="false" onclick="viewImg(this.src)" onkeydown="if(event.key==='Enter')viewImg(this.src)"><small class="imgnote">This image will disappear within one month</small>${im[2]?`<span class="apl">${esc(im[2])}</span>`:""}`}
  if(b.startsWith("Applied for this position")){const p=b.split(" ¦ "),fit=p.slice(4).join(" ¦ ");return `<b class="apt">${esc(p[0])}</b>${p.slice(1,4).map(x=>`<span class="apl">${esc(x)}</span>`).join("")}${fit?`<span class="apl">${esc(fit)}</span>`:""}`}
  if(b.startsWith("Booking Request from ")){const p=b.split(" ¦ ");return `<b class="apt">${esc(p[0])}</b>${p.slice(1).map(x=>`<span class="apl">${esc(x)}</span>`).join("")}`}
  return esc(b.replace(/ ¦ /g," · "))}
@@ -2310,9 +2322,9 @@ function chat(T){const V=T||view,t=S.threads.find(x=>x.id===S.thread);
  const pres=on=>`<i class="pres ${on?"on":""}" aria-hidden="true"></i>`;
  V.innerHTML=`<div class="row chatrow"><h2>Messages</h2>${SB_ON&&typeof RT!=="undefined"&&RT.ok===false?`<span class="cnt" role="status">Chat server not set up yet</span>`:""}${unread()?`<span class="ucirc" role="img" aria-label="${unread()} unread message${unread()===1?"":"s"}">${unread()>99?"99+":unread()}</span>`:""}</div><div class="chat ${t?"open":""}">
  <div class="threads">${S.threads.length?S.threads.map(x=>{const l=x.m[x.m.length-1];return `<button class="th" ${t&&t.id===x.id?'aria-current="true"':""} onclick="openChat('${x.id}')"><span class="avw"><div class="av" style="${abg(x.n)}">${ait(x.n)}</div>${pres(x.on)}</span><span class="thm"><span class="thr"><b>${esc(x.n)}</b>${l?`<em>${tShort(l.ts)}</em>`:""}</span><span class="thr"><small>${l?(l.me?"You: ":"")+esc(clean(l.t)):"Say hello"}</small>${x.u?`<span class="nb" role="img" aria-label="${x.u} unread message${x.u===1?"":"s"}">${x.u>99?"99+":x.u}</span>`:""}</span></span></button>`}).join(""):`<div class="empty">No conversations yet.</div>`}</div>
- <section class="pane" aria-label="Conversation" data-t="${t?t.id:''}">${t?`${!Net.on?`<div class="cbar" role="status">You’re offline. Messages will send automatically when you reconnect.</div>`:""}<div class="ph"><button class="back" aria-label="Back to conversations" onclick="S.thread=null;Chat.stick=true;render()">‹</button><span class="avw"><div class="av" style="${abg(t.n)}">${ait(t.n)}</div>${pres(t.on)}</span><div class="phn"><b>${esc(t.n)}</b><small class="${t.typing||t.on?"on":""}">${t.typing?"typing…":t.on?"Online":SB_ON?"Offline":""}</small></div><div class="cmenu"><button type="button" class="btn alt rep dots" aria-haspopup="menu" aria-expanded="false" aria-label="Chat options" onclick="toggleCM(event)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button><div class="cml hide" role="menu"><button type="button" role="menuitem" data-n="${esc(t.n)}" onclick="reportUser(this.dataset.n)">Report</button><button type="button" role="menuitem" class="dng" onclick="askDelChat()">Delete</button></div></div></div>${Chat.pend?`<div class="mprev"><img src="${Chat.pend}" alt="Photo to send"><span>Photo ready to send</span><button type="button" aria-label="Remove photo" onclick="clearImg()">✕</button></div>`:""}
- <div class="msgs" id="ms" aria-live="polite">${t.m.map(m=>`<div class="m ${m.me?"me":""}">${qCard(m,t)}${fmtMsg(m.t)}${actBar(m)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]:""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span><button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}</span></div>`).join("")}</div>
- <form class="send" style="max-width:none" onsubmit="sendMsg(event)"><button type="button" class="btn alt att" aria-label="Attach a photo" onclick="document.getElementById('mimg').click()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg></button><input id="mimg" type="file" accept="image/*" hidden onchange="pickImg(this)"><input id="mi" autocomplete="off" autocapitalize="sentences" enterkeyhint="send" maxlength="1000" aria-label="Message" placeholder="${Chat.pend?"Add a caption (optional)":"Write a message"}"><button class="btn" onpointerdown="event.preventDefault()">Send</button></form>`:`<div class="empty" style="margin:auto">Pick a conversation to start chatting.</div>`}</section></div>`;
+ <section class="pane" aria-label="Conversation" data-t="${t?t.id:''}">${t?`${!Net.on?`<div class="cbar" role="status">You’re offline. Messages will send automatically when you reconnect.</div>`:""}<div class="ph"><button class="back" aria-label="Back to conversations" onclick="S.thread=null;Chat.stick=true;render()">‹</button><span class="avw"><div class="av" style="${abg(t.n)}">${ait(t.n)}</div>${pres(t.on)}</span><div class="phn"><b>${esc(t.n)}</b><small class="${t.typing||t.on?"on":""}">${t.typing?"typing…":t.on?"Online":SB_ON?"Offline":""}</small></div><div class="cmenu"><button type="button" class="btn alt rep dots" aria-haspopup="menu" aria-expanded="false" aria-label="Chat options" onclick="toggleCM(event)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button><div class="cml hide" role="menu"><button type="button" role="menuitem" data-n="${esc(t.n)}" onclick="reportUser(this.dataset.n)">Report</button><button type="button" role="menuitem" class="dng" onclick="askDelChat()">Delete</button></div></div></div>
+ <div class="msgs" id="ms" aria-live="polite">${t.m.map(m=>`<div class="m ${m.me?"me":""}" data-mid="${esc(m.id)}">${qCard(m,t)}${fmtMsg(m.t)}${actBar(m)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]:""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span><button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}</span></div>`).join("")}</div>${Chat.rep?`<div class="mprev repbar"><span><b>Replying to ${esc(Chat.rep.who)}</b><small>${esc(Chat.rep.snip)}</small></span><button type="button" aria-label="Cancel reply" onclick="clearRep()">✕</button></div>`:""}${Chat.pend?`<div class="mprev"><img src="${Chat.pend}" alt="Photo to send"><span>Photo ready — tap Send</span><button type="button" aria-label="Remove photo" onclick="clearImg()">✕</button></div>`:""}
+ <form class="send" style="max-width:none" onsubmit="sendMsg(event)"><button type="button" class="btn alt att" aria-label="Attach a photo" onclick="document.getElementById('mimg').click()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg></button><input id="mimg" type="file" accept="image/*" hidden onchange="pickImg(this)"><input id="mi" autocomplete="off" autocapitalize="sentences" enterkeyhint="send" maxlength="1000" aria-label="Message" placeholder="${Chat.pend?"Tap Send to share the photo":"Write a message"}"><button class="btn" onpointerdown="event.preventDefault()">Send</button></form>`:`<div class="empty" style="margin:auto">Pick a conversation to start chatting.</div>`}</section></div>`;
  const m=V.querySelector("#ms");if(m){if(Chat.stick!==false||Chat.pos==null)m.scrollTop=m.scrollHeight;else m.scrollTop=Math.min(Chat.pos,m.scrollHeight)}}
 
 /* ---------- chat: options menu, delete chat, photos ---------- */
@@ -2329,16 +2341,38 @@ function pickImg(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
   if(out.length>140000){toast("That photo is too large. Try a smaller one.");return}
   const i=document.getElementById("mi"),v=i?i.value:"";Chat.pend=out;Chat.stick=true;ui();const n=document.getElementById("mi");if(n){n.value=v;n.focus({preventScroll:true})}phSet()};
  im.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t read that image")};im.src=url}
-function phSet(){const n=document.getElementById("mi");if(n)n.placeholder=Chat.pend?"Add a caption (optional)":"Write a message"}
+function phSet(){const n=document.getElementById("mi");if(n)n.placeholder=Chat.pend?"Tap Send to share the photo":"Write a message"}
 function clearImg(){Chat.pend=null;const i=document.getElementById("mi"),v=i?i.value:"";ui();const n=document.getElementById("mi");if(n)n.value=v;phSet()}
-function viewImg(src){let d=document.getElementById("imgD");if(!d){d=document.createElement("dialog");d.id="imgD";d.className="imgd";d.addEventListener("click",()=>d.close());document.body.appendChild(d)}d.innerHTML=`<img src="${src}" alt="Photo">`;d.showModal()}
+function viewImg(src){if(Date.now()-lpFired<800)return;let d=document.getElementById("imgD");if(!d){d=document.createElement("dialog");d.id="imgD";d.className="imgd";d.addEventListener("click",()=>d.close());document.body.appendChild(d)}d.innerHTML=`<img src="${src}" alt="Photo">`;d.showModal()}
+/* ---------- photos: long-press to reply, expire after one month ---------- */
+let lpT=null,lpX=0,lpY=0,lpFired=0;
+function hideImenu(){const m=document.getElementById("imenu");if(m)m.remove()}
+function showImgMenu(im,x,y){hideImenu();const b=im.closest(".m");if(!b)return;const m=document.createElement("div");m.id="imenu";m.className="imenu";m.setAttribute("role","menu");
+ m.innerHTML=`<button type="button" role="menuitem" data-mid="${esc(b.dataset.mid)}" onclick="startReply(this.dataset.mid)">↩ Reply</button>`;document.body.appendChild(m);
+ const w=m.offsetWidth,h=m.offsetHeight;m.style.left=Math.max(8,Math.min(innerWidth-w-8,x-w/2))+"px";m.style.top=Math.max(8,Math.min(innerHeight-h-8,y-h-12))+"px";const bt=m.querySelector("button");if(bt)bt.focus({preventScroll:true})}
+function startReply(mid){hideImenu();const t=S.threads.find(x=>x.id===S.thread),m=t&&t.m.find(x=>String(x.id)===String(mid));if(!m)return;
+ const b=qBody(m.t),img=/^⟦img/.test(b);Chat.rep={who:m.me?"You":t.n,snip:img?"Photo":b.replace(/\s+/g," ").slice(0,60)};ui();const i=document.getElementById("mi");if(i)i.focus({preventScroll:true})}
+function clearRep(){Chat.rep=null;const i=document.getElementById("mi"),v=i?i.value:"";ui();const n=document.getElementById("mi");if(n)n.value=v}
+document.addEventListener("pointerdown",e=>{if(!e.target.closest||!e.target.closest("#imenu"))hideImenu();const im=e.target.closest&&e.target.closest(".m .mimg");if(!im)return;lpX=e.clientX;lpY=e.clientY;clearTimeout(lpT);lpT=setTimeout(()=>{lpT=null;lpFired=Date.now();showImgMenu(im,lpX,lpY)},450)},true);
+["pointerup","pointercancel"].forEach(ev=>document.addEventListener(ev,()=>{if(lpT){clearTimeout(lpT);lpT=null}},true));
+document.addEventListener("pointermove",e=>{if(lpT&&Math.hypot(e.clientX-lpX,e.clientY-lpY)>10){clearTimeout(lpT);lpT=null}},true);
+document.addEventListener("contextmenu",e=>{const im=e.target.closest&&e.target.closest(".m .mimg");if(!im)return;e.preventDefault();if(lpT){clearTimeout(lpT);lpT=null}if(Date.now()-lpFired>800){lpFired=Date.now();showImgMenu(im,e.clientX,e.clientY)}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")hideImenu()});
+const IMG_TTL=30*864e5,IMG_RE=/^(?:⟪rp\|[^⟫]*⟫\s*)?⟦img\|/;
+const imgOld=(t,ts)=>IMG_RE.test(String(t||""))&&Date.now()-(+ts||0)>IMG_TTL;
+function imgExpire(){let ch=false;(S.threads||[]).forEach(t=>t.m.forEach(m=>{if(imgOld(m.t,m.ts)){m.t="⟦img-expired⟧";ch=true}}));if(ch){try{save()}catch(e){}}
+ if(SB_ON&&S.me&&!S.out){try{fetch(RT.base()+"?from_name=eq."+encodeURIComponent(S.name)+"&body=like."+encodeURIComponent("*⟦img|*")+"&ts=lt."+(Date.now()-IMG_TTL),{method:"PATCH",headers:cHead({Prefer:"return=minimal"}),body:JSON.stringify({body:"⟦img-expired⟧"})}).catch(()=>{})}catch(e){}}
+ return ch}
+setInterval(()=>{if(imgExpire()&&S.view==="chat")ui()},3600000);
 function sendMsg(e){e.preventDefault();const i=document.getElementById("mi");if(!i)return;Chat.stick=true;
- if(Chat.pend){const cap=i.value.trim();if(Chat.send(S.thread,"⟦img|"+Chat.pend+"⟧"+(cap?" "+cap:""),{img:1})){i.value="";Chat.pend=null}}
- else if(Chat.send(S.thread,i.value)){i.value=""}ui();phSet();const n=document.getElementById("mi");if(n)n.focus({preventScroll:true})}
+ const cl=v=>String(v||"").replace(/[|⟪⟫⟦⟧]/g," ").trim().slice(0,60),rp=Chat.rep?`⟪rp|${cl(Chat.rep.who)}|${cl(Chat.rep.snip)}⟫`:"";
+ if(Chat.pend){if(Chat.send(S.thread,rp+"⟦img|"+Chat.pend+"⟧",{img:1})){Chat.pend=null;Chat.rep=null}}
+ else if(i.value.trim()){if(Chat.send(S.thread,rp+i.value)){i.value="";Chat.rep=null}}
+ ui();phSet();const n=document.getElementById("mi");if(n)n.focus({preventScroll:true})}
 const rank={sending:0,sent:1,delivered:2,read:3};
 const Net={on:navigator.onLine!==false,send(e){return Net.on?RT.send(e):Promise.reject("offline")},
  set(on){if(Net.on===on)return;Net.on=on;if(on){S.threads.forEach(t=>t.m.forEach(m=>{if(m.st==="sending")m.next=0}));Chat.flush();if(typeof RT!=="undefined")RT.poll()}ui()}};
-const Chat={pend:null,busy:0,ackMs:4000,max:5,base:800,rt:null,
+const Chat={pend:null,rep:null,busy:0,ackMs:4000,max:5,base:800,rt:null,
  send(tid,text,o){const t=S.threads.find(x=>x.id===tid);text=(text||"").trim();if(!t||!text)return null;if(text.length>(o&&o.img?150000:1000)){toast(o&&o.img?"That photo is too large":"Message is too long (max 1000 characters)");return null}
   const m={id:"m"+uid(),me:1,t:text,ts:Date.now(),st:"sending",tries:0};t.m.push(m);S.chatStats.sent++;save();Chat.flush();return m},
  async flush(){if(Chat.busy||!Net.on)return;Chat.busy=1;
@@ -2352,7 +2386,7 @@ const Chat={pend:null,busy:0,ackMs:4000,max:5,base:800,rt:null,
  receipt(id,st){S.threads.forEach(t=>t.m.forEach(m=>{if(m.id===id&&rank[st]>rank[m.st]){m.st=st;if(m.me&&(st==="delivered"||st==="read"))Notify.add({type:"chat",key:"chat:st:"+t.n,title:st==="read"?`${t.n} read your message`:`Message delivered to ${t.n}`,body:clean(m.t).slice(0,90),act:{k:"chat",n:t.n},read:S.view==="chat"&&S.thread===t.id?1:0})}}));save();ui()},
  typing(n,on){const t=S.threads.find(x=>x.n===n);if(!t)return;t.typing=on;clearTimeout(t.tt);if(on)t.tt=setTimeout(()=>{t.typing=0;ui()},3000);ui()},
  receive(m){if(S.threads.some(t=>t.m.some(x=>x.id===m.id)))return;if(S.delT&&S.delT[m.peer]&&+m.ts<=S.delT[m.peer])return;stubUser(m.peer);const t=ensure(m.peer);t.typing=0;
-  let i=t.m.length;while(i>0&&t.m[i-1].ts>m.ts)i--;t.m.splice(i,0,{id:m.id,t:m.t,ts:m.ts});try{actSync(m.t,m.peer)}catch(e){}
+  let i=t.m.length;while(i>0&&t.m[i-1].ts>m.ts)i--;t.m.splice(i,0,{id:m.id,t:imgOld(m.t,m.ts)?"⟦img-expired⟧":m.t,ts:m.ts});try{actSync(m.t,m.peer)}catch(e){}
   const here=S.view==="chat"&&S.thread===t.id&&!document.hidden;
   if(!here&&!m.read){t.u=(+t.u||0)+1;if(m.quiet){t.qn=(t.qn||0)+1;t.ql=clean(m.t)}if(!m.quiet){Notify.add({type:"chat",key:"chat:msg:"+t.n,title:t.u>1?`${t.u} new messages from ${t.n}`:`New message from ${t.n}`,body:clean(m.t).slice(0,90),act:{k:"chat",n:t.n}});toast("New message from "+t.n)}}
   save();ui()}};
@@ -2379,7 +2413,7 @@ const RT={ok:null,err:undefined,at:0,me:"",since:0,first:true,timer:null,ch:null
  markRead(peer){if(S.out||!peer)return;RT.patch({to:S.name,from:peer},"read").catch(()=>{})},
  async poll(){if(S.out||!S.me||RT.me!==S.name)return;if(SB_ON&&RT.ok===false&&Date.now()-RT.at<30000)return;
   try{const rows=await RT.rows({to:S.name,since:RT.since>0?RT.since-1:0});rows.forEach(x=>{RT.incoming(x,RT.first);RT.since=Math.max(RT.since,+x.ts||0)});S.threads.filter(t=>t.qn).forEach(t=>{Notify.add({type:"chat",key:"chat:msg:"+t.n,title:t.qn>1?`${t.qn} new messages from ${t.n}`:`New message from ${t.n}`,body:String(t.ql||"").slice(0,90),act:{k:"chat",n:t.n}});t.qn=0;t.ql=""});
-   if(RT.first){const o=await RT.rows({from:S.name});let ch=false;o.forEach(x=>{if(S.threads.some(t=>t.m.some(m=>m.id===x.id)))return;if(S.delT&&S.delT[x.to_name]&&+x.ts<=S.delT[x.to_name])return;stubUser(x.to_name);const t=ensure(x.to_name);let i=t.m.length;while(i>0&&t.m[i-1].ts>+x.ts)i--;t.m.splice(i,0,{id:x.id,me:1,t:x.body,ts:+x.ts,st:x.status||"sent"});ch=true});if(ch){save();ui()}RT.first=false}
+   if(RT.first){const o=await RT.rows({from:S.name});let ch=false;o.forEach(x=>{if(S.threads.some(t=>t.m.some(m=>m.id===x.id)))return;if(S.delT&&S.delT[x.to_name]&&+x.ts<=S.delT[x.to_name])return;stubUser(x.to_name);const t=ensure(x.to_name);let i=t.m.length;while(i>0&&t.m[i-1].ts>+x.ts)i--;t.m.splice(i,0,{id:x.id,me:1,t:imgOld(x.body,x.ts)?"⟦img-expired⟧":x.body,ts:+x.ts,st:x.status||"sent"});ch=true});if(ch){save();ui()}RT.first=false}
    const pend=S.threads.flatMap(t=>t.m).filter(m=>m.me&&(m.st==="sent"||m.st==="delivered"));
    if(pend.length){const lo=Math.min(...pend.map(m=>m.ts))-1;(await RT.rows({from:S.name,since:lo})).forEach(RT.status)}}
   catch(e){if(RT.ok===false)ui()}},
@@ -2429,8 +2463,31 @@ function ui(){
    nav();return}}
  const v=i?i.value:"",f=i&&document.activeElement===i;render();const n=document.getElementById("mi");if(n){n.value=v;if(f)n.focus({preventScroll:true})}}
 addEventListener("online",()=>Net.set(true));addEventListener("offline",()=>Net.set(false));
-setTimeout(()=>Chat.flush(),0)
+setTimeout(()=>Chat.flush(),0);setTimeout(()=>{try{imgExpire()}catch(e){}},1500)
 
+/* ---------- delete account permanently ---------- */
+async function deleteAccount(){
+ const go=document.getElementById("delAccGo"),u=meU(),n=S.name;if(!u){delAccD.close();return}
+ if(go){go.disabled=true;go.textContent="Deleting…"}
+ const em=u.email,pw=u.pw,enc=encodeURIComponent,tmo=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(r,ms))]);
+ if(SB_ON){
+  try{await tmo(Promise.allSettled([
+   fetch(cBase()+"?owner=eq."+enc(n),{method:"DELETE",headers:cHead()}),
+   fetch(RT.base()+"?from_name=eq."+enc(n),{method:"DELETE",headers:cHead()}),
+   fetch(RT.base()+"?to_name=eq."+enc(n),{method:"DELETE",headers:cHead()})]),6000)}catch(e){}
+  try{const c=await tmo(sbClient(),6000);if(c&&em&&pw){sbQuiet++;try{const r=await tmo(c.auth.signInWithPassword({email:em,password:pw}),6000);if(r&&!r.error)await tmo(c.rpc("delete_my_account"),6000)}finally{try{await c.auth.signOut({scope:"local"})}catch(e){}sbQuiet--}}}catch(e){}
+ }
+ S.users=S.users.filter(x=>x!==u);
+ ["jobs","services","stories"].forEach(k=>{S[k]=(S[k]||[]).filter(o=>o.by!==n)});
+ S.services.forEach(x=>{if(x.b)x.b=x.b.filter(b=>b.by!==n);if(Array.isArray(x.v))x.v=x.v.filter(v=>v!==n)});
+ S.jobs.forEach(j=>{if(j.p)j.p=j.p.filter(q=>q.by!==n);if(Array.isArray(j.v))j.v=j.v.filter(v=>v!==n)});
+ S.stories.forEach(t=>{if(Array.isArray(t.v))t.v=t.v.filter(v=>v!==n)});
+ S.threads=[];S.hist=[];S.notifs=[];S.delT={};S.sy={};
+ if(S.fol&&typeof S.fol==="object"){delete S.fol[n];Object.keys(S.fol).forEach(k=>{if(Array.isArray(S.fol[k]))S.fol[k]=S.fol[k].filter(y=>y!==n)})}
+ try{RT.lmSave(RT.lm().filter(x=>x.from_name!==n&&x.to_name!==n))}catch(e){}
+ try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}
+ try{sbOut()}catch(e){}
+ delAccD.close();S.out=true;S.me=null;S.name="";S.role="client";S.thread=null;Chat.pend=null;S.profile={name:"",age:"",email:"",phone:""};S.view="home";au="home";pgReset();save();render();toast("Your account has been deleted")}
 function settings(){
  const P=S.priv,th=S.theme==="dark"?"dark":"light",pr=S.profile,nm=pr.name||S.name,cl=S.role==="client";
  const row=(ic,t,sub,a,c2="")=>`<button class="srow ${c2}" onclick="${a}"><span class="si" aria-hidden="true">${ic}</span><span><b>${t}</b><small>${sub}</small></span><span aria-hidden="true">›</span></button>`;
@@ -2451,6 +2508,7 @@ function settings(){
   <section class="scard"><h4>Privacy</h4>${tg("vis","Show my profile","Let other users find and view it")}${tg("online","Show when I’m online","Display an online dot on your avatar")}${tg("msgs","Allow messages from anyone","Turn off to limit who can message you")}</section>
   <section class="scard"><details class="hdrop"><summary><h4>Help</h4></summary><details><summary>How do I post a job?</summary><p>Open Add Post, choose Post Vacancies, fill in the details and tap Publish.</p></details><details><summary>How do I apply for a job?</summary><p>Tap Apply now on a vacancy, enter your price and start date, and say why you’re a good fit.</p></details><details><summary>How do I book a worker?</summary><p>Tap Book now on a worker’s card, pick a date and price, then send the request. Your chat starts from there.</p></details><button class="btn" onclick="go('support')">Connect Support</button></details></section>
   ${row(FI.logout,"Log out","Sign out of this device","outD.showModal()","slog danger")}
+  ${row('<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',"Delete account permanently","Remove your account and all your data","delAccD.showModal()","slog danger")}
  </div></div></div>`}
 
 function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...S.services].filter(j=>j.by===S.name);
