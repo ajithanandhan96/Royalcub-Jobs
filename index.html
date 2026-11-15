@@ -1188,6 +1188,18 @@ input,select,textarea{color-scheme:light}
 :root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea{color-scheme:dark}
 :root[data-theme="light"] input,:root[data-theme="light"] select,:root[data-theme="light"] textarea{color-scheme:light}
 input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-calendar-picker-indicator{opacity:1;cursor:pointer}
+/* ===== chat: options menu, photo attach, image bubbles ===== */
+.cmenu{position:relative;margin-left:auto;flex:none}.cmenu .rep{margin-left:0;width:42px;padding:0;display:grid;place-items:center}
+.cml{position:absolute;right:0;top:calc(100% + 6px);min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.2);padding:6px;z-index:40;display:flex;flex-direction:column}
+.cml.hide{display:none}
+.cml button{background:none;border:0;text-align:left;padding:11px 12px;border-radius:10px;font:inherit;font-weight:600;color:var(--ink);cursor:pointer;min-height:44px}
+.cml button:hover,.cml button:focus-visible{background:var(--soft)}.cml .dng{color:#c0261c}
+.send .att{flex:none;width:44px;padding:0;display:grid;place-items:center}
+.mprev{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+.mprev img{width:48px;height:48px;object-fit:cover;border-radius:10px}.mprev span{flex:1}.mprev button{background:none;border:0;font-size:18px;color:var(--ink);cursor:pointer;padding:6px 10px}
+.m .mimg{display:block;max-width:100%;width:240px;max-height:260px;object-fit:cover;border-radius:12px;cursor:zoom-in;margin-bottom:4px}
+.imgd{padding:0;border:0;background:transparent;max-width:96vw;max-height:92vh;overflow:visible}.imgd::backdrop{background:rgba(0,0,0,.75)}
+.imgd img{display:block;max-width:96vw;max-height:90vh;border-radius:12px}
 </style>
 </head>
 <body>
@@ -1246,6 +1258,10 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 
 <dialog id="outD"><h3>Log out?</h3><p style="color:var(--mute)">You can log back in any time. Your vacancies and chats stay saved.</p><div class="acts"><button class="btn" onclick="outD.close();try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view='home';au='home';pgReset();save();render()">Log out</button><button class="btn alt" onclick="outD.close()">Stay logged in</button></div></dialog>
 <dialog id="exitD" aria-labelledby="exT"><h3 id="exT">Exit RoyalCub Jobs?</h3><p style="color:var(--mute)">Are you sure you want to leave the app?</p><div class="acts"><button class="btn" id="exYes" type="button" onclick="exitApp()">Exit</button><button class="btn alt" id="exNo" type="button" onclick="exitD.close()">Stay</button></div></dialog>
+<script>
+/* one-time fresh start: clears accounts, posts, stories and chats saved on this device */
+try{var RV="fresh-2026-11-15";if(localStorage.getItem("rc_reset")!==RV){["rcj","rc_mbox","rc_privacy","rc_terms"].forEach(function(k){localStorage.removeItem(k)});try{sessionStorage.clear()}catch(e){}localStorage.setItem("rc_reset",RV)}}catch(e){}
+</script>
 <script>
 (function(){var D=window.HTMLDialogElement&&HTMLDialogElement.prototype;if(D&&typeof D.showModal==="function")return;
  document.documentElement.classList.add("nodlg");var E=HTMLElement.prototype;
@@ -1314,17 +1330,8 @@ function pgAgree(){const cb=document.getElementById("pgCk");if(!cb||!cb.checked)
  pgOk=true;try{sessionStorage.setItem("rc_pg",PG_V);localStorage.setItem("rc_privacy",JSON.stringify({v:PG_V,at:Date.now()}));localStorage.setItem("rc_terms",JSON.stringify({v:PG_V,at:Date.now()}))}catch(e){}
  showAuth("login")}
 let editP=false,cp=null,ck="job",sv={n:null,i:0};
-let S={services:SERV0,tab:"jobs",role:"client",name:"",theme:"light",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[],hist:[{id:"h1",t:"Fix leaking kitchen pipe",who:"Anna Reed",d:"12 Oct 2026",a:"₹800",s:"Completed"},{id:"h2",t:"Deep clean 2BHK flat",who:"Meera Nair",d:"28 Sep 2026",a:"₹1,800",s:"Completed"},{id:"h3",t:"Rewire hall switchboard",who:"Victor King",d:"15 Sep 2026",a:"₹1,200",s:"Cancelled"}],cat:"All",view:"home",notes:2,thread:null,
- jobs:[
- {id:1,t:"Fix leaking kitchen pipe",c:"Plumbing",loc:"Downtown",b:"₹800",per:"day",by:"Anna Reed",d:"Pipe under the sink drips constantly. Need someone to replace the joint and check the seals today or tomorrow.",p:[],v:VW.slice(0,5)},
- {id:2,t:"Rewire garage sockets",c:"Electrical",loc:"Northside",b:"₹2,500",per:"week",by:"Victor King",d:"Four sockets and a new breaker panel in a detached garage. Certified electrician only.",p:[],v:VW.slice(1,4)},
- {id:3,t:"Night nurse for elderly parent",c:"Nursing",loc:"Riverside",b:"₹2,400",per:"day",by:"Hana Kim",d:"Care for my father 3 nights a week. Experience with mobility support and medication reminders needed.",p:[],v:VW.slice(0,7)},
- {id:4,t:"Garden cleanup and hedge trim",c:"Gardening",loc:"Westfield",b:"₹1,500",per:"day",by:"Dev Bose",d:"Medium garden, overgrown hedges, leaves to bag. Tools are available on site.",p:[],v:VW.slice(2,4)}],
- stories:[{id:"s1",by:"Anna Reed",text:"Plumber needed this week 🔧",bg:0,v:VW.slice(0,3)},{id:"s2",by:"Victor King",text:"Certified electrician wanted ⚡",bg:1,v:VW.slice(1,3)},{id:"s3",by:"Hana Kim",text:"Night nurse needed 🩺",bg:2,v:VW.slice(0,2)},{id:"s4",by:"Dev Bose",text:"Garden clean-up day this Saturday 🌿",bg:3,v:VW.slice(3,6)}],
- threads:[
- {id:"a",n:"Anna Reed",on:1,m:[{t:"Hi! Are you available to look at the pipe today?"}]},
- {id:"b",n:"Sam Foster",on:1,m:[{t:"Thanks for the quick quote."}]},
- {id:"c",n:"Dana Fox",on:0,m:[{t:"Can you start Monday?"}]}]};
+let S={services:[],tab:"jobs",role:"client",name:"",theme:"light",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[],hist:[],cat:"All",view:"home",notes:0,thread:null,
+ jobs:[],stories:[],threads:[]};
 try{const x=JSON.parse(localStorage.getItem("rcj")||"null");if(x&&x.jobs)S=Object.assign(S,x,{view:"home",thread:null,out:false,sec:null,q:"",qloc:""})}catch(e){}
 const SEED3={jobs:[
  {id:301,t:"Electrician for house rewiring",c:"Electrical",loc:"Kalpathy, Palakkad",b:"₹2,200",per:"day",by:"Dev Bose",d:"Old two-storey house needs fresh wiring, new switchboards and earthing. Materials supplied.",p:[],v:[]},
@@ -1339,8 +1346,8 @@ const SEED2=[{id:5,t:"Driver needed for weekend trip",c:"Driving",loc:"Airport R
 {id:8,t:"Two-wheeler service and brake check",c:"Mechanic",loc:"Midtown",b:"₹900",per:"day",by:"Joseph Paul",d:"Full service and brake pad replacement for a 150cc scooter. Pickup preferred.",p:[],v:VW.slice(2,5)},
 {id:9,t:"Install new bathroom taps",c:"Plumbing",loc:"Northside",b:"₹1,100",per:"day",by:"Karan Mehta",d:"Replace two taps and a shower mixer. Fittings are already bought.",p:[],v:VW.slice(0,2)}];
 const PER0={1:["₹800","day"],2:["₹2,500","week"],3:["₹2,400","day"],4:["₹1,500","day"]};
-S.jobs.forEach(j=>{if(!j.per){const d=PER0[j.id];if(d){j.b=d[0];j.per=d[1]}else j.per=/week|mo/i.test(j.b)?"week":"day"}});
-const per=j=>`<small class="per">${({week:"per week",month:"per month",total:"in total",choose:"for these dates"})[j.per]||"per day"}</small>`;
+S.jobs.forEach(j=>{if(!j.per)j.per="none"});
+const per=j=>{const t=({day:"per day",week:"per week",month:"per month",total:"in total",choose:"for these dates"})[j.per];return t?`<small class="per">${t}</small>`:""};
 const REV0=[["Sam Foster","Meera Nair",5,"Fixed our leak in under an hour. Tidy and on time."],["Sam Foster","Rohan Das",4,"Good work, fair price."],["Sam Foster","Isha Rao",5,"Very professional, will hire again."],
 ["Dana Fox","Priya Shah",5,"Safe, neat wiring and explained everything."],["Dana Fox","Tom Park",4,"Arrived a little late but did a great job."],
 ["Priya Nair","Kabir Anand",5,"Caring and patient with my father."],["Priya Nair","Leena Jose",5,"Highly recommended for home care."],["Arun Das","Sana Iqbal",4,"Smooth ride and polite driver."],
@@ -1383,7 +1390,7 @@ function scheduleNewPro(){clearTimeout(npT);return;if(S.out)return;npT=setTimeou
  if(!S.users.some(u=>u.name===q.by))S.users.push({email:q.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:q.by,phone:"",age:"",cat:q.c,role:"worker",title:"",status:"active",joined:Date.now()});
  Notify.add({type:"pro",title:`New professional: ${q.by}`,body:`${q.t} · ${q.loc} · ₹${q.min}–₹${q.max}/h`,act:{k:"service",id:q.id}});
  const ae=document.activeElement;if(S.view==="home"&&!document.querySelector("dialog[open]")&&!(ae&&/INPUT|TEXTAREA/.test(ae.tagName))){if(HS.busy)pendR=true;else home()}scheduleNewPro()},CFG.newProMs)}
-function resumeNeg(){S.services.forEach(x=>x.b.forEach(b=>{if(!b.id)b.id="b"+uid();if(!b.status)b.status="pending";if(!b.mode)b.mode="listed";if(b.status==="pending"&&b.by===S.name&&!S.out)setTimeout(()=>negRespond(x.id,b.id),2500)}))}
+function resumeNeg(){S.services.forEach(x=>x.b.forEach(b=>{if(!b.id)b.id="b"+uid();if(!b.status)b.status="pending";if(!b.mode)b.mode="listed";}))}
 S.notifs=S.notifs||[];S.plan=S.plan||"free";S.nf=S.nf||"all";
 const EXPL=[["fresher","Fresher (0–1 yr)",0,1,["fresher","beginner","entry level","entry-level","trainee","new"]],["1-3","1–3 years",1,3,["junior"]],["3-5","3–5 years",3,5,["intermediate","mid-level","mid level"]],["5-10","5–10 years",5,10,["senior","experienced"]],["10+","10+ years",10,99,["expert","veteran","master","highly experienced"]]];
 const expOpts=(v,job)=>[["",job?"Any":"Not set"],...EXPL].map(e=>`<option value="${e[0]}" ${v===e[0]?"selected":""}>${e[1]}</option>`).join("");
@@ -1406,10 +1413,11 @@ S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.fol=S.fol||{};S
 const DEMO_NAMES=new Set(["Arjun Rao","Site Admin"].concat(["Anna Reed","Victor King","Hana Kim","Dev Bose",...SERV0.map(x=>x.by),...SEED2.map(j=>j.by),...SEED3.jobs.map(j=>j.by),...SEED3.svc.map(x=>x.by),...SEED4.map(x=>x.by),...NEWPROS.map(x=>x.by)]));
 S.users=(S.users||[]).filter(u=>!(u&&!u.gid&&((u.email==="admin@royalcub.com"&&u.pw==="Admin@123")||(/@example\.com$/i.test(u.email||"")&&DEMO_NAMES.has(u.name)))));
 S.notifs=(S.notifs||[]).filter(n=>!["n1","n2","n3","n4"].includes(n.id)||!/Go Pro for 50%|New professional: Kiran Rao|Anna Reed read your message|Latha Raman/.test(n.title||""));
-const KEEP_USERS=n=>/^(kichu|ajith anandhan)$/i.test(String(n||"").trim());
+const RESET_AT=Date.parse("2026-11-15T08:11:18Z");
+const KEEP_USERS=()=>false;
 ["Sam Foster","Dana Fox","Meera Nair","Latha Raman","Kiran Rao","Arjun Rao","Site Admin","Sneha Pillai"].forEach(n=>DEMO_NAMES.add(n));
 const isDemoN=n=>DEMO_NAMES.has(n)&&!KEEP_USERS(n);
-function purgeDemo(){const bad=x=>isDemoN(x&&x.by);
+function purgeDemo(){const bad=x=>isDemoN(x&&x.by);VW.forEach(n=>DEMO_NAMES.add(n));["jobs","services","stories"].forEach(c=>(S[c]||[]).forEach(o=>{if(Array.isArray(o.v))o.v=o.v.filter(n=>!isDemoN(n))}));
  S.jobs=(S.jobs||[]).filter(x=>!bad(x));S.services=(S.services||[]).filter(x=>!bad(x));S.stories=(S.stories||[]).filter(x=>!bad(x));
  S.threads=(S.threads||[]).filter(t=>!isDemoN(t&&t.n));S.hist=(S.hist||[]).filter(h=>!isDemoN(h&&h.who));
  S.users=(S.users||[]).filter(u=>!(u&&isDemoN(u.name)));
@@ -1432,9 +1440,9 @@ async function cPush(){S.sy=S.sy||{};const up=[],del=[];
  if(up.length){await cFetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify(up.map(x=>x.row))});
   up.forEach(x=>{cHash[x.row.kind+x.row.id]=x.h;const a=S.sy[x.row.kind]=S.sy[x.row.kind]||[];if(!a.includes(x.row.id))a.push(x.row.id)})}
  for(const [k,id] of del){await cFetch(cBase()+"?kind=eq."+k+"&id=eq."+encodeURIComponent(id),{method:"DELETE",headers:cHead()});S.sy[k]=(S.sy[k]||[]).filter(x=>String(x)!==id)}}
-async function cPull(){const r=await cFetch(cBase()+"?select=kind,id,owner,data&order=created_at.desc&limit=1000",{headers:cHead()});const rows=await r.json();
+async function cPull(){const r=await cFetch(cBase()+"?select=kind,id,owner,data,created_at&order=created_at.desc&limit=1000",{headers:cHead()});const rows=await r.json();
  if(!Array.isArray(rows))return false;S.sy=S.sy||{};let ch=false;const seen={job:new Set(),service:new Set(),story:new Set()};
- for(const row of rows.slice().reverse()){const k=row.kind,d=row.data;if(!seen[k]||!d||typeof d!=="object"||isDemoN(row.owner||d.by))continue;seen[k].add(String(row.id));
+ for(const row of rows.slice().reverse()){const k=row.kind,d=row.data;if(!seen[k]||!d||typeof d!=="object"||isDemoN(row.owner||d.by)||(row.created_at&&Date.parse(row.created_at)<RESET_AT))continue;seen[k].add(String(row.id));
   const L=S[CK.find(x=>x[0]===k)[1]],i=L.findIndex(x=>String(x.id)===String(row.id));cHash[k+row.id]=JSON.stringify(d);
   if(i<0){const o=Object.assign({v:[]},d);if(k==="job")o.p=o.p||[];if(k==="service")o.b=o.b||[];L.unshift(o);ch=true;
    if(o.by&&!S.users.some(u=>u.name===o.by))S.users.push({email:o.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:o.by,phone:"",age:"",cat:k==="job"?"Client":(o.c||"Client"),role:k==="job"?"client":"worker",title:"",status:"active",joined:Date.now()})}
@@ -1690,6 +1698,7 @@ async function sbLoginFallback(em,pw){const bad=()=>setErr("Incorrect email or p
   if((r.error||!r.data||!r.data.user)&&pw!==pw.trim()&&pw.trim()){const r2=await tmo(c.auth.signInWithPassword({email:em,password:pw.trim()}),20000);if(!r2.error&&r2.data&&r2.data.user){r=r2;pw=pw.trim()}}
   const {data,error}=r;
   if(error||!data||!data.user){const m=String(error&&error.message||""),st=error&&error.status;if(/not confirmed/i.test(m))return setErr("Please confirm your email address from the link we sent, then log in.","le");if(!error||/invalid|credentials/i.test(m)||st===400||st===401)return bad();return net()}
+  if(data.user.created_at&&Date.parse(data.user.created_at)<RESET_AT){try{await c.auth.signOut({scope:"local"})}catch(_){}return bad()}
   const m=data.user.user_metadata||{};try{await c.auth.signOut({scope:"local"})}catch(_){}
   let u=S.users.find(x=>x.email.toLowerCase()===em);
   if(!u){u={email:em,pw:pw,name:String(m.name||em.split("@")[0]).slice(0,40),phone:m.phone||"",age:String(m.age||""),cat:m.cat||"Client",role:m.role==="worker"?"worker":"client",title:"",status:"active",joined:Date.now()};S.users.push(u)}else u.pw=pw;
@@ -1959,7 +1968,7 @@ function home(){
  if(y0!==null&&Math.abs(scrollY-y0)>2)scrollTo(0,y0)}
 function historyView(){const h=S.hist;
  view.innerHTML=`<button class="btn alt" style="padding:6px 16px;margin-bottom:14px" onclick="go('profile')">‹ Back</button><div class="row"><h2>Booking history</h2><span>${String(h.length).padStart(2,"0")}</span></div>
- <div class="set hgrid">${h.length?h.map(x=>`<div class="hi"><div class="t"><b>${esc(x.t)}</b><span class="pill ${esc(x.s)}">${esc(x.s)}</span></div><small>${esc(x.who)} · ${esc(x.d)}</small><b style="color:var(--plum)">${x.k==="earn"?mEarn():DI.rupee}${esc(x.a)}</b></div>`).join(""):`<div class="empty">No bookings yet. Requests you send will show up here.</div>`}</div>`}
+ <div class="set hgrid">${h.length?h.map(x=>`<div class="hi"><div class="t"><b>${esc(x.t)}</b><span class="pill ${esc(x.s)}">${esc(x.s==="Requested"?"Pending":x.s)}</span></div><small>${esc(x.who)} · ${esc(x.d)}</small><b style="color:var(--plum)">${x.k==="earn"?mEarn():DI.rupee}${esc(x.a)}</b></div>`).join(""):`<div class="empty">No bookings yet. Requests you send will show up here.</div>`}</div>`}
 function svcCard(x){const mine=x.by===S.name,n=x.v.length;
  return `<article class="job" onclick="openService(${x.id})"><div class="jh">${who(x.by,byLine(x.by))}<span class="tag">${x.c}</span></div>
  <h3><button class="lnk">${esc(x.t)}</button></h3>
@@ -1984,14 +1993,14 @@ const postShell=o=>{const rl=revOf(o.by).sort((a,b)=>b.ts-a.ts),me=o.by===S.name
 function toggleRev(){const b=document.getElementById("rvm"),x=document.querySelectorAll("#rvl .rv-x"),open=b.getAttribute("aria-expanded")!=="true";x.forEach(e=>e.classList.toggle("hide",!open));b.setAttribute("aria-expanded",open);b.textContent=open?"Show less":`View more (${x.length})`}
 
 /* ---- bookings & price negotiation ---- */
-const BKS={pending:["Awaiting reply","Requested"],accepted:["Accepted","Accepted"],countered:["Counter offer","Countered"],declined:["Rejected","Rejected"],cancelled:["Withdrawn","Cancelled"]};
+const BKS={pending:["Pending","Requested"],accepted:["Accepted","Accepted"],countered:["Counter offer","Countered"],declined:["Rejected","Rejected"],cancelled:["Withdrawn","Cancelled"]};
 const bkPrice=(x,b)=>b.mode==="offer"?`₹${b.offer}/${uS(x)} · ₹${b.offer*b.hours} total`:`Listed rate · ${estTx(x,b.hours)}`;
 const bkSync=(x,b)=>{S.hist.forEach(h=>{if(h.bid===b.id){h.s=BKS[b.status][1];h.a=b.mode==="offer"?"₹"+(b.status==="countered"&&b.counter?b.counter:b.offer)*b.hours:estTx(x,b.hours)}})};
 function bkCard(x,b,mine){const st=BKS[b.status]||BKS.pending,me=b.by===S.name,id=`'${x.id}','${b.id}'`;let a="";
- if(mine&&b.status==="pending")a=`<div class="bka"><button class="btn" onclick="bkAct(${id},'paccept')">Accept</button><button class="btn alt" onclick="bkAct(${id},'pdecline')">Reject</button></div><div class="cin"><input id="ct_${b.id}" type="number" min="1" inputmode="numeric" placeholder="Counter ₹/${uS(x)}" aria-label="Counter offer per hour"><button class="btn alt" onclick="bkAct(${id},'pcounter')">Counter</button></div>`;
+ if(mine&&b.status==="pending")a=`<div class="bka"><button class="btn" onclick="bkAct(${id},'paccept')">Accept</button><button class="btn alt" onclick="bkAct(${id},'pdecline')">Reject</button></div>`;
  if(!mine&&me&&b.status==="countered")a=`<div class="bka"><button class="btn" onclick="bkAct(${id},'caccept')">Accept ₹${b.counter}/${uS(x)}</button><button class="btn alt" onclick="book(${x.id},'${b.id}')">Negotiate</button><button class="btn alt" onclick="bkAct(${id},'cwithdraw')">Withdraw</button></div>`;
  if(!mine&&me&&b.status==="pending")a=`<div class="bka"><button class="btn alt" onclick="bkAct(${id},'cwithdraw')">Withdraw</button></div>`;
- return `<div class="req bk"><div class="l1"><b>${esc(b.by)}${me?" (You)":""}</b><span class="pill ${st[1]}">${st[0]}</span></div><small>${mDate(x.c)}${esc(b.date)} · ${mClock(x.c)}${qtyTx(x,b.hours)}</small><div>${mine?mEarn():mPrice(x.c)}${bkPrice(x,b)}</div>${b.counter&&b.status==="countered"?`<div class="ctr">${mine?"You":esc(x.by)} countered: ₹${b.counter}/${uS(x)} · ₹${b.counter*b.hours} total</div>`:""}${b.note?`<span style="color:var(--mute)">${esc(b.note)}</span>`:""}${a}${mine?`<div class="bka"><button class="btn alt" data-n="${esc(b.by)}" onclick="msgTo(this.dataset.n)">Message</button></div>`:""}</div>`}
+ return `<div class="req bk"><div class="l1"><b>${esc(b.by)}${me?" (You)":""}</b><span class="pill ${st[1]}">${st[0]}</span></div><small>${mDate(x.c)}${esc(b.date)}${b.time?" · "+esc(tm12(b.time)):""} · ${mClock(x.c)}${qtyTx(x,b.hours)}</small>${b.loc?`<small>Location: ${esc(b.loc)}</small>`:""}<small>Base price: ${rateTx(x)}/${uOf(x)}</small><div>${mine?mEarn():mPrice(x.c)}${bkPrice(x,b)}</div>${b.counter&&b.status==="countered"?`<div class="ctr">${mine?"You":esc(x.by)} countered: ₹${b.counter}/${uS(x)} · ₹${b.counter*b.hours} total</div>`:""}${b.note?`<span style="color:var(--mute)">${esc(b.note)}</span>`:""}${a}${mine?`<div class="bka"><button class="btn alt" data-n="${esc(b.by)}" onclick="msgTo(this.dataset.n)">Message</button></div>`:""}</div>`}
 function openService(id){const x=S.services.find(z=>z.id===id);if(!x)return;cp=id;ck="service";shut("profD","storyD");addView(x);save();
  const mine=x.by===S.name,n=x.v.length,own=x.b.filter(b=>b.by===S.name);
  const bk=mine?(x.b.length?x.b.map(b=>bkCard(x,b,true)).join(""):`<div class="empty" style="padding:18px">No bookings yet.</div>`):(own.length?own.map(b=>bkCard(x,b,false)).join(""):`<p class="cnt" style="margin:0">You haven’t booked yet. Book at the listed rate or make an offer.</p>`);
@@ -2007,6 +2016,7 @@ function book(id,bid){bj=S.services.find(z=>z.id===id);if(!bj)return;bedit=bid?b
  <div class="dh"><h3 style="margin:0">Book this professional</h3><button type="button" class="x" aria-label="Close" onclick="bookD.close()">✕</button></div>
  <div class="bkpro"><div class="av sm" style="${abg(bj.by)}" aria-hidden="true">${ait(bj.by)}</div><div><b>${esc(bj.by)}</b><small>${esc(bj.t)}</small></div><span class="pill Completed">${rateTx(bj)}/${uS(bj)}</span></div>
  <div class="two"><label>Date<input id="bd" type="date" required></label><label>${({hour:"Hours needed",day:"Days needed",week:"Weeks needed",month:"Months needed",year:"Years needed",project:"Projects needed"})[rtk(bj)]}<input id="bh" type="number" inputmode="numeric" min="${qMin(bj)}" max="${qMax(bj)}" value="${bedit?bedit.hours:(rtk(bj)==="hour"?Math.max(2,qMin(bj)):1)}" oninput="bookEst()"></label></div>
+ <div class="two"><label>Time<input id="bt" type="time" required value="${bedit&&bedit.time?bedit.time:"09:00"}"></label><label>Location<input id="bl" required maxlength="80" autocomplete="off" placeholder="Where should they come?" value="${bedit&&bedit.loc?esc(bedit.loc):""}"></label></div>
  <div class="neg"><b>Price</b>
   <div class="seg" role="group" aria-label="Pricing option"><button type="button" aria-pressed="${bmode==="listed"}" onclick="setBM('listed')">Listed rate</button><button type="button" aria-pressed="${bmode==="offer"}" onclick="setBM('offer')">Negotiate</button></div>
   <div id="offBox" class="${bmode==="offer"?"":"hide"}"><label>Your offer per ${uOf(bj)} (₹)<input id="bo" type="number" min="1" max="99999" inputmode="numeric" value="${bedit&&bedit.offer?bedit.offer:mid5(bj)}" oninput="bookEst()"></label>
@@ -2024,17 +2034,19 @@ function bookEst(){const h=Math.max(1,+bh.value||1),o=+bo.value,x=bj,mid=(x.min+
  else t=`Estimated cost: <b>${estTx(x,h)}</b> for ${qtyTx(x,h)}`;
  bookE.innerHTML=t;bookFit.textContent=f;bkGo.textContent=bedit?"Send new offer":bmode==="offer"?"Send offer":"Book now"}
 function bkNotifyUI(x){if(postD.open&&ck==="service"&&cp===x.id)openService(x.id);else if(S.view==="history")historyView();nav()}
-function sendBook(){const h=+bh.value,o=+bo.value;if(!bd.value){toast("Pick a date");bd.focus();return}const lo=qMin(bj),hi=qMax(bj);if(!(h>=lo&&h<=hi)){toast(`Enter between ${lo} and ${hi} ${uOf(bj)}s`);bh.focus();return}
+const tm12=t=>{const[h,m]=String(t||"").split(":").map(Number);return isNaN(h)?"":`${h%12||12}:${String(m||0).padStart(2,"0")} ${h<12?"AM":"PM"}`};
+function bkMsg(x,b,upd){const c=v=>String(v||"").replace(/¦/g,"|").trim(),u=uOf(x),base=`${rateTx(x)}/${u}`;
+ return[`Booking Request from ${S.name}`,upd?"Updated request":"",`Service: “${x.t}”`,`Base price: ${base}`,`Offer: ${b.mode==="offer"?`₹${b.offer}/${u} × ${qtyTx(x,b.hours)} = ₹${b.offer*b.hours}`:`Listed rate ${base} × ${qtyTx(x,b.hours)} = ${estTx(x,b.hours)}`}`,`Date: ${b.date}`,`Time: ${tm12(b.time)}`,`Duration: ${qtyTx(x,b.hours)}`,`Location: ${c(b.loc)}`,b.note?`Note: ${c(b.note)}`:""].filter(Boolean).join(" ¦ ")}
+function sendBook(){const h=+bh.value,o=+bo.value,x=bj;if(!bd.value){toast("Pick a date");bd.focus();return}const lo=qMin(x),hi=qMax(x);if(!(h>=lo&&h<=hi)){toast(`Enter between ${lo} and ${hi} ${uOf(x)}s`);bh.focus();return}
+ if(!bt.value){toast("Pick a time");bt.focus();return}if(!bl.value.trim()){toast("Enter the location");bl.focus();return}
  if(bmode==="offer"&&!(o>=1&&o<=99999)){toast("Enter a valid offer per "+uOf(x));bo.focus();return}
- const dt=new Date(bd.value+"T00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),note=bkN.value.trim(),x=bj;let b=bedit;
- const msg=bmode==="offer"?`Offer: ₹${o}/${uS(x)} for ${qtyTx(x,h)} on ${dt} (your range ₹${x.min}–₹${x.max}/${uS(x)}).`:`Booking request on ${dt}, ${qtyTx(x,h)} at your listed rate.`;
- if(b){Object.assign(b,{date:dt,iso:bd.value,hours:h,note,mode:bmode,offer:bmode==="offer"?o:null,counter:null,status:"pending",rounds:(b.rounds||0)+1});bkSync(x,b);Chat.send(ensure(x.by).id,`Updated ${msg}`+mkTag("bk",x.id,b.id,"pending"))}
- else{b={id:"b"+uid(),by:S.name,date:dt,iso:bd.value,hours:h,note,mode:bmode,offer:bmode==="offer"?o:null,counter:null,status:"pending",rounds:0,ts:Date.now()};x.b.push(b);
+ const dt=new Date(bd.value+"T00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),note=bkN.value.trim(),time=bt.value,loc=bl.value.trim();let b=bedit;
+ if(b){Object.assign(b,{date:dt,iso:bd.value,time,loc,hours:h,note,mode:bmode,offer:bmode==="offer"?o:null,counter:null,status:"pending",rounds:(b.rounds||0)+1});bkSync(x,b);Chat.send(ensure(x.by).id,bkMsg(x,b,true)+mkTag("bk",x.id,b.id,"pending"))}
+ else{b={id:"b"+uid(),by:S.name,date:dt,iso:bd.value,time,loc,hours:h,note,mode:bmode,offer:bmode==="offer"?o:null,counter:null,status:"pending",rounds:0,ts:Date.now()};x.b.push(b);
   S.hist.unshift({id:"h"+Date.now(),bid:b.id,t:x.t,who:x.by,d:dt,a:bmode==="offer"?"₹"+o*h:estTx(x,h),s:"Requested",k:"spend"});
-  Chat.send(ensure(x.by).id,`Booking request for “${x.t}”. ${msg}${note?" "+note:""}`+mkTag("bk",x.id,b.id,"pending"))}
- log(bmode==="offer"?"offered":"booked",x.t,bmode==="offer"?`₹${o}/${uS(x)}`:"listed");Notify.add({type:"booking",title:bmode==="offer"?`Offer sent to ${x.by}`:`Booking requested from ${x.by}`,body:`${x.t} · ${dt} · ${bmode==="offer"?"₹"+o+"/"+uS(x):"listed rate"}`,act:{k:"service",id:x.id},read:1});
- bookD.close();save();render();if(postD.open)openService(x.id);toast(bmode==="offer"?"Offer sent to "+x.by:"Booking requested from "+x.by);
- const sid=x.id,bid=b.id;setTimeout(()=>negRespond(sid,bid),3500)}
+  Chat.send(ensure(x.by).id,bkMsg(x,b,false)+mkTag("bk",x.id,b.id,"pending"))}
+ log(bmode==="offer"?"offered":"booked",x.t,bmode==="offer"?`₹${o}/${uS(x)}`:"listed");Notify.add({type:"booking",title:`Booking request sent to ${x.by}`,body:`${x.t} · ${dt} · ${bmode==="offer"?"₹"+o+"/"+uS(x):"listed rate"} · Pending`,act:{k:"service",id:x.id},read:1});
+ bookD.close();save();render();if(postD.open)openService(x.id);toast("Booking request sent to "+x.by+" · Pending")}
 function negRespond(sid,bid){const x=S.services.find(z=>z.id===sid),b=x&&x.b.find(q=>q.id===bid);if(!b||b.status!=="pending"||b.by!==S.name)return;
  const mid=Math.ceil((x.min+x.max)/2);let ttl,body,peer;
  if(b.mode!=="offer"||b.offer>=mid){b.status="accepted";ttl=`${x.by} accepted your ${b.mode==="offer"?"offer":"booking"}`;body=b.mode==="offer"?`Agreed at ₹${b.offer}/${uS(x)} · ₹${b.offer*b.hours} total`:`Listed rate · ${estTx(x,b.hours)}`;peer=b.mode==="offer"?`Deal! ₹${b.offer}/${uS(x)} works for me. See you on ${b.date}.`:`Booking confirmed for ${b.date}. See you then!`}
@@ -2095,7 +2107,7 @@ function showStory(){const l=S.stories.filter(x=>x.by===sv.n),sk=document.getEle
  ${mine?`<div class="vw">${DI.eye}${nv(x)}${x.v.length?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:""}
  ${mine?"":`<form class="srep" onsubmit="sendStoryReply(event,'${x.id}')"><input id="srx" data-sid="${esc(x.id)}" maxlength="500" autocomplete="off" enterkeyhint="send" aria-label="Reply to ${esc(x.by)}’s status" placeholder="Reply to ${esc(x.by.split(" ")[0])}’s status…"><button class="btn">Send</button></form>`}
  <div class="acts" style="margin-top:12px">${l.length>1?`<button class="btn alt" ${sv.i===0?"disabled":""} onclick="stepStory(-1)" aria-label="Previous poster">‹ Prev</button><button class="btn alt" ${sv.i===l.length-1?"disabled":""} onclick="stepStory(1)" aria-label="Next poster">Next ›</button>`:""}
- ${mine?`<button class="btn alt" onclick="delStory('${x.id}')">Delete</button>`:`<button class="btn" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">Message</button>`}</div>`;
+ ${mine?`<button class="btn alt" onclick="delStory('${x.id}')">Delete</button>`:""}</div>`;
  {const n=document.getElementById("srx");if(n&&skv&&n.dataset.sid===skid){n.value=skv;if(skf)n.focus({preventScroll:true})}}
  if(S.view==="home"&&!S.out)home()}
 function delStory(id){S.stories=S.stories.filter(x=>x.id!==id);save();toast("Status deleted");showStory()}
@@ -2115,9 +2127,11 @@ const raw=t=>String(t==null?"":t).replace(TAGRE,"");
 const QRE=/^⟪st\|([A-Za-z0-9_-]*)\|(\d{1,2})\|([^⟫]*)⟫\s*/;
 const qOf=t=>{const m=raw(t).match(QRE);return m?{id:m[1],bg:+m[2],s:m[3]}:null};
 const qBody=t=>raw(t).replace(QRE,"");
-const clean=t=>raw(t).replace(QRE,"↩ ").replace(/ ¦ /g," · ");
+const clean=t=>raw(t).replace(QRE,"↩ ").replace(/^⟦img\|[^⟧]*⟧\s*/,"Photo ").replace(/ ¦ /g," · ");
 function fmtMsg(t){const b=qBody(t);
+ {const im=b.match(/^⟦img\|(data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+)⟧\s*([\s\S]*)$/);if(im)return `<img class="mimg" src="${im[1]}" alt="Photo" loading="lazy" onclick="viewImg(this.src)">${im[2]?`<span class="apl">${esc(im[2])}</span>`:""}`}
  if(b.startsWith("Applied for this position")){const p=b.split(" ¦ "),fit=p.slice(4).join(" ¦ ");return `<b class="apt">${esc(p[0])}</b>${p.slice(1,4).map(x=>`<span class="apl">${esc(x)}</span>`).join("")}${fit?`<span class="apl">${esc(fit)}</span>`:""}`}
+ if(b.startsWith("Booking Request from ")){const p=b.split(" ¦ ");return `<b class="apt">${esc(p[0])}</b>${p.slice(1).map(x=>`<span class="apl">${esc(x)}</span>`).join("")}`}
  return esc(b.replace(/ ¦ /g," · "))}
 function qCard(m,t){const q=qOf(m.t);if(!q)return"";const lbl=m.me?`You replied to ${esc(t.n)}’s status`:`${esc(t.n)} replied to your status`;
  return `<button type="button" class="sq" data-sid="${esc(q.id)}" style="background:${BG[q.bg]||BG[0]}" onclick="sqOpen(this.dataset.sid)" aria-label="${lbl}. Open this status"><small>↩ ${lbl}</small><span>${esc(q.s)}</span></button>`}
@@ -2145,7 +2159,7 @@ function actBar(m){const g=tagOf(m.t);if(!g)return"";let st=g.s,own=false,live=f
  if(g.k==="pitch"){const j=S.jobs.find(z=>String(z.id)===g.a),p=j&&j.p.find(q=>q.id===g.b);if(p){live=true;own=j.by===S.name;if(g.s==="pending")st=p.st||"pending"}}
  else if(g.k==="bk"){const x=S.services.find(z=>String(z.id)===g.a),b=x&&x.b.find(q=>q.id===g.b);if(b){live=true;own=x.by===S.name;if(g.s==="pending")st=b.status}}
  if(st==="declined")st="rejected";
- const isP=g.k==="pitch",L={pending:"Awaiting reply",accepted:isP?"Approved":"Accepted",rejected:isP?"Cancelled":"Rejected",countered:"Counter offer",cancelled:"Withdrawn"},C={pending:"Requested",accepted:"Accepted",rejected:isP?"Cancelled":"Rejected",countered:"Countered",cancelled:"Cancelled"},id=esc(m.id);
+ const isP=g.k==="pitch",L={pending:"Pending",accepted:isP?"Approved":"Accepted",rejected:isP?"Cancelled":"Rejected",countered:"Counter offer",cancelled:"Withdrawn"},C={pending:"Requested",accepted:"Accepted",rejected:isP?"Cancelled":"Rejected",countered:"Countered",cancelled:"Cancelled"},id=esc(m.id);
  const decide=g.s==="pending"&&!m.me&&own&&live&&st==="pending";
  return `<div class="mact">${decide?`<button type="button" class="btn" onclick="chatAct('${id}','accept')">${isP?"Approve":"Accept"}</button><button type="button" class="btn alt" onclick="chatAct('${id}','reject')">${isP?"Cancel":"Reject"}</button>`:`<span class="pill ${C[st]||"Requested"}">${L[st]||esc(st)}</span>`}${!isP||st==="accepted"?`<button type="button" class="btn alt" onclick="chatAct('${id}','continue')">Continue Chat</button>`:""}</div>`}
 function chatAct(mid,act){const t=S.threads.find(x=>x.id===S.thread);if(!t)return;const m=t.m.find(x=>x.id===mid);if(!m)return;
@@ -2158,7 +2172,15 @@ function chatAct(mid,act){const t=S.threads.find(x=>x.id===S.thread);if(!t)retur
   bkAct(x.id,b.id,act==="accept"?"paccept":"pdecline")}}
 function pitchFromMsg(text,peer,g){const j=S.jobs.find(z=>String(z.id)===g.a);if(!j||j.by!==S.name||(j.p||[]).some(q=>q.id===g.b))return;const b=qBody(text).split(" ¦ ");if(b[0]!=="Applied for this position"||b.length<5)return;
  j.p.push({id:g.b,st:"pending",by:peer,price:b[2].replace(/^Compensation:\s*₹/,""),start:b[3].replace(/^Start date:\s*/,""),msg:b.slice(4).join(" ¦ ").replace(/^Why I’m a good fit:\s*/,"")})}
-function actSync(text,peer){const g=tagOf(text);if(g&&g.k==="pitch"&&g.s==="pending")try{pitchFromMsg(text,peer,g)}catch(e){}if(!g||g.s==="pending")return;
+function bkFromMsg(text,peer,g){const x=S.services.find(z=>String(z.id)===g.a);if(!x||x.by!==S.name)return;const body=qBody(text);if(!/^Booking Request from /.test(body))return;
+ const p=body.split(" ¦ "),f=k=>{const q=p.find(v=>v.startsWith(k));return q?q.slice(k.length).trim():""};
+ const om=f("Offer: ").match(/^₹(\d+)\//),hrs=+((f("Duration: ").match(/^(\d+)/)||[])[1])||1,tm=f("Time: ").match(/^(\d{1,2}):(\d{2}) (AM|PM)$/),hh=tm?(+tm[1]%12)+(tm[3]==="PM"?12:0):9,
+  d={date:f("Date: "),time:tm?String(hh).padStart(2,"0")+":"+tm[2]:"",loc:f("Location: "),hours:hrs,note:f("Note: "),mode:om?"offer":"listed",offer:om?+om[1]:null,counter:null,status:"pending"};
+ x.b=x.b||[];let b=x.b.find(q=>q.id===g.b);
+ if(b){if(b.by===peer&&b.status!=="accepted"&&b.status!=="declined"){Object.assign(b,d,{rounds:(b.rounds||0)+1})}else return}
+ else{b=Object.assign({id:g.b,by:peer,iso:"",rounds:0,ts:Date.now()},d);x.b.push(b);S.hist.unshift({id:"h"+Date.now(),bid:b.id,t:x.t,who:peer,d:d.date,a:b.mode==="offer"?"₹"+b.offer*b.hours:estTx(x,b.hours),s:"Requested",k:"earn"})}
+ Notify.add({type:"booking",title:`Booking Request from ${peer}`,body:`${x.t} · ${d.date}${d.time?" · "+tm12(d.time):""} · ${b.mode==="offer"?"₹"+b.offer+"/"+uS(x):"listed rate"}`,act:{k:"service",id:x.id}});save()}
+function actSync(text,peer){const g=tagOf(text);if(g&&g.k==="bk"&&g.s==="pending")try{bkFromMsg(text,peer,g)}catch(e){}if(g&&g.k==="pitch"&&g.s==="pending")try{pitchFromMsg(text,peer,g)}catch(e){}if(!g||g.s==="pending")return;
  if(g.k==="pitch"){const j=S.jobs.find(z=>String(z.id)===g.a),p=j&&j.p.find(q=>q.id===g.b);
   if(p&&(g.s==="accepted"||g.s==="rejected")&&(!p.st||p.st==="pending")){p.st=g.s;const h=S.hist.find(h=>h.s==="Requested"&&h.who===peer&&h.t===j.t);if(h)h.s=g.s==="accepted"?"Accepted":"Cancelled"}}
  else if(g.k==="bk"){const x=S.services.find(z=>String(z.id)===g.a),b=x&&x.b.find(q=>q.id===g.b);
@@ -2238,7 +2260,7 @@ const bRange=o=>{const m=String(o.b||"").replace(/,/g,"").match(/\d+/g)||[];retu
 const jobForm=o=>{const[bn,bx]=o?bRange(o):["",""],pr=o&&["full","contract","freelance"].includes(o.per)?o.per:"full";return `<form class="pform" onsubmit="${o?"saveEdit(event)":"postJob(event)"}"><label>Job title<input id="jt" required maxlength="70" placeholder="e.g. Install a new water heater" value="${o?esc(o.t):""}"></label>
  <label>Job description<textarea id="jd" required placeholder="Describe the work, timing and any tools or certificates needed.">${o?esc(o.d):""}</textarea></label>
  ${catSel("jc","jco",o&&o.c)}
- <div class="fgrp"><b class="fl">Salary (₹)</b><div class="trio"><label>From<input id="jbmin" required type="number" inputmode="numeric" min="1" placeholder="800" value="${bn}"></label><label>To<input id="jbmax" required type="number" inputmode="numeric" min="1" placeholder="1200" value="${bx}"></label><label>Type<select id="jp">${[["full","Full-time"],["contract","Contract"],["freelance","Freelance"]].map(([v,t])=>`<option value="${v}" ${pr===v?"selected":""}>${t}</option>`).join("")}</select></label></div></div>
+ <div class="fgrp"><b class="fl">Salary (₹)</b><div class="duo"><label>From<input id="jbmin" required type="number" inputmode="numeric" min="1" placeholder="800" value="${bn}"></label><label>To<input id="jbmax" required type="number" inputmode="numeric" min="1" placeholder="1200" value="${bx}"></label></div></div>
  <label>Location<input id="jl" required autocomplete="address-level2" list="locdl2" placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label>
  <div class="duo"><label>Experience level<select id="jx">${expOpts(o&&o.exp,1)}</select></label><label>Qualifications (optional)<input id="jq" maxlength="80" placeholder="e.g. ITI certificate, valid licence" value="${o?esc(o.qual||""):""}"></label></div>
  <button class="btn" style="justify-self:start">${o?"Save changes":"Publish vacancy"}</button></form>`};
@@ -2267,7 +2289,7 @@ function readSvc(){const rt=RTS[svRT.value==="flex"?"project":svRT.value]?svRT.v
  return{c,t:svT.value.trim(),rt,fx:rt==="flex"?(svFx.value==="perm"?"perm":"free"):null,min:mn,max:mx,hrs,days:ds,from:svF.value,to:svU.value,start:"",loc:svL.value.trim(),d:svD.value.trim(),exp:svX.value,qual:svQ.value.trim()}}
 function readJob(){const mn=Number(jbmin.value),mx=Number(jbmax.value);if(!(mn>=1&&mx>=mn)){toast("The “to” salary must be at least the “from” salary");jbmax.focus();return null}
  const c=catVal("jc","jco");if(!c)return null;const f=n=>"₹"+n.toLocaleString("en-IN");
- return{t:jt.value.trim(),c,loc:jl.value.trim(),b:mn===mx?f(mn):f(mn)+"–"+f(mx),bmin:mn,bmax:mx,per:jp.value,d:jd.value.trim(),exp:jx.value,qual:jq.value.trim()}}
+ return{t:jt.value.trim(),c,loc:jl.value.trim(),b:mn===mx?f(mn):f(mn)+"–"+f(mx),bmin:mn,bmax:mx,d:jd.value.trim(),exp:jx.value,qual:jq.value.trim()}}
 function postService(e){e.preventDefault();const d=readSvc();if(!d)return;const o=Object.assign({id:Date.now(),by:S.name,v:[],b:[]},d);
  S.services.unshift(o);log("posted service",o.t);Notify.add({type:"pro",title:"Your service is live",body:o.t,act:{k:"service",id:o.id},read:1});simView(o);S.tab="services";S.cat="All";at=null;toast("Service published");go("home")}
 function postJob(e){e.preventDefault();const d=readJob();if(!d)return;const nj=Object.assign({id:Date.now(),by:S.name,p:[],v:[]},d);S.jobs.unshift(nj);log("posted vacancy",nj.t);simView(nj);S.cat="All";S.tab="jobs";at=null;toast("Vacancy published");go("home")}
@@ -2277,7 +2299,7 @@ function ownPost(kind,id){const o=(kind==="job"?S.jobs:S.services).find(x=>x.id=
 function editPost(kind,id){const o=ownPost(kind,id);if(!o)return;ed={kind,id};shut("postD","profD","storyD","delD");
  editD.innerHTML=`<div class="dh"><h3 style="margin:0">Edit ${kind==="job"?"vacancy":"service"}</h3><button type="button" class="x" aria-label="Close" onclick="editD.close()">✕</button></div>${kind==="job"?jobForm(o):svcForm(o)}`;editD.showModal();if(kind==="service")setRT(o.rt||"hour");else{drInit(o);drRender()}}
 function saveEdit(e){e.preventDefault();if(!ed)return;const o=ownPost(ed.kind,ed.id);if(!o){editD.close();return}const d=ed.kind==="service"?readSvc():readJob();if(!d)return;
- Object.assign(o,d);if(ed.kind==="job")o.per=d.per;log("edited "+ed.kind,o.t);save();editD.close();toast("Post updated");render()}
+ Object.assign(o,d);log("edited "+ed.kind,o.t);save();editD.close();toast("Post updated");render()}
 function delPost(kind,id){const o=ownPost(kind,id);if(!o)return;shut("postD","editD");const n=kind==="job"?o.p.length:o.b.length,w=kind==="job"?"request":"booking";
  delD.innerHTML=`<div class="dh"><h3 style="margin:0">Delete this post?</h3></div><p style="margin:0">“${esc(o.t)}” will be removed${n?`, along with its ${n} ${w}${n===1?"":"s"}`:""}. This can’t be undone.</p><div class="acts"><button type="button" class="btn danger" onclick="confirmDel('${kind}',${id})">Delete</button><button type="button" class="btn alt" onclick="delD.close()">Cancel</button></div>`;delD.showModal()}
 function confirmDel(kind,id){const L=kind==="job"?S.jobs:S.services,i=L.findIndex(x=>x.id===id&&x.by===S.name);if(i<0){delD.close();return}const t=L[i].t;L.splice(i,1);
@@ -2288,16 +2310,36 @@ function chat(T){const V=T||view,t=S.threads.find(x=>x.id===S.thread);
  const pres=on=>`<i class="pres ${on?"on":""}" aria-hidden="true"></i>`;
  V.innerHTML=`<div class="row chatrow"><h2>Messages</h2>${SB_ON&&typeof RT!=="undefined"&&RT.ok===false?`<span class="cnt" role="status">Chat server not set up yet</span>`:""}${unread()?`<span class="ucirc" role="img" aria-label="${unread()} unread message${unread()===1?"":"s"}">${unread()>99?"99+":unread()}</span>`:""}</div><div class="chat ${t?"open":""}">
  <div class="threads">${S.threads.length?S.threads.map(x=>{const l=x.m[x.m.length-1];return `<button class="th" ${t&&t.id===x.id?'aria-current="true"':""} onclick="openChat('${x.id}')"><span class="avw"><div class="av" style="${abg(x.n)}">${ait(x.n)}</div>${pres(x.on)}</span><span class="thm"><span class="thr"><b>${esc(x.n)}</b>${l?`<em>${tShort(l.ts)}</em>`:""}</span><span class="thr"><small>${l?(l.me?"You: ":"")+esc(clean(l.t)):"Say hello"}</small>${x.u?`<span class="nb" role="img" aria-label="${x.u} unread message${x.u===1?"":"s"}">${x.u>99?"99+":x.u}</span>`:""}</span></span></button>`}).join(""):`<div class="empty">No conversations yet.</div>`}</div>
- <section class="pane" aria-label="Conversation" data-t="${t?t.id:''}">${t?`${!Net.on?`<div class="cbar" role="status">You’re offline. Messages will send automatically when you reconnect.</div>`:""}<div class="ph"><button class="back" aria-label="Back to conversations" onclick="S.thread=null;Chat.stick=true;render()">‹</button><span class="avw"><div class="av" style="${abg(t.n)}">${ait(t.n)}</div>${pres(t.on)}</span><div class="phn"><b>${esc(t.n)}</b><small class="${t.typing||t.on?"on":""}">${t.typing?"typing…":t.on?"Online":SB_ON?"Offline":""}</small></div><button class="btn alt rep" data-n="${esc(t.n)}" onclick="reportUser(this.dataset.n)" aria-label="Report ${esc(t.n)}">Report</button></div>
+ <section class="pane" aria-label="Conversation" data-t="${t?t.id:''}">${t?`${!Net.on?`<div class="cbar" role="status">You’re offline. Messages will send automatically when you reconnect.</div>`:""}<div class="ph"><button class="back" aria-label="Back to conversations" onclick="S.thread=null;Chat.stick=true;render()">‹</button><span class="avw"><div class="av" style="${abg(t.n)}">${ait(t.n)}</div>${pres(t.on)}</span><div class="phn"><b>${esc(t.n)}</b><small class="${t.typing||t.on?"on":""}">${t.typing?"typing…":t.on?"Online":SB_ON?"Offline":""}</small></div><div class="cmenu"><button type="button" class="btn alt rep dots" aria-haspopup="menu" aria-expanded="false" aria-label="Chat options" onclick="toggleCM(event)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button><div class="cml hide" role="menu"><button type="button" role="menuitem" data-n="${esc(t.n)}" onclick="reportUser(this.dataset.n)">Report</button><button type="button" role="menuitem" class="dng" onclick="askDelChat()">Delete</button></div></div></div>${Chat.pend?`<div class="mprev"><img src="${Chat.pend}" alt="Photo to send"><span>Photo ready to send</span><button type="button" aria-label="Remove photo" onclick="clearImg()">✕</button></div>`:""}
  <div class="msgs" id="ms" aria-live="polite">${t.m.map(m=>`<div class="m ${m.me?"me":""}">${qCard(m,t)}${fmtMsg(m.t)}${actBar(m)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]:""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span><button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}</span></div>`).join("")}</div>
- <form class="send" style="max-width:none" onsubmit="sendMsg(event)"><input id="mi" autocomplete="off" autocapitalize="sentences" enterkeyhint="send" maxlength="1000" aria-label="Message" placeholder="Write a message"><button class="btn" onpointerdown="event.preventDefault()">Send</button></form>`:`<div class="empty" style="margin:auto">Pick a conversation to start chatting.</div>`}</section></div>`;
+ <form class="send" style="max-width:none" onsubmit="sendMsg(event)"><button type="button" class="btn alt att" aria-label="Attach a photo" onclick="document.getElementById('mimg').click()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg></button><input id="mimg" type="file" accept="image/*" hidden onchange="pickImg(this)"><input id="mi" autocomplete="off" autocapitalize="sentences" enterkeyhint="send" maxlength="1000" aria-label="Message" placeholder="${Chat.pend?"Add a caption (optional)":"Write a message"}"><button class="btn" onpointerdown="event.preventDefault()">Send</button></form>`:`<div class="empty" style="margin:auto">Pick a conversation to start chatting.</div>`}</section></div>`;
  const m=V.querySelector("#ms");if(m){if(Chat.stick!==false||Chat.pos==null)m.scrollTop=m.scrollHeight;else m.scrollTop=Math.min(Chat.pos,m.scrollHeight)}}
-function sendMsg(e){e.preventDefault();const i=document.getElementById("mi");if(!i)return;Chat.stick=true;if(Chat.send(S.thread,i.value)){i.value=""}ui();const n=document.getElementById("mi");if(n)n.focus({preventScroll:true})}
+
+/* ---------- chat: options menu, delete chat, photos ---------- */
+function toggleCM(e){e.stopPropagation();const l=document.querySelector(".cml");if(!l)return;const o=l.classList.toggle("hide");e.currentTarget.setAttribute("aria-expanded",String(!o))}
+document.addEventListener("click",e=>{const l=document.querySelector(".cml:not(.hide)");if(l&&!e.target.closest(".cmenu")){l.classList.add("hide");const b=document.querySelector(".cmenu .dots");if(b)b.setAttribute("aria-expanded","false")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){const l=document.querySelector(".cml:not(.hide)");if(l)l.classList.add("hide")}});
+function askDelChat(){const t=S.threads.find(x=>x.id===S.thread);if(!t)return;const l=document.querySelector(".cml");if(l)l.classList.add("hide");
+ delD.innerHTML=`<div class="dh"><h3 style="margin:0">Delete this chat?</h3></div><p style="margin:0">Your conversation with ${esc(t.n)} will be removed from this device. This can’t be undone.</p><div class="acts"><button type="button" class="btn danger" onclick="confirmDelChat('${t.id}')">Delete</button><button type="button" class="btn alt" onclick="delD.close()">Cancel</button></div>`;delD.showModal()}
+function confirmDelChat(id){const t=S.threads.find(x=>x.id===id);if(t){S.delT=S.delT||{};S.delT[t.n]=Date.now();S.threads=S.threads.filter(x=>x.id!==id)}if(S.thread===id)S.thread=null;Chat.pend=null;delD.close();save();Chat.stick=true;render();toast("Chat deleted")}
+function pickImg(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;if(!/^image\//.test(f.type)){toast("Please choose an image");return}
+ const url=URL.createObjectURL(f),im=new Image();
+ im.onload=()=>{URL.revokeObjectURL(url);let w=im.naturalWidth,h=im.naturalHeight,k=Math.min(1,720/Math.max(w,h)),q=.7,out="";
+  for(let i=0;i<6;i++){const c=document.createElement("canvas");c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);out=c.toDataURL("image/jpeg",q);if(out.length<=110000)break;q=Math.max(.4,q-.1);k*=.85}
+  if(out.length>140000){toast("That photo is too large. Try a smaller one.");return}
+  const i=document.getElementById("mi"),v=i?i.value:"";Chat.pend=out;Chat.stick=true;ui();const n=document.getElementById("mi");if(n){n.value=v;n.focus({preventScroll:true})}phSet()};
+ im.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t read that image")};im.src=url}
+function phSet(){const n=document.getElementById("mi");if(n)n.placeholder=Chat.pend?"Add a caption (optional)":"Write a message"}
+function clearImg(){Chat.pend=null;const i=document.getElementById("mi"),v=i?i.value:"";ui();const n=document.getElementById("mi");if(n)n.value=v;phSet()}
+function viewImg(src){let d=document.getElementById("imgD");if(!d){d=document.createElement("dialog");d.id="imgD";d.className="imgd";d.addEventListener("click",()=>d.close());document.body.appendChild(d)}d.innerHTML=`<img src="${src}" alt="Photo">`;d.showModal()}
+function sendMsg(e){e.preventDefault();const i=document.getElementById("mi");if(!i)return;Chat.stick=true;
+ if(Chat.pend){const cap=i.value.trim();if(Chat.send(S.thread,"⟦img|"+Chat.pend+"⟧"+(cap?" "+cap:""),{img:1})){i.value="";Chat.pend=null}}
+ else if(Chat.send(S.thread,i.value)){i.value=""}ui();phSet();const n=document.getElementById("mi");if(n)n.focus({preventScroll:true})}
 const rank={sending:0,sent:1,delivered:2,read:3};
 const Net={on:navigator.onLine!==false,send(e){return Net.on?RT.send(e):Promise.reject("offline")},
  set(on){if(Net.on===on)return;Net.on=on;if(on){S.threads.forEach(t=>t.m.forEach(m=>{if(m.st==="sending")m.next=0}));Chat.flush();if(typeof RT!=="undefined")RT.poll()}ui()}};
-const Chat={busy:0,ackMs:4000,max:5,base:800,rt:null,
- send(tid,text){const t=S.threads.find(x=>x.id===tid);text=(text||"").trim();if(!t||!text)return null;if(text.length>1000){toast("Message is too long (max 1000 characters)");return null}
+const Chat={pend:null,busy:0,ackMs:4000,max:5,base:800,rt:null,
+ send(tid,text,o){const t=S.threads.find(x=>x.id===tid);text=(text||"").trim();if(!t||!text)return null;if(text.length>(o&&o.img?150000:1000)){toast(o&&o.img?"That photo is too large":"Message is too long (max 1000 characters)");return null}
   const m={id:"m"+uid(),me:1,t:text,ts:Date.now(),st:"sending",tries:0};t.m.push(m);S.chatStats.sent++;save();Chat.flush();return m},
  async flush(){if(Chat.busy||!Net.on)return;Chat.busy=1;
   try{for(const t of S.threads)for(const m of t.m){if(!m.me||m.st!=="sending")continue;if(m.next>Date.now())break;
@@ -2309,10 +2351,10 @@ const Chat={busy:0,ackMs:4000,max:5,base:800,rt:null,
  retry(id){S.threads.forEach(t=>t.m.forEach(m=>{if(m.id===id){m.st="sending";m.tries=0;m.next=0}}));Chat.flush();ui()},
  receipt(id,st){S.threads.forEach(t=>t.m.forEach(m=>{if(m.id===id&&rank[st]>rank[m.st]){m.st=st;if(m.me&&(st==="delivered"||st==="read"))Notify.add({type:"chat",key:"chat:st:"+t.n,title:st==="read"?`${t.n} read your message`:`Message delivered to ${t.n}`,body:clean(m.t).slice(0,90),act:{k:"chat",n:t.n},read:S.view==="chat"&&S.thread===t.id?1:0})}}));save();ui()},
  typing(n,on){const t=S.threads.find(x=>x.n===n);if(!t)return;t.typing=on;clearTimeout(t.tt);if(on)t.tt=setTimeout(()=>{t.typing=0;ui()},3000);ui()},
- receive(m){if(S.threads.some(t=>t.m.some(x=>x.id===m.id)))return;stubUser(m.peer);const t=ensure(m.peer);t.typing=0;
+ receive(m){if(S.threads.some(t=>t.m.some(x=>x.id===m.id)))return;if(S.delT&&S.delT[m.peer]&&+m.ts<=S.delT[m.peer])return;stubUser(m.peer);const t=ensure(m.peer);t.typing=0;
   let i=t.m.length;while(i>0&&t.m[i-1].ts>m.ts)i--;t.m.splice(i,0,{id:m.id,t:m.t,ts:m.ts});try{actSync(m.t,m.peer)}catch(e){}
   const here=S.view==="chat"&&S.thread===t.id&&!document.hidden;
-  if(!here&&!m.read){t.u=(+t.u||0)+1;if(m.quiet){t.qn=(t.qn||0)+1;t.ql=m.t}if(!m.quiet){Notify.add({type:"chat",key:"chat:msg:"+t.n,title:t.u>1?`${t.u} new messages from ${t.n}`:`New message from ${t.n}`,body:clean(m.t).slice(0,90),act:{k:"chat",n:t.n}});toast("New message from "+t.n)}}
+  if(!here&&!m.read){t.u=(+t.u||0)+1;if(m.quiet){t.qn=(t.qn||0)+1;t.ql=clean(m.t)}if(!m.quiet){Notify.add({type:"chat",key:"chat:msg:"+t.n,title:t.u>1?`${t.u} new messages from ${t.n}`:`New message from ${t.n}`,body:clean(m.t).slice(0,90),act:{k:"chat",n:t.n}});toast("New message from "+t.n)}}
   save();ui()}};
 /* ---------- Real-time direct messaging. Only real people reply: no bots. Transport: Supabase table rc_msgs (Realtime push + 5 s polling) or, when Supabase isn't configured, a shared mailbox in this browser (other tabs get messages instantly). ---------- */
 const RT={ok:null,err:undefined,at:0,me:"",since:0,first:true,timer:null,ch:null,pch:null,bc:null,
@@ -2337,7 +2379,7 @@ const RT={ok:null,err:undefined,at:0,me:"",since:0,first:true,timer:null,ch:null
  markRead(peer){if(S.out||!peer)return;RT.patch({to:S.name,from:peer},"read").catch(()=>{})},
  async poll(){if(S.out||!S.me||RT.me!==S.name)return;if(SB_ON&&RT.ok===false&&Date.now()-RT.at<30000)return;
   try{const rows=await RT.rows({to:S.name,since:RT.since>0?RT.since-1:0});rows.forEach(x=>{RT.incoming(x,RT.first);RT.since=Math.max(RT.since,+x.ts||0)});S.threads.filter(t=>t.qn).forEach(t=>{Notify.add({type:"chat",key:"chat:msg:"+t.n,title:t.qn>1?`${t.qn} new messages from ${t.n}`:`New message from ${t.n}`,body:String(t.ql||"").slice(0,90),act:{k:"chat",n:t.n}});t.qn=0;t.ql=""});
-   if(RT.first){const o=await RT.rows({from:S.name});let ch=false;o.forEach(x=>{if(S.threads.some(t=>t.m.some(m=>m.id===x.id)))return;stubUser(x.to_name);const t=ensure(x.to_name);let i=t.m.length;while(i>0&&t.m[i-1].ts>+x.ts)i--;t.m.splice(i,0,{id:x.id,me:1,t:x.body,ts:+x.ts,st:x.status||"sent"});ch=true});if(ch){save();ui()}RT.first=false}
+   if(RT.first){const o=await RT.rows({from:S.name});let ch=false;o.forEach(x=>{if(S.threads.some(t=>t.m.some(m=>m.id===x.id)))return;if(S.delT&&S.delT[x.to_name]&&+x.ts<=S.delT[x.to_name])return;stubUser(x.to_name);const t=ensure(x.to_name);let i=t.m.length;while(i>0&&t.m[i-1].ts>+x.ts)i--;t.m.splice(i,0,{id:x.id,me:1,t:x.body,ts:+x.ts,st:x.status||"sent"});ch=true});if(ch){save();ui()}RT.first=false}
    const pend=S.threads.flatMap(t=>t.m).filter(m=>m.me&&(m.st==="sent"||m.st==="delivered"));
    if(pend.length){const lo=Math.min(...pend.map(m=>m.ts))-1;(await RT.rows({from:S.name,since:lo})).forEach(RT.status)}}
   catch(e){if(RT.ok===false)ui()}},
