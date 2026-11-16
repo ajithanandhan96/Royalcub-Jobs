@@ -2112,7 +2112,7 @@ const RPE=/^⟪rp\|([^|⟫]*)\|([^⟫]*)⟫\s*/;
 const qBody=t=>raw(t).replace(QRE,"").replace(RPE,"");
 const clean=t=>raw(t).replace(QRE,"↩ ").replace(RPE,"↩ ").replace(/^⟦img-expired⟧/,"Photo expired").replace(/^⟦img\|[^⟧]*⟧\s*/,"Photo ").replace(/\s*This image will disappear within one month\s*$/,"").replace(/ ¦ /g," · ");
 function fmtMsg(t,m){const rq=raw(t).match(RPE);return (rq?`<span class="rq"><b>${esc(rq[1])}</b>${esc(rq[2])}</span>`:"")+fmtMsg0(t,m)}
-const imgSrc=(u,m)=>{u=String(u||"");if(u==="pending")return m&&m.up&&/^data:image\/jpeg;base64,/.test(m.up)?m.up:"";if(/^data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(u))return u;const pre=SUPABASE_URL.trim().replace(/\/$/,"")+"/storage/v1/object/public/"+CHAT_BUCKET+"/";return u.startsWith(pre)&&/^[A-Za-z0-9_\-\/.]+$/.test(u.slice(pre.length))&&!u.includes("..")?u:""};
+const imgSrc=(u,m)=>{u=String(u||"");if(u==="pending")return m&&m.up&&/^data:image\/jpeg;base64,/.test(m.up)?m.up:"";if(/^data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(u))return u;const base=SUPABASE_URL.trim().replace(/\/$/,"")+"/storage/v1/object/public/";for(const b of [CHAT_BKT,CHAT_OLD_BKT]){const pre=base+b+"/";if(u.startsWith(pre)&&/^[A-Za-z0-9_\-\/.]+$/.test(u.slice(pre.length))&&!u.includes(".."))return u}return""};
 function fmtMsg0(t,m){const b=qBody(t);
  if(b.trim()==="⟦img-expired⟧")return `<span class="imgexp">This image has expired and was removed.</span>`;
   {const im=b.match(/^⟦img\|([^⟧]*)⟧\s*([\s\S]*)$/);if(im){const src=imgSrc(im[1],m),cap=im[2].replace(/\s*This image will disappear within one month\s*$/,"").trim();if(!src)return `<span class="imgexp">Photo unavailable.</span>`;return `<img class="mimg" src="${src}" alt="Photo. Press and hold to reply." loading="lazy" tabindex="0" draggable="false" onclick="viewImg(this.src)" onkeydown="if(event.key==='Enter')viewImg(this.src)" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'imgexp',textContent:'This image has expired and was removed.'}))"><small class="imgnote">${IMG_NOTE}</small>${cap?`<span class="apl">${esc(cap)}</span>`:""}`}}
@@ -2332,7 +2332,7 @@ document.addEventListener("pointerdown",e=>{if(!e.target.closest||!e.target.clos
 document.addEventListener("pointermove",e=>{if(lpT&&Math.hypot(e.clientX-lpX,e.clientY-lpY)>10){clearTimeout(lpT);lpT=null}},true);
 document.addEventListener("contextmenu",e=>{const im=e.target.closest&&e.target.closest(".m .mimg");if(!im)return;e.preventDefault();if(lpT){clearTimeout(lpT);lpT=null}if(Date.now()-lpFired>800){lpFired=Date.now();showImgMenu(im,e.clientX,e.clientY)}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")hideImenu()});
-const IMG_NOTE="This image will disappear within one month",CHAT_BUCKET="chat-media";
+const IMG_NOTE="This image will disappear within one month",CHAT_BUCKET="royalcub chat",CHAT_BKT=encodeURIComponent(CHAT_BUCKET),CHAT_OLD_BKT="chat-media";
 const IMG_TTL=30*864e5,IMG_RE=/^(?:⟪rp\|[^⟫]*⟫\s*)?⟦img\|/;
 const imgOld=(t,ts)=>IMG_RE.test(String(t||""))&&Date.now()-(+ts||0)>IMG_TTL;
 function imgExpire(){let ch=false;(S.threads||[]).forEach(t=>t.m.forEach(m=>{if(imgOld(m.t,m.ts)){m.t="⟦img-expired⟧";ch=true}}));if(ch){try{save()}catch(e){}}
@@ -2354,12 +2354,12 @@ const Chat={pend:null,rep:null,busy:0,ackMs:10000,upMs:60000,max:5,base:800,rt:n
   cap=String(cap||"").replace(/[⟦⟧⟪⟫]/g," ").trim().slice(0,300);
   const m={id:"m"+uid(),me:1,t:(rp||"")+"⟦img|pending⟧"+(cap?" "+cap:"")+"\n"+IMG_NOTE,ts:Date.now(),st:"sending",tries:0,up:data,path:"m/"+(window.crypto&&crypto.randomUUID?crypto.randomUUID():uid()+uid()+uid())+".jpg"};
   t.m.push(m);S.chatStats.sent++;save();Chat.flush();return m},
- pubUrl:p=>SUPABASE_URL.trim().replace(/\/$/,"")+"/storage/v1/object/public/"+CHAT_BUCKET+"/"+p,
+ pubUrl:p=>SUPABASE_URL.trim().replace(/\/$/,"")+"/storage/v1/object/public/"+CHAT_BKT+"/"+p,
  async upload(m){if(!SB_ON){m.t=m.t.replace("⟦img|pending⟧","⟦img|"+m.up+"⟧");delete m.up;return}
   const blob=await(await fetch(m.up)).blob(),ac=new AbortController(),tm=setTimeout(()=>ac.abort(),Chat.upMs);let r;
-  try{r=await fetch(SUPABASE_URL.trim().replace(/\/$/,"")+"/storage/v1/object/"+CHAT_BUCKET+"/"+m.path,{method:"POST",signal:ac.signal,headers:{apikey:SUPABASE_KEY,"Content-Type":"image/jpeg","x-upsert":"false","cache-control":"max-age=3600"},body:blob})}finally{clearTimeout(tm)}
+  try{r=await fetch(SUPABASE_URL.trim().replace(/\/$/,"")+"/storage/v1/object/"+CHAT_BKT+"/"+m.path,{method:"POST",signal:ac.signal,headers:Object.assign({apikey:SUPABASE_KEY,"Content-Type":"image/jpeg","x-upsert":"false","cache-control":"max-age=3600"},/^eyJ/.test(SUPABASE_KEY)?{Authorization:"Bearer "+SUPABASE_KEY}:{}),body:blob})}finally{clearTimeout(tm)}
   if(!r.ok){let d={};try{d=await r.json()}catch(e){}const dup=r.status===409||String(d.statusCode)==="409"||/already exists|duplicate/i.test(String(d.message||d.error||""));
-   if(!dup){const perm=[400,401,403,404,413,415].includes(r.status);const er=new Error("upload "+r.status);er.perm=perm;er.msg=r.status===413?"Photo is too large.":perm?"Photo storage isn’t set up yet (run supabase_chat_media.sql).":"";throw er}}
+   if(!dup){const perm=[400,401,403,404,413,415].includes(r.status);const er=new Error("upload "+r.status);er.perm=perm;const dm=String(d.message||d.error||"");er.msg=r.status===413?"Photo is too large.":/bucket not found/i.test(dm)||r.status===404?"Storage bucket “"+CHAT_BUCKET+"” was not found. Check its exact name in Supabase.":/row-level security|policy|unauthorized|not allowed/i.test(dm)||r.status===401||r.status===403?"Photo upload is blocked. Add the upload policy for the “"+CHAT_BUCKET+"” bucket (see supabase_chat_media_royalcub_chat.sql).":/mime|type/i.test(dm)||r.status===415?"This photo type isn’t allowed by the bucket.":perm?"Photo upload was rejected ("+(dm||r.status)+").":"";console.warn("RoyalCub photo upload failed:",r.status,dm);throw er}}
   m.t=m.t.replace("⟦img|pending⟧","⟦img|"+Chat.pubUrl(m.path)+"⟧");delete m.up},
  async flush(){if(Chat.busy||!Net.on)return;Chat.busy=1;
   try{for(const t of S.threads)for(const m of t.m){if(!m.me||m.st!=="sending")continue;if(m.next>Date.now())break;
