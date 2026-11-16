@@ -9,7 +9,7 @@
 -- 1. Storage bucket for chat photos --------------------------------------------------
 -- Public-read bucket: a photo is reachable only through its random (UUID) URL, and nobody can list the bucket.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('chat-media', 'chat-media', true, 2097152, array['image/jpeg','image/png','image/webp'])
+values ('royalcub chat', 'royalcub chat', true, 2097152, array['image/jpeg','image/png','image/webp'])
 on conflict (id) do update
   set public = true,
       file_size_limit = excluded.file_size_limit,
@@ -17,10 +17,10 @@ on conflict (id) do update
 
 -- The app signs people in itself (it does not use Supabase Auth sessions), so uploads come from the anon role.
 -- Upload only: no select/update/delete policy, so nobody can overwrite, delete or enumerate files from the browser.
-drop policy if exists "rc chat-media upload" on storage.objects;
-create policy "rc chat-media upload" on storage.objects
+drop policy if exists "rc royalcub chat upload" on storage.objects;
+create policy "rc royalcub chat upload" on storage.objects
   for insert to anon, authenticated
-  with check (bucket_id = 'chat-media' and name like 'm/%');
+  with check (bucket_id = 'royalcub chat' and name like 'm/%');
 
 -- 2. Backend appends the note to every photo message ----------------------------------
 create or replace function public.rc_msgs_image_note()
@@ -42,11 +42,11 @@ create trigger rc_msgs_image_note
 
 -- 3. Permanent deletion of photos after one month (30 days) --------------------------
 -- Files must be removed through the Storage API (deleting storage.objects rows in SQL would leave the
--- files behind), so a daily cron job calls the purge-chat-media Edge Function, which uses these helpers.
+-- files behind), so a daily cron job calls the purge-royalcub chat Edge Function, which uses these helpers.
 create or replace function public.rc_expired_media()
 returns setof text language sql security definer set search_path = public, storage as $$
   select name from storage.objects
-  where bucket_id = 'chat-media' and created_at < now() - interval '30 days'
+  where bucket_id = 'royalcub chat' and created_at < now() - interval '30 days'
   order by created_at
   limit 1000
 $$;
@@ -59,7 +59,7 @@ begin
   if coalesce(array_length(names, 1), 0) > 0 then
     update public.rc_msgs set body = '⟦img-expired⟧'
     where body like '%⟦img|%'
-      and exists (select 1 from unnest(names) x where strpos(body, '/chat-media/' || x) > 0);
+      and exists (select 1 from unnest(names) x where strpos(body, '/royalcub%20chat/' || x) > 0);
     get diagnostics c = row_count; n := n + c;
   end if;
   -- any other photo message older than the cutoff (this also clears old photos that were stored inside the table)
@@ -129,7 +129,7 @@ create trigger rc_msgs_push
 create extension if not exists pg_cron;
 
 select cron.schedule(
-  'rc-purge-chat-media',
+  'rc-purge-royalcub chat',
   '17 3 * * *',
   $cron$
     select net.http_post(
@@ -145,5 +145,5 @@ select cron.schedule(
 -- 7. Secrets used by the triggers above (run ONCE, with your real values) --------------
 -- select vault.create_secret('https://YOUR-PROJECT-REF.supabase.co/functions/v1/push-notify',        'rc_push_url');
 -- select vault.create_secret('THE-SAME-VALUE-AS-WEBHOOK_SECRET',                                    'rc_push_secret');
--- select vault.create_secret('https://YOUR-PROJECT-REF.supabase.co/functions/v1/purge-chat-media',   'rc_purge_url');
+-- select vault.create_secret('https://YOUR-PROJECT-REF.supabase.co/functions/v1/purge-royalcub chat',   'rc_purge_url');
 -- select vault.create_secret('THE-SAME-VALUE-AS-CRON_SECRET',                                        'rc_purge_secret');
