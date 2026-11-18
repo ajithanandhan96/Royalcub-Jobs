@@ -1234,6 +1234,7 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .adslot{display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;text-align:center;min-height:150px;padding:18px;margin:0 0 14px;border-radius:20px;border:2px dashed var(--plum);background:linear-gradient(135deg,var(--g1),var(--g2));color:var(--navytx)}
 .adslot small{font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--plum)}.adslot b{font-size:20px}.adslot span{color:var(--mute);font-size:14px}
 .bfeedh{margin-bottom:12px}
+#newPostD{width:min(480px,calc(100vw - 24px));max-height:92vh;overflow:auto}.bform{display:flex;flex-direction:column;gap:12px}.bform label:not(.btn){display:flex;flex-direction:column;gap:6px;font-weight:600}.bform .acts{display:flex;gap:10px}.bform .acts .btn{flex:1}
 .bdes{display:block;font-size:13px;color:var(--plum);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bti{margin:12px 0 0;font-size:18px;overflow-wrap:anywhere}.bsu{margin:2px 0 0;color:var(--mute);overflow-wrap:anywhere}
 .bmw{position:relative;flex:none}.bdots{font-size:22px;line-height:1}
@@ -1905,10 +1906,18 @@ function board(){const P=bPosts();
  view.innerHTML=`<div class="row"><h2>Feed</h2><span>${String(P.length).padStart(2,"0")}</span></div>
  <aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>
  ${bNotice}
- <form class="bcomp" onsubmit="bPost(event)"><input id="cti" type="text" maxlength="80" placeholder="Title (optional)" aria-label="Title" value="${esc(BD.ti||"")}" oninput="BD.ti=this.value"><input id="csu" type="text" maxlength="120" placeholder="Subtitle (optional)" aria-label="Subtitle" value="${esc(BD.su||"")}" oninput="BD.su=this.value" style="margin-top:8px"><label class="sr" for="cbt" style="position:absolute;left:-9999px">What would you like to share?</label><textarea id="cbt" maxlength="1000" placeholder="What would you like to share?" oninput="BD.draft=this.value" style="margin-top:8px">${esc(BD.draft)}</textarea>
- ${BD.img?`<div class="bprev"><img src="${BD.img}" alt="Selected photo"><button type="button" class="bdel" onclick="bClearImg()" aria-label="Remove photo">✕</button></div>`:""}
- <div class="bcr"><label class="btn alt bpick"><input type="file" accept="image/*" hidden onchange="bPick(this)">📷 Add photo</label><button class="btn" type="submit">Post</button></div></form>
+ <div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ New Post</button></div>
  <div class="bfeed">${P.map(bCard).join("")||`<p class="bnone">Nothing here yet. Start the conversation!</p>`}</div>`}
+function bNew(){let d=document.getElementById("newPostD");if(!d){d=document.createElement("dialog");d.id="newPostD";d.setAttribute("aria-labelledby","npT");document.body.appendChild(d)}bDlgUI();if(!d.open)d.showModal()}
+function bClose(){const d=document.getElementById("newPostD");if(d&&d.open)d.close()}
+function bDlgUI(){const d=document.getElementById("newPostD");if(!d)return;
+ d.innerHTML=`<form class="bform" onsubmit="bPost(event)"><div class="dh"><h3 id="npT" style="margin:0">New Post</h3></div>
+ <label>Title<input id="cti" type="text" maxlength="80" placeholder="Add a title" value="${esc(BD.ti||"")}" oninput="BD.ti=this.value"></label>
+ <label>Subject<input id="csu" type="text" maxlength="120" placeholder="What is this about?" value="${esc(BD.su||"")}" oninput="BD.su=this.value"></label>
+ <label>Details<textarea id="cbt" maxlength="1000" placeholder="Write the details" oninput="BD.draft=this.value">${esc(BD.draft)}</textarea></label>
+ ${BD.img?`<div class="bprev"><img src="${BD.img}" alt="Selected photo"><button type="button" class="bdel" onclick="bClearImg()" aria-label="Remove photo">✕</button></div>`:""}
+ <label class="btn alt bpick"><input type="file" accept="image/*" hidden onchange="bPick(this)">📷 ${BD.img?"Change photo":"Upload photo"}</label>
+ <div class="acts"><button type="submit" class="btn">Post</button><button type="button" class="btn alt" onclick="bClose()">Cancel</button></div></form>`}
 function bPick(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
  if(f.type&&!/^image\//.test(f.type)){toast("Please choose an image");return}
  if(f.size>40*1048576){toast("That photo is too large. Try a smaller one.");return}
@@ -1916,12 +1925,12 @@ function bPick(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
  im.onload=()=>{URL.revokeObjectURL(url);try{const w=im.naturalWidth,h=im.naturalHeight;if(!w||!h){toast("Couldn’t read that image");return}let k=Math.min(1,1080/Math.max(w,h)),q=.8,out="";
   for(let i=0;i<8;i++){const c=document.createElement("canvas");c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);out=c.toDataURL("image/jpeg",q);if(out.length<=350000)break;q=Math.max(.5,q-.1);k*=.85}
   if(!bImgOk(out)||out.length>700000){toast("That photo is too large. Try a smaller one.");return}
-  BD.img=out;if(S.view==="board")render()}catch(e){toast("Couldn’t prepare that photo. Try another one.")}};
+  BD.img=out;bDlgUI()}catch(e){toast("Couldn’t prepare that photo. Try another one.")}};
  im.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t read that photo. Try a JPG or PNG.")};im.src=url}
-function bClearImg(){BD.img="";render()}
+function bClearImg(){BD.img="";bDlgUI()}
 function bPost(e){e.preventDefault();const t=(document.getElementById("cbt").value||"").trim().slice(0,1000);if(!t&&!BD.img&&!(document.getElementById("cti")||{}).value){toast("Write something or add a photo");return}
  const ti=((document.getElementById("cti")||{}).value||"").trim().slice(0,80),su=((document.getElementById("csu")||{}).value||"").trim().slice(0,120);const o={id:bId(),by:S.name,ti,su,t,img:BD.img,ts:Date.now()};S.posts.unshift(o);
- try{save()}catch(err){}BD.draft="";BD.img="";BD.ti="";BD.su="";render();scrollTo(0,0);cSched();toast("Posted to the feed")}
+ try{save()}catch(err){}BD.draft="";BD.img="";BD.ti="";BD.su="";bClose();render();scrollTo(0,0);cSched();toast("Posted to the feed")}
 function bDelPost(id){if(!confirm("Delete this post? This can’t be undone."))return;const p=S.posts.find(x=>String(x.id)===String(id));if(!p||(p.by!==S.name&&!isAdmin()))return;
  S.posts=S.posts.filter(x=>String(x.id)!==String(id));S.plikes=S.plikes.filter(x=>String(x.pid)!==String(id));S.pcmts=S.pcmts.filter(x=>String(x.pid)!==String(id));save();render();cSched();toast("Post deleted")}
 function bLike(id){if(!S.posts.some(x=>String(x.id)===String(id)))return;const k=String(id)+"|"+S.name,i=S.plikes.findIndex(l=>l.id===k);
