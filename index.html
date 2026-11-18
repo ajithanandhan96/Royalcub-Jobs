@@ -1230,6 +1230,15 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .bcb{flex:1;min-width:0}.bcb p{margin:2px 0 0;overflow-wrap:anywhere;white-space:pre-wrap}
 .bcf{display:flex;gap:8px;margin-top:8px}.bcf .btn{padding:0 16px}
 .bnone{color:var(--mute);text-align:center;margin:10px 0}
+
+.adslot{display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;text-align:center;min-height:150px;padding:18px;margin:0 0 14px;border-radius:20px;border:2px dashed var(--plum);background:linear-gradient(135deg,var(--g1),var(--g2));color:var(--navytx)}
+.adslot small{font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--plum)}.adslot b{font-size:20px}.adslot span{color:var(--mute);font-size:14px}
+.bfeedh{margin-bottom:12px}
+.bdes{display:block;font-size:13px;color:var(--plum);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bti{margin:12px 0 0;font-size:18px;overflow-wrap:anywhere}.bsu{margin:2px 0 0;color:var(--mute);overflow-wrap:anywhere}
+.bmw{position:relative;flex:none}.bdots{font-size:22px;line-height:1}
+.bmenu{position:absolute;right:0;top:100%;min-width:150px;background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.2);padding:6px;z-index:30;display:flex;flex-direction:column}
+.bmenu.hide{display:none}.bmenu button{text-align:left;padding:11px 12px;border-radius:10px;font-weight:600;min-height:44px}.bmenu button:hover{background:var(--soft)}.bmenu .dng{color:#c0261c}
 </style>
 </head>
 <body>
@@ -1404,7 +1413,7 @@ const attrSpans=(x,job)=>`${expTx(x)?`<span>${DI.medal}${esc(expTx(x))}${job?" n
 const SAS={};
 const SAJ={};
 const applyA=(x,svc)=>{const a=(svc?SAS:SAJ)[x.id];if(a&&x.exp===undefined){x.exp=a[0];x.qual=a[1]}};
-S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.posts=S.posts||[];S.plikes=S.plikes||[];S.pcmts=S.pcmts||[];S.fol=S.fol||{};S.services=S.services||[];S.tab="services";S.services.forEach(x=>applyA(x,1));S.jobs.forEach(x=>applyA(x,0));S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=Array.isArray(j.v)?j.v:[]});
+S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.posts=S.posts||[];S.plikes=S.plikes||[];S.pcmts=S.pcmts||[];S.fol=S.fol||{};S.services=S.services||[];S.tab="services";S.hm="posts";S.services.forEach(x=>applyA(x,1));S.jobs.forEach(x=>applyA(x,0));S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=Array.isArray(j.v)?j.v:[]});
 const DEMO_NAMES=new Set(["Anitha Das","Anna Reed","Arjun Rao","Arun Das","Ashraf Basheer","Dana Fox","Dev Bose","Faisal Ali","Gopalan Nair","Hana Kim","Imran Khan","Isha Rao","Joby Thomas","Joseph Paul","Kabir Anand","Karan Mehta","Kiran Rao","Latha Raman","Leena Jose","Maya Thomas","Meena Joseph","Meera Nair","Mini Sebastian","Nisha Verma","Nizar Ali","Priya Nair","Priya Shah","Rahul Menon","Rajesh Pillai","Ravi Kumar","Reshma Menon","Rohan Das","Sam Foster","Sana Iqbal","Site Admin","Sneha Pillai","Sulekha Rahman","Suresh Babu","Tom Park","Victor King"]);
 S.users=(S.users||[]).filter(u=>!(u&&!u.gid&&((u.email==="admin@royalcub.com"&&u.pw==="Admin@123")||(/@example\.com$/i.test(u.email||"")&&DEMO_NAMES.has(u.name)))));
 S.notifs=(S.notifs||[]).filter(n=>!["n1","n2","n3","n4"].includes(n.id)||!/Go Pro for 50%|New professional: Kiran Rao|Anna Reed read your message|Latha Raman/.test(n.title||""));
@@ -1877,21 +1886,28 @@ const BD={draft:"",img:"",open:new Set(),busy:0};
 const bId=()=>Date.now().toString(36)+uid();
 const bImgOk=v=>typeof v==="string"&&/^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(v)&&v.length<900000;
 const bLeft=x=>Math.max(1,Math.ceil((x.ts+BMONTH-Date.now())/864e5));
-function board(){pruneBoard();const me=S.name,P=S.posts.filter(x=>x&&live(x.by)).sort((a,b)=>b.ts-a.ts);
- const cm=id=>S.pcmts.filter(c=>String(c.pid)===String(id)&&live(c.by)).sort((a,b)=>a.ts-b.ts),lk=id=>S.plikes.filter(l=>String(l.pid)===String(id));
- const av=n=>`<div class="av" style="${abg(n)}">${ait(n)}</div>`;
- const card=x=>{const id=esc(x.id),L=lk(x.id),liked=L.some(l=>l.by===me),C=cm(x.id),open=BD.open.has(String(x.id)),own=x.by===me||isAdmin();
-  return `<article class="bpost" data-id="${id}"><header class="bph">${av(x.by)}<div class="bpn"><b>${esc(x.by)}</b><small>${esc(ago(x.ts))} · deletes in ${bLeft(x)} d</small></div>${own?`<button class="bdel" type="button" onclick="bDelPost(this.closest('.bpost').dataset.id)" aria-label="Delete this post">${"🗑"}</button>`:""}</header>
-  ${x.t?`<p class="bpt">${esc(x.t)}</p>`:""}${bImgOk(x.img)?`<img class="bpi" src="${x.img}" alt="Photo shared by ${esc(x.by)}" loading="lazy" onclick="viewImg(this.src)">`:""}
+const bCm=id=>S.pcmts.filter(c=>String(c.pid)===String(id)&&live(c.by)).sort((a,b)=>a.ts-b.ts),bLk=id=>S.plikes.filter(l=>String(l.pid)===String(id));
+function bCard(x){const me=S.name,id=esc(x.id),L=bLk(x.id),liked=L.some(l=>l.by===me),C=bCm(x.id),open=BD.open.has(String(x.id)),own=x.by===me||isAdmin(),mine=x.by===me,des=roleOf(x.by);
+ return `<article class="bpost" data-id="${id}"><header class="bph"><div class="av" style="${abg(x.by)}">${ait(x.by)}</div><div class="bpn"><b>${esc(x.by)}</b>${des?`<span class="bdes">${esc(des)}</span>`:""}<small>${esc(ago(x.ts))} · disappears in ${bLeft(x)} d</small></div>
+  <div class="bmw"><button type="button" class="bdel bdots" aria-haspopup="true" aria-expanded="false" aria-label="More options" onclick="bMenu(event,this)">⋮</button><div class="bmenu hide" role="menu">${mine?"":`<button type="button" role="menuitem" onclick="bReport(this.closest('.bpost').dataset.id)">⚑ Report</button>`}${own?`<button type="button" role="menuitem" class="dng" onclick="bDelPost(this.closest('.bpost').dataset.id)">🗑 Delete</button>`:""}</div></div></header>
+  ${x.ti?`<h3 class="bti">${esc(x.ti)}</h3>`:""}${x.su?`<p class="bsu">${esc(x.su)}</p>`:""}${x.t?`<p class="bpt">${esc(x.t)}</p>`:""}${bImgOk(x.img)?`<img class="bpi" src="${x.img}" alt="Photo shared by ${esc(x.by)}" loading="lazy" onclick="viewImg(this.src)">`:""}
   <div class="bpa"><button type="button" class="${liked?"on":""}" aria-pressed="${liked}" onclick="bLike(this.closest('.bpost').dataset.id)"><span aria-hidden="true">${liked?"♥":"♡"}</span> Like${L.length?` · ${L.length}`:""}</button><button type="button" aria-expanded="${open}" onclick="bToggle(this.closest('.bpost').dataset.id)"><span aria-hidden="true">💬</span> Comment${C.length?` · ${C.length}`:""}</button><button type="button" onclick="bShare(this.closest('.bpost').dataset.id)"><span aria-hidden="true">↗</span> Share</button></div>
   ${open?`<div class="bcm">${C.map(c=>`<div class="bc" data-cid="${esc(c.id)}"><div class="bcb"><b>${esc(c.by)}</b> <small>${esc(ago(c.ts))}</small><p>${esc(c.t)}</p></div>${c.by===me||isAdmin()?`<button type="button" class="bdel" onclick="bDelCm(this.closest('.bc').dataset.cid)" aria-label="Delete comment">✕</button>`:""}</div>`).join("")||`<p class="bnone">No comments yet. Be the first.</p>`}
-  <form class="bcf" onsubmit="bComment(event,this.closest('.bpost').dataset.id)"><input type="text" name="c" maxlength="300" placeholder="Write a comment (text only)" aria-label="Write a comment" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>`:""}</article>`};
+  <form class="bcf" onsubmit="bComment(event,this.closest('.bpost').dataset.id)"><input type="text" name="c" maxlength="300" placeholder="Write a comment (text only)" aria-label="Write a comment" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>`:""}</article>`}
+const bPosts=()=>{pruneBoard();return S.posts.filter(x=>x&&live(x.by)).sort((a,b)=>b.ts-a.ts)};
+const bNotice=`<p class="bnote" role="note">ⓘ All posts disappear automatically within 1 month.</p>`;
+function feedHTML(){const P=bPosts();return `<section class="feedsec" id="feedsec" aria-label="Feed"><aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>${bNotice}<div class="bfeedh"><button class="btn alt" type="button" onclick="go('board')">＋ Create a post</button></div><div class="bfeed">${P.map(bCard).join("")||`<p class="bnone">Nothing in the feed yet. Be the first to post!</p>`}</div></section>`}
+function bMenu(e,b){e.stopPropagation();const m=b.nextElementSibling,was=m.classList.contains("hide");document.querySelectorAll(".bmenu").forEach(x=>x.classList.add("hide"));document.querySelectorAll(".bdots").forEach(x=>x.setAttribute("aria-expanded","false"));if(was){m.classList.remove("hide");b.setAttribute("aria-expanded","true")}}
+document.addEventListener("click",()=>{document.querySelectorAll(".bmenu:not(.hide)").forEach(x=>{x.classList.add("hide");const d=x.previousElementSibling;if(d)d.setAttribute("aria-expanded","false")})});
+function bReport(id){const p=S.posts.find(x=>String(x.id)===String(id));if(!p)return;document.querySelectorAll(".bmenu").forEach(x=>x.classList.add("hide"));toast("Thanks. Tell us what’s wrong with this post.");reportUser(p.by)}
+function setHM(v){S.hm=v==="feed"?"feed":"posts";save();render()}
+function board(){const P=bPosts();
  view.innerHTML=`<div class="row"><h2>Community Board</h2><span>${String(P.length).padStart(2,"0")}</span></div>
- <p class="bnote">Share news, tips and photos with everyone. Posts are removed automatically after one month.</p>
- <form class="bcomp" onsubmit="bPost(event)"><label class="sr" for="cbt" style="position:absolute;left:-9999px">What would you like to share?</label><textarea id="cbt" maxlength="1000" placeholder="What would you like to share?" oninput="BD.draft=this.value">${esc(BD.draft)}</textarea>
+ ${bNotice}
+ <form class="bcomp" onsubmit="bPost(event)"><input id="cti" type="text" maxlength="80" placeholder="Title (optional)" aria-label="Title" value="${esc(BD.ti||"")}" oninput="BD.ti=this.value"><input id="csu" type="text" maxlength="120" placeholder="Subtitle (optional)" aria-label="Subtitle" value="${esc(BD.su||"")}" oninput="BD.su=this.value" style="margin-top:8px"><label class="sr" for="cbt" style="position:absolute;left:-9999px">What would you like to share?</label><textarea id="cbt" maxlength="1000" placeholder="What would you like to share?" oninput="BD.draft=this.value" style="margin-top:8px">${esc(BD.draft)}</textarea>
  ${BD.img?`<div class="bprev"><img src="${BD.img}" alt="Selected photo"><button type="button" class="bdel" onclick="bClearImg()" aria-label="Remove photo">✕</button></div>`:""}
  <div class="bcr"><label class="btn alt bpick"><input type="file" accept="image/*" hidden onchange="bPick(this)">📷 Add photo</label><button class="btn" type="submit">Post</button></div></form>
- <div class="bfeed">${P.map(card).join("")||`<p class="bnone">Nothing here yet. Start the conversation!</p>`}</div>`}
+ <div class="bfeed">${P.map(bCard).join("")||`<p class="bnone">Nothing here yet. Start the conversation!</p>`}</div>`}
 function bPick(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
  if(f.type&&!/^image\//.test(f.type)){toast("Please choose an image");return}
  if(f.size>40*1048576){toast("That photo is too large. Try a smaller one.");return}
@@ -1902,9 +1918,9 @@ function bPick(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
   BD.img=out;if(S.view==="board")render()}catch(e){toast("Couldn’t prepare that photo. Try another one.")}};
  im.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t read that photo. Try a JPG or PNG.")};im.src=url}
 function bClearImg(){BD.img="";render()}
-function bPost(e){e.preventDefault();const t=(document.getElementById("cbt").value||"").trim().slice(0,1000);if(!t&&!BD.img){toast("Write something or add a photo");return}
- const o={id:bId(),by:S.name,t,img:BD.img,ts:Date.now()};S.posts.unshift(o);
- try{save()}catch(err){}BD.draft="";BD.img="";render();scrollTo(0,0);cSched();toast("Posted to the Community Board")}
+function bPost(e){e.preventDefault();const t=(document.getElementById("cbt").value||"").trim().slice(0,1000);if(!t&&!BD.img&&!(document.getElementById("cti")||{}).value){toast("Write something or add a photo");return}
+ const ti=((document.getElementById("cti")||{}).value||"").trim().slice(0,80),su=((document.getElementById("csu")||{}).value||"").trim().slice(0,120);const o={id:bId(),by:S.name,ti,su,t,img:BD.img,ts:Date.now()};S.posts.unshift(o);
+ try{save()}catch(err){}BD.draft="";BD.img="";BD.ti="";BD.su="";render();scrollTo(0,0);cSched();toast("Posted to the Community Board")}
 function bDelPost(id){if(!confirm("Delete this post? This can’t be undone."))return;const p=S.posts.find(x=>String(x.id)===String(id));if(!p||(p.by!==S.name&&!isAdmin()))return;
  S.posts=S.posts.filter(x=>String(x.id)!==String(id));S.plikes=S.plikes.filter(x=>String(x.pid)!==String(id));S.pcmts=S.pcmts.filter(x=>String(x.pid)!==String(id));save();render();cSched();toast("Post deleted")}
 function bLike(id){if(!S.posts.some(x=>String(x.id)===String(id)))return;const k=String(id)+"|"+S.name,i=S.plikes.findIndex(l=>l.id===k);
@@ -2044,7 +2060,7 @@ function scrollCats(d){const c=document.getElementById("cats");if(c)c.scrollBy({
 function catEdges(){const c=document.getElementById("cats"),l=document.getElementById("cl"),r=document.getElementById("cr");if(!c||!l||!r)return;l.disabled=c.scrollLeft<4;r.disabled=c.scrollLeft+c.clientWidth>=c.scrollWidth-4}
 function home(){
  syncCats();const prevC=document.getElementById("cats"),y0=prevC?scrollY:null;{const a=document.getElementById("cats"),b=document.querySelector("#view .status");if(a)HS.cats=a.scrollLeft;if(b)HS.st=b.scrollLeft}
- const jobs=shown(),svcs=shownS(),aus=authors(),src=[...S.services,...S.jobs];
+ const jobs=shown(),svcs=shownS(),aus=authors(),src=S.services;
  view.innerHTML=`<div class="sbar ${(S.q.trim()||(S.qloc||"").trim()||sOpen)?"act":""}" id="sbar" role="search">
  <div class="sbox">
  <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Search name, designation or location…" aria-label="Search by name, designation or location" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
@@ -2059,8 +2075,8 @@ function home(){
  <div class="row"><h2>Categories</h2><span>${String(CATS.length-1).padStart(2,"0")}</span></div>
  <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()"><button class="cat" style="--c:#6d28d9;--ct:#6d28d926" aria-pressed="${S.cat==='All'}" onclick="pickCat('All')" aria-label="All categories, ${src.length} posts"><span class="ce" aria-hidden="true">${FALL}</span><b>All</b><small>${src.length} post${src.length===1?"":"s"}</small></button>${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" style="${cTile(c)}" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${cIcon(c)}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}</div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
  <p class="cnt" style="margin:-4px 0 12px;min-height:0" id="locnote"><span id="syncchip">${syncChip()}</span></p>
- <section class="feedsec" aria-label="Workers"><div class="row"><h2>Workers</h2><span>${String(svcs.length).padStart(2,"0")}</span></div><div class="list">${listS(svcs)}</div></section>
- <section class="feedsec" aria-label="Job vacancies"><div class="row"><h2>Job vacancies</h2><span>${String(jobs.length).padStart(2,"0")}</span></div><div class="list">${listHTML(jobs)}</div></section>`;
+ <div class="row wkrow"><div class="wkh"><h2>Posters</h2><span>${String(svcs.length).padStart(2,"0")}</span></div><div class="wksel"><select aria-label="Show" onchange="setHM(this.value)"><option value="posts" ${S.hm==="feed"?"":"selected"}>Posts</option><option value="feed" ${S.hm==="feed"?"selected":""}>Feed</option></select></div></div>
+ ${S.hm==="feed"?feedHTML():`<div class="list">${listS(svcs)}</div>`}`;
  const stl=document.querySelector("#view .status");if(stl)stl.scrollLeft=HS.st;const c=document.getElementById("cats");if(c){c.scrollLeft=HS.cats;const sel=HS.reveal?c.querySelector("[aria-pressed=true]"):null;HS.reveal=0;if(sel){const cr=c.getBoundingClientRect(),sr=sel.getBoundingClientRect();if(sr.left<cr.left)c.scrollLeft+=sr.left-cr.left-8;else if(sr.right>cr.right)c.scrollLeft+=sr.right-cr.right+8}catEdges()}
  if(y0!==null&&Math.abs(scrollY-y0)>2)scrollTo(0,y0)}
 function historyView(){const h=S.hist;
@@ -2437,10 +2453,13 @@ function viewImg(src){if(Date.now()-lpFired<800)return;let d=document.getElement
 let lpT=null,lpX=0,lpY=0,lpFired=0;
 function hideImenu(){const m=document.getElementById("imenu");if(m)m.remove()}
 function showImgMenu(im,x,y){hideImenu();const b=im.closest(".m");if(!b)return;const m=document.createElement("div");m.id="imenu";m.className="imenu";m.setAttribute("role","menu");
- m.innerHTML=`<button type="button" role="menuitem" data-mid="${esc(b.dataset.mid)}" onclick="startReply(this.dataset.mid)">↩ Reply</button>`;document.body.appendChild(m);
+ m.innerHTML=`<button type="button" role="menuitem" data-mid="${esc(b.dataset.mid)}" onclick="startReply(this.dataset.mid)">↩ Reply</button><button type="button" role="menuitem" class="dng" data-mid="${esc(b.dataset.mid)}" onclick="askDelMsg(this.dataset.mid)">🗑 Delete</button>`;document.body.appendChild(m);
  const w=m.offsetWidth,h=m.offsetHeight;m.style.left=Math.max(8,Math.min(innerWidth-w-8,x-w/2))+"px";m.style.top=Math.max(8,Math.min(innerHeight-h-8,y-h-12))+"px";const bt=m.querySelector("button");if(bt)bt.focus({preventScroll:true})}
 function startReply(mid){hideImenu();const t=S.threads.find(x=>x.id===S.thread),m=t&&t.m.find(x=>String(x.id)===String(mid));if(!m)return;
  const b=qBody(m.t),img=/^⟦img/.test(b);Chat.rep={who:m.me?"You":t.n,snip:img?"Photo":b.replace(/\s+/g," ").slice(0,60)};ui();const i=document.getElementById("mi");if(i)i.focus({preventScroll:true})}
+function askDelMsg(mid){hideImenu();const t=S.threads.find(x=>x.id===S.thread),m=t&&t.m.find(x=>String(x.id)===String(mid));if(!m)return;
+ delD.innerHTML=`<div class="dh"><h3 style="margin:0">Delete this photo?</h3></div><p style="margin:0">It will be removed from this chat on this device. This can’t be undone.</p><div class="acts"><button type="button" class="btn danger" data-mid="${esc(String(mid))}" onclick="confirmDelMsg(this.dataset.mid)">Delete</button><button type="button" class="btn alt" onclick="delD.close()">Cancel</button></div>`;delD.showModal()}
+function confirmDelMsg(mid){const t=S.threads.find(x=>x.id===S.thread);if(t){S.delM=S.delM||{};S.delM[String(mid)]=Date.now();t.m=t.m.filter(x=>String(x.id)!==String(mid))}delD.close();save();Chat.stick=false;render();toast("Photo deleted")}
 function clearRep(){Chat.rep=null;const i=document.getElementById("mi"),v=i?i.value:"";ui();const n=document.getElementById("mi");if(n)n.value=v}
 document.addEventListener("pointerdown",e=>{if(!e.target.closest||!e.target.closest("#imenu"))hideImenu();const im=e.target.closest&&e.target.closest(".m .mimg");if(!im)return;lpX=e.clientX;lpY=e.clientY;clearTimeout(lpT);lpT=setTimeout(()=>{lpT=null;lpFired=Date.now();showImgMenu(im,lpX,lpY)},450)},true);
 ["pointerup","pointercancel"].forEach(ev=>document.addEventListener(ev,()=>{if(lpT){clearTimeout(lpT);lpT=null}},true));
@@ -2486,7 +2505,7 @@ const Chat={pend:null,rep:null,busy:0,ackMs:10000,upMs:60000,max:5,base:800,rt:n
  retry(id){S.threads.forEach(t=>t.m.forEach(m=>{if(m.id===id){m.st="sending";m.tries=0;m.next=0;m.err=""}}));Chat.flush();ui()},
  receipt(id,st){S.threads.forEach(t=>t.m.forEach(m=>{if(m.id===id&&rank[st]>rank[m.st]){m.st=st;if(m.me&&(st==="delivered"||st==="read"))Notify.add({type:"chat",key:"chat:st:"+t.n,title:st==="read"?`${t.n} read your message`:`Message delivered to ${t.n}`,body:clean(m.t).slice(0,90),act:{k:"chat",n:t.n},read:S.view==="chat"&&S.thread===t.id?1:0})}}));save();ui()},
  typing(n,on){const t=S.threads.find(x=>x.n===n);if(!t)return;t.typing=on;clearTimeout(t.tt);if(on)t.tt=setTimeout(()=>{t.typing=0;ui()},3000);ui()},
- receive(m){if(S.threads.some(t=>t.m.some(x=>x.id===m.id)))return;if(S.delT&&S.delT[m.peer]&&+m.ts<=S.delT[m.peer])return;stubUser(m.peer);const t=ensure(m.peer);t.typing=0;
+ receive(m){if(S.threads.some(t=>t.m.some(x=>x.id===m.id))||(S.delM&&S.delM[String(m.id)]))return;if(S.delT&&S.delT[m.peer]&&+m.ts<=S.delT[m.peer])return;stubUser(m.peer);const t=ensure(m.peer);t.typing=0;
   let i=t.m.length;while(i>0&&t.m[i-1].ts>m.ts)i--;t.m.splice(i,0,{id:m.id,t:imgOld(m.t,m.ts)?"⟦img-expired⟧":m.t,ts:m.ts});try{actSync(m.t,m.peer)}catch(e){}
   const here=S.view==="chat"&&S.thread===t.id&&!document.hidden;
   if(!here&&!m.read){t.u=(+t.u||0)+1;if(m.quiet){t.qn=(t.qn||0)+1;t.ql=clean(m.t)}if(!m.quiet){Notify.add({type:"chat",key:"chat:msg:"+t.n,title:t.u>1?`${t.u} new messages from ${t.n}`:`New message from ${t.n}`,body:clean(m.t).slice(0,90),act:{k:"chat",n:t.n}});toast("New message from "+t.n)}}
@@ -2514,7 +2533,7 @@ const RT={ok:null,err:undefined,at:0,me:"",since:0,first:true,timer:null,ch:null
  markRead(peer){if(S.out||!peer)return;RT.patch({to:S.name,from:peer},"read").catch(()=>{})},
  async poll(){if(S.out||!S.me||RT.me!==S.name)return;if(SB_ON&&RT.ok===false&&Date.now()-RT.at<30000)return;
   try{const rows=await RT.rows({to:S.name,since:RT.since>0?RT.since-1:0});rows.forEach(x=>{RT.incoming(x,RT.first);RT.since=Math.max(RT.since,+x.ts||0)});S.threads.filter(t=>t.qn).forEach(t=>{Notify.add({type:"chat",key:"chat:msg:"+t.n,title:t.qn>1?`${t.qn} new messages from ${t.n}`:`New message from ${t.n}`,body:String(t.ql||"").slice(0,90),act:{k:"chat",n:t.n}});t.qn=0;t.ql=""});
-   if(RT.first){const o=await RT.rows({from:S.name});let ch=false;o.forEach(x=>{if(S.threads.some(t=>t.m.some(m=>m.id===x.id)))return;if(S.delT&&S.delT[x.to_name]&&+x.ts<=S.delT[x.to_name])return;stubUser(x.to_name);const t=ensure(x.to_name);let i=t.m.length;while(i>0&&t.m[i-1].ts>+x.ts)i--;t.m.splice(i,0,{id:x.id,me:1,t:imgOld(x.body,x.ts)?"⟦img-expired⟧":x.body,ts:+x.ts,st:x.status||"sent"});ch=true});if(ch){save();ui()}RT.first=false}
+   if(RT.first){const o=await RT.rows({from:S.name});let ch=false;o.forEach(x=>{if(S.threads.some(t=>t.m.some(m=>m.id===x.id))||(S.delM&&S.delM[String(x.id)]))return;if(S.delT&&S.delT[x.to_name]&&+x.ts<=S.delT[x.to_name])return;stubUser(x.to_name);const t=ensure(x.to_name);let i=t.m.length;while(i>0&&t.m[i-1].ts>+x.ts)i--;t.m.splice(i,0,{id:x.id,me:1,t:imgOld(x.body,x.ts)?"⟦img-expired⟧":x.body,ts:+x.ts,st:x.status||"sent"});ch=true});if(ch){save();ui()}RT.first=false}
    const pend=S.threads.flatMap(t=>t.m).filter(m=>m.me&&(m.st==="sent"||m.st==="delivered"));
    if(pend.length){const lo=Math.min(...pend.map(m=>m.ts))-1;(await RT.rows({from:S.name,since:lo})).forEach(RT.status)}}
   catch(e){if(RT.ok===false)ui()}},
@@ -2605,7 +2624,7 @@ async function deleteAccount(){
  S.services.forEach(x=>{if(x.b)x.b=x.b.filter(b=>b.by!==n);if(Array.isArray(x.v))x.v=x.v.filter(v=>v!==n)});
  S.jobs.forEach(j=>{if(j.p)j.p=j.p.filter(q=>q.by!==n);if(Array.isArray(j.v))j.v=j.v.filter(v=>v!==n)});
  S.stories.forEach(t=>{if(Array.isArray(t.v))t.v=t.v.filter(v=>v!==n)});
- S.threads=[];S.hist=[];S.notifs=[];S.delT={};S.sy={};
+ S.threads=[];S.hist=[];S.notifs=[];S.delT={};S.delM={};S.sy={};
  if(S.fol&&typeof S.fol==="object"){delete S.fol[n];Object.keys(S.fol).forEach(k=>{if(Array.isArray(S.fol[k]))S.fol[k]=S.fol[k].filter(y=>y!==n)})}
  try{RT.lmSave(RT.lm().filter(x=>x.from_name!==n&&x.to_name!==n))}catch(e){}
  try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}
