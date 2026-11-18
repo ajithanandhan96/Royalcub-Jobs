@@ -1234,12 +1234,26 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .adslot{display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;text-align:center;min-height:150px;padding:18px;margin:0 0 14px;border-radius:20px;border:2px dashed var(--plum);background:linear-gradient(135deg,var(--g1),var(--g2));color:var(--navytx)}
 .adslot small{font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--plum)}.adslot b{font-size:20px}.adslot span{color:var(--mute);font-size:14px}
 .bfeedh{margin-bottom:12px}
-#newPostD{width:min(480px,calc(100vw - 24px));max-height:92vh;overflow:auto}.bform{display:flex;flex-direction:column;gap:12px}.bform label:not(.btn){display:flex;flex-direction:column;gap:6px;font-weight:600}.bform .acts{display:flex;gap:10px}.bform .acts .btn{flex:1}
+#newPostD{width:min(760px,calc(100vw - 24px));max-height:92vh;overflow:auto}.bform{display:flex;flex-direction:column;gap:12px}.bform label:not(.btn){display:flex;flex-direction:column;gap:6px;font-weight:600}.bform .acts{display:flex;gap:10px}.bform .acts .btn{flex:1}
 .bdes{display:block;font-size:13px;color:var(--plum);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bti{margin:12px 0 0;font-size:18px;overflow-wrap:anywhere}.bsu{margin:2px 0 0;color:var(--mute);overflow-wrap:anywhere}
 .bmw{position:relative;flex:none}.bdots{font-size:22px;line-height:1}
 .bmenu{position:absolute;right:0;top:100%;min-width:150px;background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.2);padding:6px;z-index:30;display:flex;flex-direction:column}
 .bmenu.hide{display:none}.bmenu button{text-align:left;padding:11px 12px;border-radius:10px;font-weight:600;min-height:44px}.bmenu button:hover{background:var(--soft)}.bmenu .dng{color:#c0261c}
+
+.bfeed{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:none}
+@media (min-width:960px){.bfeed{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
+.bfeed .bnone{grid-column:1/-1}
+.btile{display:flex;flex-direction:column;gap:6px;height:252px;overflow:hidden;padding:12px;border-radius:18px;background:var(--card);border:1px solid var(--line);cursor:pointer;text-align:left}
+.btile:hover,.btile:focus-visible{border-color:var(--plum);outline:none}
+.btph{display:flex;align-items:center;gap:8px;flex:none}.btph .av{margin:0;width:34px;height:34px;border-radius:10px;font-size:12px;flex:none}
+.btph .bpn b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}.btph small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mute);font-size:12px}
+.btt,.btx{margin:0;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow-wrap:anywhere;flex:none}
+.btt{font-size:15px;font-weight:800}.btx{font-size:14px;color:var(--ink)}
+.btm{flex:1;min-height:0;border-radius:10px;overflow:hidden;background:var(--soft)}.btm img{width:100%;height:100%;object-fit:cover;display:block}
+.btf{display:flex;gap:10px;font-size:12px;color:var(--mute);flex:none}.btd{margin-left:auto}
+#postViewD{width:min(720px,calc(100vw - 24px));max-height:92vh;overflow:auto;padding:14px;position:relative}
+#postViewD .bpost{margin:0;border:0;padding:0;background:none}.pvx{position:sticky;top:0;float:right;z-index:35;width:36px;height:36px;border-radius:10px;background:var(--soft);font-weight:800}
 </style>
 </head>
 <body>
@@ -1890,16 +1904,23 @@ const bId=()=>Date.now().toString(36)+uid();
 const bImgOk=v=>typeof v==="string"&&/^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(v)&&v.length<900000;
 const bLeft=x=>Math.max(1,Math.ceil((x.ts+BMONTH-Date.now())/864e5));
 const bCm=id=>S.pcmts.filter(c=>String(c.pid)===String(id)&&live(c.by)).sort((a,b)=>a.ts-b.ts),bLk=id=>S.plikes.filter(l=>String(l.pid)===String(id));
-function bCard(x){const me=S.name,id=esc(x.id),L=bLk(x.id),liked=L.some(l=>l.by===me),C=bCm(x.id),open=BD.open.has(String(x.id)),own=x.by===me||isAdmin(),mine=x.by===me,des=roleOf(x.by);
+function bCard(x,full){const me=S.name,id=esc(x.id),L=bLk(x.id),liked=L.some(l=>l.by===me),C=bCm(x.id),open=!!full||BD.open.has(String(x.id)),own=x.by===me||isAdmin(),mine=x.by===me,des=roleOf(x.by);
  return `<article class="bpost" data-id="${id}"><header class="bph"><div class="av" style="${abg(x.by)}">${ait(x.by)}</div><div class="bpn"><b>${esc(x.by)}</b>${des?`<span class="bdes">${esc(des)}</span>`:""}<small>${esc(ago(x.ts))} · disappears in ${bLeft(x)} d</small></div>
   <div class="bmw"><button type="button" class="bdel bdots" aria-haspopup="true" aria-expanded="false" aria-label="More options" onclick="bMenu(event,this)">⋮</button><div class="bmenu hide" role="menu">${mine?"":`<button type="button" role="menuitem" onclick="bReport(this.closest('.bpost').dataset.id)">⚑ Report</button>`}${own?`<button type="button" role="menuitem" class="dng" onclick="bDelPost(this.closest('.bpost').dataset.id)">🗑 Delete</button>`:""}</div></div></header>
   ${x.ti?`<h3 class="bti">${esc(x.ti)}</h3>`:""}${x.su?`<p class="bsu">${esc(x.su)}</p>`:""}${x.t?`<p class="bpt">${esc(x.t)}</p>`:""}${bImgOk(x.img)?`<img class="bpi" src="${x.img}" alt="Photo shared by ${esc(x.by)}" loading="lazy" onclick="viewImg(this.src)">`:""}
   <div class="bpa"><button type="button" class="${liked?"on":""}" aria-pressed="${liked}" onclick="bLike(this.closest('.bpost').dataset.id)"><span aria-hidden="true">${liked?"♥":"♡"}</span> Like${L.length?` · ${L.length}`:""}</button><button type="button" aria-expanded="${open}" onclick="bToggle(this.closest('.bpost').dataset.id)"><span aria-hidden="true">💬</span> Comment${C.length?` · ${C.length}`:""}</button><button type="button" onclick="bShare(this.closest('.bpost').dataset.id)"><span aria-hidden="true">↗</span> Share</button></div>
   ${open?`<div class="bcm">${C.map(c=>`<div class="bc" data-cid="${esc(c.id)}"><div class="bcb"><b>${esc(c.by)}</b> <small>${esc(ago(c.ts))}</small><p>${esc(c.t)}</p></div>${c.by===me||isAdmin()?`<button type="button" class="bdel" onclick="bDelCm(this.closest('.bc').dataset.cid)" aria-label="Delete comment">✕</button>`:""}</div>`).join("")||`<p class="bnone">No comments yet. Be the first.</p>`}
   <form class="bcf" onsubmit="bComment(event,this.closest('.bpost').dataset.id)"><input type="text" name="c" maxlength="300" placeholder="Write a comment (text only)" aria-label="Write a comment" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>`:""}</article>`}
+function bTile(x){const id=esc(x.id),L=bLk(x.id).length,C=bCm(x.id).length,des=roleOf(x.by),t=x.ti||x.su||"";
+ return `<div class="btile" role="button" tabindex="0" data-id="${id}" onclick="bOpen(this.dataset.id)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();bOpen(this.dataset.id)}" aria-label="Open post by ${esc(x.by)}"><div class="btph"><div class="av" style="${abg(x.by)}">${ait(x.by)}</div><div class="bpn"><b>${esc(x.by)}</b><small>${des?esc(des):esc(ago(x.ts))}</small></div></div>
+  ${t?`<h3 class="btt">${esc(t)}</h3>`:""}${x.t?`<p class="btx">${esc(x.t)}</p>`:""}<div class="btm">${bImgOk(x.img)?`<img src="${x.img}" alt="" loading="lazy">`:""}</div><div class="btf"><span>♡ ${L}</span><span>💬 ${C}</span><span class="btd">${bLeft(x)} d left</span></div></div>`}
+function bOpen(id){const x=S.posts.find(z=>String(z.id)===String(id));if(!x)return;BD.view=String(id);let d=document.getElementById("postViewD");if(!d){d=document.createElement("dialog");d.id="postViewD";d.setAttribute("aria-label","Post details");d.addEventListener("click",e=>{if(e.target===d)d.close()});d.addEventListener("close",()=>{BD.view=null});document.body.appendChild(d)}bViewUI();if(!d.open)d.showModal()}
+function bViewUI(){const d=document.getElementById("postViewD");if(!d||!d.open&&!BD.view)return;const x=S.posts.find(z=>String(z.id)===String(BD.view));if(!x){if(d.open)d.close();return}
+ const keep=(d.querySelector(".bcf input")||{}).value||"";d.innerHTML=`<button type="button" class="pvx" onclick="document.getElementById('postViewD').close()" aria-label="Close">✕</button>${bCard(x,true)}`;const i=d.querySelector(".bcf input");if(i&&keep)i.value=keep}
+const __render=render;render=function(){__render.apply(this,arguments);if(BD.view)bViewUI()};
 const bPosts=()=>{pruneBoard();return S.posts.filter(x=>x&&live(x.by)).sort((a,b)=>b.ts-a.ts)};
 const bNotice=`<p class="bnote" role="note">ⓘ All posts disappear automatically within 1 month.</p>`;
-function feedHTML(){const P=bPosts();return `<section class="feedsec" id="feedsec" aria-label="Feed"><aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>${bNotice}<div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ New Post</button></div><div class="bfeed">${P.map(bCard).join("")||`<p class="bnone">Nothing in the feed yet. Be the first to post!</p>`}</div></section>`}
+function feedHTML(){const P=bPosts();return `<section class="feedsec" id="feedsec" aria-label="Feed"><aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>${bNotice}<div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button></div><div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing in the feed yet. Be the first to post!</p>`}</div></section>`}
 function bMenu(e,b){e.stopPropagation();const m=b.nextElementSibling,was=m.classList.contains("hide");document.querySelectorAll(".bmenu").forEach(x=>x.classList.add("hide"));document.querySelectorAll(".bdots").forEach(x=>x.setAttribute("aria-expanded","false"));if(was){m.classList.remove("hide");b.setAttribute("aria-expanded","true")}}
 document.addEventListener("click",()=>{document.querySelectorAll(".bmenu:not(.hide)").forEach(x=>{x.classList.add("hide");const d=x.previousElementSibling;if(d)d.setAttribute("aria-expanded","false")})});
 function bReport(id){const p=S.posts.find(x=>String(x.id)===String(id));if(!p)return;document.querySelectorAll(".bmenu").forEach(x=>x.classList.add("hide"));toast("Thanks. Tell us what’s wrong with this post.");reportUser(p.by)}
@@ -1909,12 +1930,12 @@ function board(){const P=bPosts();
  view.innerHTML=`<div class="row"><h2>Feed</h2><span>${String(P.length).padStart(2,"0")}</span></div>
  <aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>
  ${bNotice}
- <div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ New Post</button></div>
- <div class="bfeed">${P.map(bCard).join("")||`<p class="bnone">Nothing here yet. Start the conversation!</p>`}</div>`}
+ <div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button></div>
+ <div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing here yet. Start the conversation!</p>`}</div>`}
 function bNew(){let d=document.getElementById("newPostD");if(!d){d=document.createElement("dialog");d.id="newPostD";d.setAttribute("aria-labelledby","npT");document.body.appendChild(d)}bDlgUI();if(!d.open)d.showModal()}
 function bClose(){const d=document.getElementById("newPostD");if(d&&d.open)d.close()}
 function bDlgUI(){const d=document.getElementById("newPostD");if(!d)return;
- d.innerHTML=`<form class="bform" onsubmit="bPost(event)"><div class="dh"><h3 id="npT" style="margin:0">New Post</h3></div>
+ d.innerHTML=`<form class="bform" onsubmit="bPost(event)"><div class="dh"><h3 id="npT" style="margin:0">Add Post</h3></div>
  <label>Title<input id="cti" type="text" maxlength="80" placeholder="Add a title" value="${esc(BD.ti||"")}" oninput="BD.ti=this.value"></label>
  <label>Subject<input id="csu" type="text" maxlength="120" placeholder="What is this about?" value="${esc(BD.su||"")}" oninput="BD.su=this.value"></label>
  <label>Details<textarea id="cbt" maxlength="1000" placeholder="Write the details" oninput="BD.draft=this.value">${esc(BD.draft)}</textarea></label>
