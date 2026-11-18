@@ -1333,6 +1333,16 @@ let editP=false,cp=null,ck="job",sv={n:null,i:0};
 let S={services:[],tab:"jobs",role:"client",name:"",theme:"light",priv:{vis:true,online:true,msgs:true},sec:null,out:false,q:"",me:null,users:[],hist:[],cat:"All",view:"home",notes:0,thread:null,
  jobs:[],stories:[],threads:[]};
 try{const x=JSON.parse(localStorage.getItem("rcj")||"null");if(x&&x.jobs)S=Object.assign(S,x,{view:"home",thread:null,out:false,sec:null,q:"",qloc:""})}catch(e){}
+/* Login persistence: a tiny separate record keeps people signed in even if the big app-state key can't be saved (storage full) or is cleared. */
+const SESS_KEY="rc_sess";
+function sessSave(){try{if(S.me&&!S.out){const u=(S.users||[]).find(x=>x&&x.email===S.me);if(u&&u.role!=="admin")localStorage.setItem(SESS_KEY,JSON.stringify({v:1,email:u.email,name:u.name,role:u.role==="worker"?"worker":"client",phone:u.phone||"",age:u.age||"",cat:u.cat||"",title:u.title||"",loc:u.loc||"",at:Date.now()}))}else if(!S.me)localStorage.removeItem(SESS_KEY)}catch(e){}}
+function askPersist(){try{if(navigator.storage&&navigator.storage.persist&&!/firefox/i.test(navigator.userAgent))navigator.storage.persist()}catch(e){}}
+try{if(!S.me){const r=JSON.parse(localStorage.getItem(SESS_KEY)||"null");
+ if(r&&r.v===1&&typeof r.email==="string"&&typeof r.name==="string"&&/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(r.email)&&r.name.length>1){
+  S.users=Array.isArray(S.users)?S.users:[];let u=S.users.find(x=>x&&x.email===r.email);
+  if(!u){u={email:r.email,pw:"",name:String(r.name).slice(0,40),phone:r.phone||"",age:r.age||"",cat:r.cat||"Client",role:r.role==="worker"?"worker":"client",title:r.title||"",loc:r.loc||"",status:"active",joined:Date.now()};S.users.push(u)}
+  S.me=u.email;S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false}}}catch(e){}
+const phoneKey=p=>{const d=String(p||"").replace(/\D/g,"");return d.length>=10?d.slice(-10):d};
 S.jobs.forEach(j=>{if(!j.per)j.per="none"});
 const per=j=>{const t=({day:"per day",week:"per week",month:"per month",total:"in total",choose:"for these dates"})[j.per];return t?`<small class="per">${t}</small>`:""};
 const REV0=[["Sam Foster","Meera Nair",5,"Fixed our leak in under an hour. Tidy and on time."],["Sam Foster","Rohan Das",4,"Good work, fair price."],["Sam Foster","Isha Rao",5,"Very professional, will hire again."],
@@ -1461,7 +1471,10 @@ async function cSync(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOff
  try{if(ch){save();if(S.view==="home"&&!document.querySelector("dialog[open]")){if(typingNow()||sOpen)pendR=true;else render()}}}finally{cBusy=false;syncUI()}}
 function cSched(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||S.out)return;clearTimeout(cT);cT=setTimeout(()=>{cT=null;cSync()},900)}
 setInterval(()=>{if(!document.hidden)cSync()},20000);setInterval(()=>{if(!S.out&&pruneStories()&&!document.querySelector("dialog[open]")&&!typingNow())render()},60000);addEventListener("focus",cSync);
-const save=()=>{try{localStorage.setItem("rcj",JSON.stringify(S))}catch(e){}cSched()};
+const slimRep=(k,v)=>typeof v==="string"&&v.length>30000&&/^(?:data:image|(?:⟪rp\|[^⟫]*⟫\s*)?⟦img\|data:image)/.test(v)&&k!=="up"?(k==="photo"?undefined:"⟦img-expired⟧"):v;
+const save=()=>{sessSave();let done=false;try{localStorage.setItem("rcj",JSON.stringify(S));done=true}catch(e){}
+ if(!done){try{localStorage.setItem("rcj",JSON.stringify(S,slimRep));console.warn("RoyalCub: storage is almost full, large photos were left out of the saved copy.")}catch(e){console.warn("RoyalCub: couldn't save app data on this device (storage full). You stay logged in.")}}
+ cSched()};
 S.profile=S.profile||{name:S.name,age:"",email:"",phone:""};
 function applyTheme(){if(S.theme!=="dark")S.theme="light";document.documentElement.dataset.theme=S.theme}applyTheme();
 const SV=d=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="${d}"/></svg>`;
@@ -1602,7 +1615,7 @@ function showAuth(k){if(!pgOk&&k!=="recover")k="home";au=k;if(k==="forgot")fp={s
 function setErr(m,id){document.getElementById("aerr").textContent=m;const f=id&&document.getElementById(id);if(f)f.focus();return false}
 function pwErr(p,c){if(p.length<8)return["Password must be at least 8 characters.",0];if(!/[A-Za-z]/.test(p)||!/\d/.test(p))return["Use at least one letter and one number.",0];if(p!==c)return["Passwords don’t match.",1];return null}
 function swapBoxes(n){S.box=S.box||{};if(S.boxFor===n)return;if(S.boxFor)S.box[S.boxFor]={t:S.threads,n:S.notifs};const b=S.box[n];S.threads=b?b.t:(S.boxFor?[]:S.threads);S.notifs=b?b.n:(S.boxFor?[]:S.notifs);S.boxFor=n;S.thread=null}
-function enter(u,msg){if(!u.tnc||!u.tnc.at)u.tnc={v:TNC_V,at:Date.now()};navJump=true;swapBoxes(u.name);S.me=u.email;u.last=Date.now();S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false;HS.st=HS.cats=0;S.view=u.role==="admin"?"admin":"home";S.cat="All";S.q="";S.thread=null;log("login");save();render();scrollTo(0,0);resumeNeg();RT.start();pushSync();openFromPush();toast(msg||"Welcome back, "+u.name.split(" ")[0])}
+function enter(u,msg){if(!u.tnc||!u.tnc.at)u.tnc={v:TNC_V,at:Date.now()};navJump=true;swapBoxes(u.name);S.me=u.email;u.last=Date.now();S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false;HS.st=HS.cats=0;S.view=u.role==="admin"?"admin":"home";S.cat="All";S.q="";S.thread=null;log("login");save();askPersist();render();scrollTo(0,0);resumeNeg();RT.start();pushSync();openFromPush();try{Chat.flush()}catch(_){}toast(msg||"Welcome back, "+u.name.split(" ")[0])}
 let loginBusy=false;
 function loginBtn(on){const b=document.querySelector('form[onsubmit="doLogin(event)"] .btn');if(b){b.disabled=on;b.textContent=on?"Logging in…":"Log in"}}
 function doLogin(e){e.preventDefault();if(loginBusy)return;const em=le.value.trim().toLowerCase();let pw=lp.value;
@@ -1646,15 +1659,43 @@ function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.
 function sbUserSignIn(u){if(!u||!S.out||sbBusy||rcRec||sbQuiet||!(u.identities||[]).some(i=>i.provider==="google"))return;const m=u.user_metadata||{};googleSignIn({sub:String(m.sub||m.provider_id||u.id),email:u.email||m.email||"",email_verified:true,name:m.full_name||m.name||""})}
 function showRecover(em){rcRec=true;S.out=true;au="recover";fp={step:1,email:em||"",code:"",tries:0};render()}
 async function sbInit(){if(!SB_ON)return;sbGoogleOn();if(/type=recovery/.test(location.hash))rcRec=true;try{const c=await sbClient();c.auth.onAuthStateChange((ev,ss)=>{if(ev==="PASSWORD_RECOVERY"){showRecover(ss&&ss.user&&ss.user.email);return}if(ev==="SIGNED_IN"&&ss&&ss.user)sbUserSignIn(ss.user)});const {data}=await c.auth.getSession();if(rcRec&&data&&data.session)showRecover(data.session.user.email);else if(data&&data.session)sbUserSignIn(data.session.user);if(location.hash.includes("access_token")||location.search.includes("code="))history.replaceState(null,"",location.pathname)}catch(e){console.warn("Supabase init failed",e)}}
-function doRegister(e){e.preventDefault();const nm=rn.value.trim(),em=re.value.trim().toLowerCase(),ph=rph.value.trim(),ag=+ra.value,ct=rc.value;
+let regBusy=false;
+async function contactTaken(em,ph){const r=await fetch(rpcUrl("rc_contact_taken"),{method:"POST",headers:cHead(),body:JSON.stringify({p_email:em,p_phone:ph})});
+ if(!r.ok){console.warn(r.status===404?"RoyalCub: run supabase_unique_accounts.sql in Supabase so the database blocks duplicate emails and phone numbers.":"RoyalCub: contact check failed ("+r.status+")");return null}
+ try{return await r.json()}catch(e){return null}}
+async function sbRegister(u){const net={err:"Couldn’t reach the server. Check your internet connection and try again."},tmo=(p,ms)=>Promise.race([p,new Promise((_,no)=>setTimeout(()=>no(new Error("timeout")),ms))]);
+ const dupE={err:"An account with this email already exists. Try logging in.",field:"re"},dupP={err:"An account with this phone number already exists. Try logging in.",field:"rph"};
+ const pick=t=>t&&t.email?dupE:t&&t.phone?dupP:null;
+ try{const c=await tmo(sbClient(),20000);
+  let t=null;try{t=await tmo(contactTaken(u.email,u.phone),15000)}catch(e){return net}
+  if(pick(t))return pick(t);
+  const{data,error}=await tmo(c.auth.signUp({email:u.email,password:u.pw,options:{data:{name:u.name,phone:u.phone,age:u.age,cat:u.cat,role:u.role}}}),25000);
+  if(error){const m=String(error.message||"");
+   if(/already (?:registered|exists)/i.test(m))return dupE;
+   if(/database error|duplicate|unique|duplicate_account/i.test(m)){let t2=null;try{t2=await tmo(contactTaken(u.email,u.phone),15000)}catch(e){}return pick(t2)||{err:"An account with this email or phone number already exists. Try logging in.",field:"re"}}
+   if(/rate limit|too many/i.test(m)||error.status===429)return{err:"Too many attempts. Please wait a minute and try again."};
+   if(/password/i.test(m))return{err:m,field:"rpw"};
+   if(!error.status||/fetch|network|timeout|failed to/i.test(m))return net;
+   return{err:"Couldn’t create the account ("+m+"). Please try again."}}
+  if(data&&data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0)return dupE;
+  try{await c.auth.signOut({scope:"local"})}catch(_){}
+  return{ok:true}}catch(e){return net}}
+async function doRegister(e){e.preventDefault();if(regBusy)return;const nm=rn.value.trim(),em=re.value.trim().toLowerCase(),ph=rph.value.trim(),ag=+ra.value,ct=rc.value;
  if(nm.length<2)return setErr("Enter your full name.","rn");
  if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","re");
  if(S.users.some(x=>x.email.toLowerCase()===em))return setErr("An account with this email already exists. Try logging in.","re");
  if(!/^[0-9+\s\-]{7,16}$/.test(ph)||ph.replace(/\D/g,"").length<7)return setErr("Enter a valid phone number.","rph");
+ if(S.users.some(x=>x.phone&&phoneKey(x.phone)===phoneKey(ph)))return setErr("An account with this phone number already exists. Try logging in.","rph");
  if(!(ag>=16&&ag<=99))return setErr("Age must be between 16 and 99.","ra");
  if(!ct)return setErr("Choose a category.","rc");
  const pe=pwErr(rpw.value,rcf.value);if(pe)return setErr(pe[0],pe[1]?"rcf":"rpw");
- const u={email:em,pw:rpw.value,name:nm,phone:ph,age:String(ag),cat:ct,role:ct==="Client"?"client":"worker",title:rt.value.trim()};S.users.push(u);enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!");sbEnsure(u,u.pw)}
+ const u={email:em,pw:rpw.value,name:nm,phone:ph,age:String(ag),cat:ct,role:ct==="Client"?"client":"worker",title:rt.value.trim()};
+ if(!SB_ON){S.users.push(u);enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!");return}
+ regBusy=true;setErr("");const bt=document.querySelector('form[onsubmit="doRegister(event)"] .btn'),bl=bt&&bt.textContent;if(bt){bt.disabled=true;bt.textContent="Creating account…"}
+ try{const r=await sbRegister(u);if(!r.ok){setErr(r.err,r.field);return}
+  if(S.users.some(x=>x.email.toLowerCase()===em))return setErr("An account with this email already exists. Try logging in.","re");
+  S.users.push(u);enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!")}
+ finally{regBusy=false;const b=document.querySelector('form[onsubmit="doRegister(event)"] .btn');if(b&&b.disabled){b.disabled=false;if(bl)b.textContent=bl}}}
 async function doReset1(e){e.preventDefault();const em=fe.value.trim().toLowerCase();if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","fe");
  if(!SB_ON)return setErr("Password reset isn’t available right now. Please contact support.");
  const bt=e.submitter||document.querySelector(".acard .btn");if(bt)bt.disabled=true;
@@ -1944,8 +1985,7 @@ function home(){
  return `<button class="st" data-n="${esc(n)}" onclick="openStory(this.dataset.n)" aria-label="${me?`Your status, ${tot} views`:`View status of ${esc(n)}`}"><div class="av ring ${seen?"seen":""}" style="${abg(n)}">${ait(n)}</div><b>${me?"You":esc(n.split(" ")[0])}</b>${me?`<small>${DI.eye}${tot}</small>`:""}</button>`}).join("")}</div>
  <div class="row"><h2>Categories</h2><span>${String(CATS.length-1).padStart(2,"0")}</span></div>
  <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()"><button class="cat" style="--c:#6d28d9;--ct:#6d28d926" aria-pressed="${S.cat==='All'}" onclick="pickCat('All')" aria-label="All categories, ${src.length} posts"><span class="ce" aria-hidden="true">${FALL}</span><b>All</b><small>${src.length} post${src.length===1?"":"s"}</small></button>${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" style="${cTile(c)}" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${cIcon(c)}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}</div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
- <div class="row wkrow"><div class="wkh"><h2>${S.cat==="All"?(isS?"Workers":"Job vacancies"):esc(S.cat)}</h2><span id="pcount">${String((isS?svcs:jobs).length).padStart(2,"0")}</span></div><label class="wksel"><select id="wkSel" aria-label="Choose what to show: workers or job vacancies" onchange="setTab(this.value)"><option value="services" ${isS?"selected":""}>Workers</option><option value="jobs" ${isS?"":"selected"}>Job vacancies</option></select></label></div>
- <p class="cnt" style="margin:-4px 0 12px;min-height:0" id="locnote"><span id="syncchip">${syncChip()}</span></p><div class="list" id="plist">${isS?listS(svcs):listHTML(jobs)}</div>`;
+ <p class="cnt" style="margin:-4px 0 12px;min-height:0" id="locnote"><span id="syncchip">${syncChip()}</span></p>`;
  const stl=document.querySelector("#view .status");if(stl)stl.scrollLeft=HS.st;const c=document.getElementById("cats");if(c){c.scrollLeft=HS.cats;const sel=HS.reveal?c.querySelector("[aria-pressed=true]"):null;HS.reveal=0;if(sel){const cr=c.getBoundingClientRect(),sr=sel.getBoundingClientRect();if(sr.left<cr.left)c.scrollLeft+=sr.left-cr.left-8;else if(sr.right>cr.right)c.scrollLeft+=sr.right-cr.right+8}catEdges()}
  if(y0!==null&&Math.abs(scrollY-y0)>2)scrollTo(0,y0)}
 function historyView(){const h=S.hist;
@@ -2237,10 +2277,7 @@ function catPick(id,oid){const o=document.getElementById(id).value==="Other";doc
 function catVal(id,oid){const v=document.getElementById(id).value;if(v!=="Other")return v;const el=document.getElementById(oid),t=el.value.trim();const had=CATS.some(c=>c.toLowerCase()===t.toLowerCase()),c=regCat(t);if(!c){toast("Enter a category name (2 to 20 letters or numbers)");el.focus();return null}if(!had){S.cats=S.cats||[];S.cats.push(c)}return c}
 /* ---------- Add Post: two categories ---------- */
 function setAdd(k){at=k;add()}
-function add(){const k=at||"service";const pk=(v,ic,t,d)=>`<button type="button" class="pick ${k===v?"on":""}" aria-pressed="${k===v}" onclick="setAdd('${v}')"><span class="pki" aria-hidden="true">${ic}</span><span class="pkt"><b>${t}</b></span></button>`;
- view.innerHTML=`<div class="addhead"><h2>Add post</h2></div><div class="addpick" role="group" aria-label="What do you want to post?">${pk("service",DI.talent,"Offer a Service","Get booked for your skills")}${pk("job",DI.brief,"Post Vacancies","Hire someone for a job")}</div>
- <label class="addsel"><select aria-label="What do you want to post?" onchange="setAdd(this.value)"><option value="service" ${k==="service"?"selected":""}>Offer a Service</option><option value="job" ${k==="job"?"selected":""}>Post Vacancies</option></select></label>
- <div class="addcard">${k==="job"?jobForm():svcForm()}</div>`;
+function add(){const k=at||"service"; view.innerHTML=`<div class="addhead"><h2>Add post</h2></div> <div class="addcard">${k==="job"?jobForm():svcForm()}</div>`;
  if(k==="service")setRT(document.getElementById("svRT").value)}
 const bRange=o=>{const m=String(o.b||"").replace(/,/g,"").match(/\d+/g)||[];return[o.bmin||m[0]||"",o.bmax||m[1]||m[0]||""]};
 const jobForm=o=>{const[bn,bx]=o?bRange(o):["",""],pr=o&&["full","contract","freelance"].includes(o.per)?o.per:"full";return `<form class="pform" onsubmit="${o?"saveEdit(event)":"postJob(event)"}"><label>Job title<input id="jt" required maxlength="70" placeholder="e.g. Install a new water heater" value="${o?esc(o.t):""}"></label>
@@ -2308,13 +2345,16 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){const l=document.qu
 function askDelChat(){const t=S.threads.find(x=>x.id===S.thread);if(!t)return;const l=document.querySelector(".cml");if(l)l.classList.add("hide");
  delD.innerHTML=`<div class="dh"><h3 style="margin:0">Delete this chat?</h3></div><p style="margin:0">Your conversation with ${esc(t.n)} will be removed from this device. This can’t be undone.</p><div class="acts"><button type="button" class="btn danger" onclick="confirmDelChat('${t.id}')">Delete</button><button type="button" class="btn alt" onclick="delD.close()">Cancel</button></div>`;delD.showModal()}
 function confirmDelChat(id){const t=S.threads.find(x=>x.id===id);if(t){S.delT=S.delT||{};S.delT[t.n]=Date.now();S.threads=S.threads.filter(x=>x.id!==id)}if(S.thread===id)S.thread=null;Chat.pend=null;delD.close();save();Chat.stick=true;render();toast("Chat deleted")}
-function pickImg(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;if(!/^image\//.test(f.type)){toast("Please choose an image");return}
- const url=URL.createObjectURL(f),im=new Image();
- im.onload=()=>{URL.revokeObjectURL(url);let w=im.naturalWidth,h=im.naturalHeight,k=Math.min(1,1280/Math.max(w,h)),q=.8,out="";
+function pickImg(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
+ if(f.type&&!/^image\//.test(f.type)){toast("Please choose an image");return}
+ if(f.size>40*1048576){toast("That photo is too large. Try a smaller one.");return}
+ const fin=(im,w,h)=>{try{if(!w||!h){toast("Couldn’t read that image");return}let k=Math.min(1,1280/Math.max(w,h)),q=.8,out="";
   for(let i=0;i<8;i++){const c=document.createElement("canvas");c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);out=c.toDataURL("image/jpeg",q);if(out.length<=450000)break;q=Math.max(.5,q-.1);k*=.85}
-  if(out.length>700000){toast("That photo is too large. Try a smaller one.");return}
-  const i=document.getElementById("mi"),v=i?i.value:"";Chat.pend=out;Chat.stick=true;ui();const n=document.getElementById("mi");if(n){n.value=v;n.focus({preventScroll:true})}phSet()};
- im.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t read that image")};im.src=url}
+  if(!/^data:image\/jpeg;base64,/.test(out)||out.length>700000){toast("That photo is too large. Try a smaller one.");return}
+  const i=document.getElementById("mi"),v=i?i.value:"";Chat.pend=out;Chat.stick=true;ui();const n=document.getElementById("mi");if(n){n.value=v;n.focus({preventScroll:true})}phSet()}catch(e){toast("Couldn’t prepare that photo. Try another one.")}};
+ const url=URL.createObjectURL(f),im=new Image();
+ im.onload=()=>{URL.revokeObjectURL(url);fin(im,im.naturalWidth,im.naturalHeight)};
+ im.onerror=()=>{URL.revokeObjectURL(url);if(window.createImageBitmap){createImageBitmap(f).then(b=>{fin(b,b.width,b.height);try{b.close()}catch(e){}}).catch(()=>toast("Couldn’t read that photo. Try a JPG or PNG."))}else toast("Couldn’t read that photo. Try a JPG or PNG.")};im.src=url}
 function phSet(){const n=document.getElementById("mi");if(n)n.placeholder=Chat.pend?"Add a caption (optional)":"Write a message"}
 function clearImg(){Chat.pend=null;const i=document.getElementById("mi"),v=i?i.value:"";ui();const n=document.getElementById("mi");if(n)n.value=v;phSet()}
 function viewImg(src){if(Date.now()-lpFired<800)return;let d=document.getElementById("imgD");if(!d){d=document.createElement("dialog");d.id="imgD";d.className="imgd";d.addEventListener("click",()=>d.close());document.body.appendChild(d)}d.innerHTML=`<img src="${src}" alt="Photo">`;d.showModal()}
@@ -2364,7 +2404,7 @@ const Chat={pend:null,rep:null,busy:0,ackMs:10000,upMs:60000,max:5,base:800,rt:n
  async flush(){if(Chat.busy||!Net.on)return;Chat.busy=1;
   try{for(const t of S.threads)for(const m of t.m){if(!m.me||m.st!=="sending")continue;if(m.next>Date.now())break;
    try{if(m.up){await Chat.upload(m);save();ui()}await Promise.race([Net.send({id:m.id,peer:t.n,t:m.t,ts:m.ts}),new Promise((_,no)=>setTimeout(()=>no("timeout"),Chat.ackMs))]);if(rank[m.st]<1)m.st="sent"}
-   catch(e){m.tries++;S.chatStats.retries++;m.err=e&&e.msg||"";if((e&&e.perm)||m.tries>=Chat.max){m.st="failed";S.chatStats.failed++;Notify.add({type:"chat",key:"chat:fail:"+t.n,title:`Message to ${t.n} failed`,body:"Open the chat to retry sending.",act:{k:"chat",n:t.n}})}else m.next=Date.now()+Math.min(15000,Chat.base*2**m.tries)*(.8+Math.random()*.4)}
+   catch(e){m.tries++;S.chatStats.retries++;m.err=e&&e.msg||(e==="timeout"||e==="offline"||(e&&/timeout|abort|fetch|network|load failed/i.test(String(e.message||e)))?"Slow or no connection. Tap Retry to send again.":"");if((e&&e.perm)||m.tries>=Chat.max){m.st="failed";S.chatStats.failed++;Notify.add({type:"chat",key:"chat:fail:"+t.n,title:`Message to ${t.n} failed`,body:"Open the chat to retry sending.",act:{k:"chat",n:t.n}})}else m.next=Date.now()+Math.min(15000,Chat.base*2**m.tries)*(.8+Math.random()*.4)}
    save();ui()}}finally{Chat.busy=0}
   const w=S.threads.flatMap(t=>t.m).filter(m=>m.me&&m.st==="sending");clearTimeout(Chat.rt);
   if(w.length&&Net.on)Chat.rt=setTimeout(Chat.flush,Math.max(50,Math.min(...w.map(m=>(m.next||0)-Date.now()))))},
@@ -2455,7 +2495,7 @@ document.addEventListener("keydown",e=>{if(e.key!=="Enter"||e.isComposing||e.shi
  if(i>=0&&i<els.length-1){e.preventDefault();els[i+1].focus()}});
 document.addEventListener("invalid",e=>{e.target.setAttribute("aria-invalid","true")},true);
 document.addEventListener("input",e=>{if(e.target.getAttribute&&e.target.getAttribute("aria-invalid")==="true"&&e.target.checkValidity())e.target.removeAttribute("aria-invalid")},true);
-addEventListener("online",()=>{RT.ok=null;RT.poll()});document.addEventListener("visibilitychange",()=>{if(!document.hidden)RT.poll()});
+addEventListener("online",()=>{RT.ok=null;RT.poll()});document.addEventListener("visibilitychange",()=>{if(!document.hidden){RT.poll();try{Chat.flush()}catch(e){}}});
 function ui(){
  if(S.out||S.view!=="chat"){nav();return}
  const i=document.getElementById("mi"),m=document.getElementById("ms");
@@ -2547,6 +2587,7 @@ function removePhoto(){const u=S.users.find(q=>q.email===S.me);if(u){delete u.ph
 function saveProfile(e){e.preventDefault();const o=S.profile.name,n=pn.value.trim();
  const ne=pe.value.trim().toLowerCase(),ur=S.users.find(x=>x.email===S.me);
  if(S.users.some(x=>x!==ur&&x.email.toLowerCase()===ne)){toast("That email is already registered");return}
+ {const pk=phoneKey(pph.value);if(pk&&S.users.some(x=>x!==ur&&x.phone&&phoneKey(x.phone)===pk)){toast("That phone number is already registered");return}}
  if(ur){ur.name=n;ur.age=pa.value;ur.phone=pph.value.trim();ur.email=ne;ur.title=pt.value.trim();ur.loc=ploc.value.trim()||"Palakkad"}S.services.forEach(x=>{if(x.by===o)x.by=n;x.v=x.v.map(y=>y===o?n:y);x.b.forEach(b=>{if(b.by===o)b.by=n})});S.me=ne;
  S.jobs.forEach(j=>{if(j.by===o)j.by=n;j.v=j.v.map(x=>x===o?n:x);j.p.forEach(q=>{if(q.by===o)q.by=n})});S.stories.forEach(x=>{if(x.by===o)x.by=n;x.v=x.v.map(y=>y===o?n:y)});{const F={};Object.keys(S.fol||{}).forEach(k=>{F[k===o?n:k]=S.fol[k].map(y=>y===o?n:y)});S.fol=F}
  S.profile={name:n,age:pa.value,email:pe.value.trim(),phone:pph.value.trim(),title:pt.value.trim(),loc:ploc.value.trim()||"Palakkad"};S.name=n;editP=false;toast("Profile saved");render()}
@@ -2639,7 +2680,7 @@ spl.src=LG.s;document.querySelector(".app").inert=true;
 function hideSplash(){if(!window.splash)return;const sp=document.getElementById("splash");if(!sp)return;sp.classList.add("leave");document.querySelector(".app").inert=false;setTimeout(()=>sp.remove(),reduce?0:550)}
 setTimeout(hideSplash,reduce?700:2700);
 render();
-resumeNeg();sbInit();RT.start();pushSync();openFromPush();
+resumeNeg();sbInit();RT.start();pushSync();openFromPush();try{Chat.flush()}catch(e){}
 </script>
 <datalist id="locdl2"></datalist>
 </body>
