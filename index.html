@@ -1209,6 +1209,27 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .repbar span{display:block}.repbar b{display:block;color:var(--ink)}.repbar small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70vw}
 .imenu{position:fixed;z-index:2000;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.28);padding:6px}
 .imenu button{background:none;border:0;font:inherit;font-weight:700;color:var(--ink);padding:11px 18px;min-height:44px;border-radius:10px;cursor:pointer}.imenu button:hover,.imenu button:focus-visible{background:var(--soft)}
+
+.feedsec{margin-top:6px}
+.bnote{color:var(--mute);margin:-4px 0 12px;font-size:14px}
+.bcomp,.bpost{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px}
+.bcomp textarea{min-height:84px}
+.bcr{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:10px}
+.bpick{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.bprev{position:relative;margin-top:10px}.bprev img{width:100%;max-height:260px;object-fit:cover;border-radius:14px;display:block}
+.bprev .bdel{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff}
+.bfeed{max-width:680px}
+.bph{display:flex;align-items:center;gap:10px}.bph .av{margin:0;width:44px;height:44px;border-radius:13px;font-size:15px;flex:none}
+.bpn{flex:1;min-width:0}.bpn b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bpn small,.bc small{color:var(--mute)}
+.bdel{width:36px;height:36px;border-radius:10px;color:var(--mute);flex:none;display:grid;place-items:center}
+.bpt{white-space:pre-wrap;overflow-wrap:anywhere;margin:12px 0 0}
+.bpi{width:100%;max-height:420px;object-fit:cover;border-radius:14px;margin-top:10px;display:block;cursor:zoom-in}
+.bpa{display:flex;gap:6px;margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+.bpa button{flex:1;white-space:nowrap;font-size:14px;padding:0 4px;min-height:44px;border-radius:12px;font-weight:600;color:var(--mute)}.bpa button.on{color:var(--accent)}
+.bcm{margin-top:8px}.bc{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}
+.bcb{flex:1;min-width:0}.bcb p{margin:2px 0 0;overflow-wrap:anywhere;white-space:pre-wrap}
+.bcf{display:flex;gap:8px;margin-top:8px}.bcf .btn{padding:0 16px}
+.bnone{color:var(--mute);text-align:center;margin:10px 0}
 </style>
 </head>
 <body>
@@ -1383,7 +1404,7 @@ const attrSpans=(x,job)=>`${expTx(x)?`<span>${DI.medal}${esc(expTx(x))}${job?" n
 const SAS={};
 const SAJ={};
 const applyA=(x,svc)=>{const a=(svc?SAS:SAJ)[x.id];if(a&&x.exp===undefined){x.exp=a[0];x.qual=a[1]}};
-S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.fol=S.fol||{};S.services=S.services||[];S.tab="services";S.services.forEach(x=>applyA(x,1));S.jobs.forEach(x=>applyA(x,0));S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=Array.isArray(j.v)?j.v:[]});
+S.cats=Array.isArray(S.cats)?S.cats:[];S.stories=S.stories||[];S.posts=S.posts||[];S.plikes=S.plikes||[];S.pcmts=S.pcmts||[];S.fol=S.fol||{};S.services=S.services||[];S.tab="services";S.services.forEach(x=>applyA(x,1));S.jobs.forEach(x=>applyA(x,0));S.users=S.users||[];S.out=!S.me;S.hist=S.hist||[];S.q=S.q||"";S.jobs.forEach(j=>{j.v=Array.isArray(j.v)?j.v:[]});
 const DEMO_NAMES=new Set(["Anitha Das","Anna Reed","Arjun Rao","Arun Das","Ashraf Basheer","Dana Fox","Dev Bose","Faisal Ali","Gopalan Nair","Hana Kim","Imran Khan","Isha Rao","Joby Thomas","Joseph Paul","Kabir Anand","Karan Mehta","Kiran Rao","Latha Raman","Leena Jose","Maya Thomas","Meena Joseph","Meera Nair","Mini Sebastian","Nisha Verma","Nizar Ali","Priya Nair","Priya Shah","Rahul Menon","Rajesh Pillai","Ravi Kumar","Reshma Menon","Rohan Das","Sam Foster","Sana Iqbal","Site Admin","Sneha Pillai","Sulekha Rahman","Suresh Babu","Tom Park","Victor King"]);
 S.users=(S.users||[]).filter(u=>!(u&&!u.gid&&((u.email==="admin@royalcub.com"&&u.pw==="Admin@123")||(/@example\.com$/i.test(u.email||"")&&DEMO_NAMES.has(u.name)))));
 S.notifs=(S.notifs||[]).filter(n=>!["n1","n2","n3","n4"].includes(n.id)||!/Go Pro for 50%|New professional: Kiran Rao|Anna Reed read your message|Latha Raman/.test(n.title||""));
@@ -1399,7 +1420,8 @@ function purgeDemo(){const bad=x=>isDemoN(x&&x.by);["jobs","services","stories"]
  if(S.fol&&typeof S.fol==="object")for(const k of Object.keys(S.fol)){if(isDemoN(k)){delete S.fol[k];continue}if(Array.isArray(S.fol[k]))S.fol[k]=S.fol[k].filter(n=>!isDemoN(n))}}
 purgeDemo();
 /* ---------- Shared content: posts, services and stories are visible to every logged-in user (Supabase table rc_content; run supabase_setup.sql once) ---------- */
-const CK=[["job","jobs"],["service","services"],["story","stories"]];
+const CK=[["job","jobs"],["service","services"],["story","stories"],["post","posts"],["plike","plikes"],["pcmt","pcmts"]];
+const BRK={post:1,plike:1,pcmt:1},BMONTH=30*864e5;
 let cT=null,cBusy=false,cOff=!SB_ON,cHash={},cState=SB_ON?"wait":"local",cOffAt=0;
 const syncChip=()=>cState==="local"?`<span title="Posts are stored on this device only">💾 This device only</span>`:cState==="off"?`<span style="color:#b54708;font-weight:700" title="Run supabase_setup.sql in your Supabase project so posts appear on other accounts and devices">⚠ Posts aren’t syncing to other devices yet</span>`:cState==="err"?`<span title="Will retry automatically">⚠ Offline, will retry</span>`:"";
 function syncUI(){const e=document.getElementById("syncchip");if(e)e.innerHTML=syncChip()}
@@ -1430,12 +1452,12 @@ async function cPush(){S.sy=S.sy||{};const up=[],del=[];
  if(up.length){await cFetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify(up.map(x=>x.row))});
   up.forEach(x=>{cHash[x.row.kind+x.row.id]=x.h;const a=S.sy[x.row.kind]=S.sy[x.row.kind]||[];if(!a.includes(x.row.id))a.push(x.row.id)})}
  for(const [k,id] of del){await cFetch(cBase()+"?kind=eq."+k+"&id=eq."+encodeURIComponent(id),{method:"DELETE",headers:cHead()});S.sy[k]=(S.sy[k]||[]).filter(x=>String(x)!==id)}}
-async function cPull(){const r=await cFetch(cBase()+"?kind=in.(job,service,story)&select=kind,id,owner,data,created_at&order=created_at.desc&limit=1000",{headers:cHead()});const rows=await r.json();
- if(!Array.isArray(rows))return false;S.sy=S.sy||{};let ch=false;const seen={job:new Set(),service:new Set(),story:new Set()};
- for(const row of rows.slice().reverse()){const k=row.kind,d=row.data;if(!seen[k]||!d||typeof d!=="object"||isDemoN(row.owner||d.by)||(row.created_at&&Date.parse(row.created_at)<RESET_AT))continue;seen[k].add(String(row.id));
+async function cPull(){const r=await cFetch(cBase()+"?kind=in.(job,service,story,post,plike,pcmt)&select=kind,id,owner,data,created_at&order=created_at.desc&limit=3000",{headers:cHead()});const rows=await r.json();
+ if(!Array.isArray(rows))return false;S.sy=S.sy||{};let ch=false;const seen={job:new Set(),service:new Set(),story:new Set(),post:new Set(),plike:new Set(),pcmt:new Set()},pids=new Set(rows.filter(r=>r.kind==="post").map(r=>String(r.id))),bNow=Date.now();
+ for(const row of rows.slice().reverse()){const k=row.kind,d=row.data;if(!seen[k]||!d||typeof d!=="object"||isDemoN(row.owner||d.by)||(row.created_at&&Date.parse(row.created_at)<RESET_AT)||(BRK[k]&&(!(d.ts>0)||bNow-d.ts>BMONTH||(k!=="post"&&!pids.has(String(d.pid))))))continue;seen[k].add(String(row.id));
   const L=S[CK.find(x=>x[0]===k)[1]],i=L.findIndex(x=>String(x.id)===String(row.id));cHash[k+row.id]=JSON.stringify(d);
   if(i<0){const o=Object.assign({v:[]},d);if(k==="job")o.p=o.p||[];if(k==="service")o.b=o.b||[];L.unshift(o);ch=true;
-   if(o.by&&!S.users.some(u=>u.name===o.by))S.users.push({email:o.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:o.by,phone:"",age:"",cat:k==="job"?"Client":(o.c||"Client"),role:k==="job"?"client":"worker",title:"",status:"active",joined:Date.now()})}
+   if(o.by&&!BRK[k]&&!S.users.some(u=>u.name===o.by))S.users.push({email:o.by.toLowerCase().replace(/\s+/g,".")+"@example.com",pw:"x"+uid(),name:o.by,phone:"",age:"",cat:k==="job"?"Client":(o.c||"Client"),role:k==="job"?"client":"worker",title:"",status:"active",joined:Date.now()})}
   else if(L[i].by!==S.name&&JSON.stringify(cData(L[i]))!==JSON.stringify(d)){Object.assign(L[i],d);ch=true}}
  for(const [k,col] of CK){const gone=new Set((S.sy[k]||[]).map(String).filter(id=>!seen[k].has(id)));
   if(gone.size){const n=S[col].length;S[col]=S[col].filter(x=>!gone.has(String(x.id)));if(S[col].length!==n)ch=true}
@@ -1462,15 +1484,15 @@ async function cProfiles(){if(cOff||S.out||!S.me)return false;let ch=false;try{
   if(typeof d.loc==="string"&&d.loc&&u.loc!==d.loc.slice(0,40)){u.loc=d.loc.slice(0,40);ch=true}
   if(typeof d.title==="string"&&u.title!==d.title.slice(0,40)){u.title=d.title.slice(0,40);ch=true}}
  }catch(e){if(!cFW){cFW=true;console.warn("RoyalCub: profile sync skipped ("+e.message+"). Re-run supabase_setup.sql to enable it.")}}return ch}
-async function cSync(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||cBusy||S.out||!S.me)return;cBusy=true;let ch=false;
+async function cSync(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||cBusy||S.out||!S.me)return;cBusy=true;let ch=false;try{if(pruneBoard())ch=true}catch(e){}
  try{await cPush();ch=await cPull();if(!cOff)cState="ok"}catch(e){if(!cOff)cState="err";console.warn("RoyalCub sync:",e.message)}
  try{if(await cFollow())ch=true}catch(e){}
  try{if(await cProfiles())ch=true}catch(e){}
  try{if(await cViews())ch=true}catch(e){}
  try{if(scrubViews())ch=true}catch(e){}
- try{if(ch){save();if(S.view==="home"&&!document.querySelector("dialog[open]")){if(typingNow()||sOpen)pendR=true;else render()}}}finally{cBusy=false;syncUI()}}
+ try{if(ch){save();if((S.view==="home"||S.view==="board")&&!document.querySelector("dialog[open]")){if(typingNow()||sOpen)pendR=true;else render()}}}finally{cBusy=false;syncUI()}}
 function cSched(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||S.out)return;clearTimeout(cT);cT=setTimeout(()=>{cT=null;cSync()},900)}
-setInterval(()=>{if(!document.hidden)cSync()},20000);setInterval(()=>{if(!S.out&&pruneStories()&&!document.querySelector("dialog[open]")&&!typingNow())render()},60000);addEventListener("focus",cSync);
+setInterval(()=>{if(!document.hidden)cSync()},20000);setInterval(()=>{if(!S.out&&(pruneStories()|pruneBoard())&&!document.querySelector("dialog[open]")&&!typingNow())render()},60000);addEventListener("focus",cSync);
 const slimRep=(k,v)=>typeof v==="string"&&v.length>30000&&/^(?:data:image|(?:⟪rp\|[^⟫]*⟫\s*)?⟦img\|data:image)/.test(v)&&k!=="up"?(k==="photo"?undefined:"⟦img-expired⟧"):v;
 const save=()=>{sessSave();let done=false;try{localStorage.setItem("rcj",JSON.stringify(S));done=true}catch(e){}
  if(!done){try{localStorage.setItem("rcj",JSON.stringify(S,slimRep));console.warn("RoyalCub: storage is almost full, large photos were left out of the saved copy.")}catch(e){console.warn("RoyalCub: couldn't save app data on this device (storage full). You stay logged in.")}}
@@ -1496,6 +1518,7 @@ const CLK=IC.clock.replace("<svg ",'<svg class="mi clk" ');
 const FP=(d,x)=>`<path fill-rule="evenodd" d="${d}"${x||""}/>`;
 const FS=(a,b)=>`<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">${b?`<g opacity=".4">${b}</g>`:""}${a}</svg>`;
 const FI={
+ board:FS(FP("M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm0 2c-3 0-6.5 1.5-6.5 4v1.5a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V17c0-2.5-3.5-4-6.5-4z"),FP("M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm.6 2.1c2.3.4 4.9 1.7 4.9 3.9v1.5a1 1 0 0 1-1 1H17.5V17c0-1.6-.6-3-1.9-3.9z")),
  home:FS(FP("M12 2.6 2.7 10.9a.9.9 0 0 0 .6 1.6H5v7.5A1.5 1.5 0 0 0 6.5 21.5h11a1.5 1.5 0 0 0 1.5-1.5v-7.5h1.7a.9.9 0 0 0 .6-1.6zM10 21.5v-4.7a2 2 0 0 1 4 0v4.7z"),FP("M16.3 4h2.5v5l-2.5-2.2z")),
  add:FS(FP("M6 3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3zm5 4.8V11H7.8v2H11v3.2h2V13h3.2v-2H13V7.8z")),
  chat:FS(FP("M5.5 3h13A3.5 3.5 0 0 1 22 6.5v7a3.5 3.5 0 0 1-3.5 3.5H13l-4.2 3.8a.7.7 0 0 1-1.2-.5V17H5.5A3.5 3.5 0 0 1 2 13.5v-7A3.5 3.5 0 0 1 5.5 3zM8 9.4a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8zm4 0a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8zm4 0a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z")),
@@ -1599,7 +1622,7 @@ function tncCard(gate){const u=meU(),at=u&&u.tnc&&u.tnc.at,ad=at?new Date(at).to
  <div class="tcft">${gate?`<button class="btn" id="tncGo" type="button" onclick="tncAccept()" disabled>I Agree &amp; Continue</button>`:`<button class="btn" type="button" onclick="go('home')">Back to Home</button>`}</div>`}
 function terms(){const u=meU();if(u&&(!u.tnc||!u.tnc.at))u.tnc={v:TNC_V,at:Date.now()};view.innerHTML=tncCard(false)}
 
-const NAV=[["home",FI.home,"Home"],["add",FI.add,"Add Post"],["chat",FI.chat,"Chat"],["profile",FI.person,"Profile"]];
+const NAV=[["home",FI.home,"Home"],["add",FI.add,"Add Post"],["board",FI.board,"Community"],["chat",FI.chat,"Chat"],["profile",FI.person,"Profile"]];
 function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
  botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.style.visibility=un?"visible":"hidden";const uc=unread(),cb=document.getElementById("cn");cb.textContent=uc>9?"9+":uc;cb.style.visibility=uc?"visible":"hidden";document.getElementById("chatB").setAttribute("aria-label",uc?"Chat, "+uc+" unread":"Chat");document.getElementById("bellB").setAttribute("aria-label",un?"Notifications, "+un+" unread":"Notifications")}
 const BASE_T=document.title;
@@ -1843,11 +1866,61 @@ function restoreForm(o){const v=document.getElementById("view");if(!v||!o)return
  Object.keys(o.c).forEach(k=>{if(k.indexOf("sd:")===0){const e=v.querySelector("input[name=sd][value="+k.slice(3)+"]");if(e)e.checked=o.c[k]}else{const e=document.getElementById(k);if(e&&v.contains(e))e.checked=o.c[k]}});
  if(o.v.svRT&&typeof setRT==="function"&&document.getElementById("svRT"))setRT(o.v.svRT);
  if(o.f){const e=document.getElementById(o.f.id);if(e&&v.contains(e)){try{e.focus({preventScroll:true});if(o.f.s!=null)e.setSelectionRange(o.f.s,o.f.e)}catch(x){}}}}
+/* Community Board: every post (with its likes and comments) is deleted automatically one month after it was made */
+function pruneBoard(){const n=Date.now();S.posts=S.posts||[];S.plikes=S.plikes||[];S.pcmts=S.pcmts||[];S.posts.forEach(x=>{if(!(x.ts>0))x.ts=n});
+ const a=S.posts.length,b=S.plikes.length,c=S.pcmts.length;S.posts=S.posts.filter(x=>n-x.ts<BMONTH);const ids=new Set(S.posts.map(x=>String(x.id)));
+ S.plikes=S.plikes.filter(x=>ids.has(String(x.pid)));S.pcmts=S.pcmts.filter(x=>ids.has(String(x.pid)));
+ const ch=a!==S.posts.length||b!==S.plikes.length||c!==S.pcmts.length;if(ch){try{save()}catch(e){}if(S.view==="board"&&!typingNow())render()}return ch}
+
+/* ---------- Community Board ---------- */
+const BD={draft:"",img:"",open:new Set(),busy:0};
+const bId=()=>Date.now().toString(36)+uid();
+const bImgOk=v=>typeof v==="string"&&/^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(v)&&v.length<900000;
+const bLeft=x=>Math.max(1,Math.ceil((x.ts+BMONTH-Date.now())/864e5));
+function board(){pruneBoard();const me=S.name,P=S.posts.filter(x=>x&&live(x.by)).sort((a,b)=>b.ts-a.ts);
+ const cm=id=>S.pcmts.filter(c=>String(c.pid)===String(id)&&live(c.by)).sort((a,b)=>a.ts-b.ts),lk=id=>S.plikes.filter(l=>String(l.pid)===String(id));
+ const av=n=>`<div class="av" style="${abg(n)}">${ait(n)}</div>`;
+ const card=x=>{const id=esc(x.id),L=lk(x.id),liked=L.some(l=>l.by===me),C=cm(x.id),open=BD.open.has(String(x.id)),own=x.by===me||isAdmin();
+  return `<article class="bpost" data-id="${id}"><header class="bph">${av(x.by)}<div class="bpn"><b>${esc(x.by)}</b><small>${esc(ago(x.ts))} · deletes in ${bLeft(x)} d</small></div>${own?`<button class="bdel" type="button" onclick="bDelPost(this.closest('.bpost').dataset.id)" aria-label="Delete this post">${"🗑"}</button>`:""}</header>
+  ${x.t?`<p class="bpt">${esc(x.t)}</p>`:""}${bImgOk(x.img)?`<img class="bpi" src="${x.img}" alt="Photo shared by ${esc(x.by)}" loading="lazy" onclick="viewImg(this.src)">`:""}
+  <div class="bpa"><button type="button" class="${liked?"on":""}" aria-pressed="${liked}" onclick="bLike(this.closest('.bpost').dataset.id)"><span aria-hidden="true">${liked?"♥":"♡"}</span> Like${L.length?` · ${L.length}`:""}</button><button type="button" aria-expanded="${open}" onclick="bToggle(this.closest('.bpost').dataset.id)"><span aria-hidden="true">💬</span> Comment${C.length?` · ${C.length}`:""}</button><button type="button" onclick="bShare(this.closest('.bpost').dataset.id)"><span aria-hidden="true">↗</span> Share</button></div>
+  ${open?`<div class="bcm">${C.map(c=>`<div class="bc" data-cid="${esc(c.id)}"><div class="bcb"><b>${esc(c.by)}</b> <small>${esc(ago(c.ts))}</small><p>${esc(c.t)}</p></div>${c.by===me||isAdmin()?`<button type="button" class="bdel" onclick="bDelCm(this.closest('.bc').dataset.cid)" aria-label="Delete comment">✕</button>`:""}</div>`).join("")||`<p class="bnone">No comments yet. Be the first.</p>`}
+  <form class="bcf" onsubmit="bComment(event,this.closest('.bpost').dataset.id)"><input type="text" name="c" maxlength="300" placeholder="Write a comment (text only)" aria-label="Write a comment" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>`:""}</article>`};
+ view.innerHTML=`<div class="row"><h2>Community Board</h2><span>${String(P.length).padStart(2,"0")}</span></div>
+ <p class="bnote">Share news, tips and photos with everyone. Posts are removed automatically after one month.</p>
+ <form class="bcomp" onsubmit="bPost(event)"><label class="sr" for="cbt" style="position:absolute;left:-9999px">What would you like to share?</label><textarea id="cbt" maxlength="1000" placeholder="What would you like to share?" oninput="BD.draft=this.value">${esc(BD.draft)}</textarea>
+ ${BD.img?`<div class="bprev"><img src="${BD.img}" alt="Selected photo"><button type="button" class="bdel" onclick="bClearImg()" aria-label="Remove photo">✕</button></div>`:""}
+ <div class="bcr"><label class="btn alt bpick"><input type="file" accept="image/*" hidden onchange="bPick(this)">📷 Add photo</label><button class="btn" type="submit">Post</button></div></form>
+ <div class="bfeed">${P.map(card).join("")||`<p class="bnone">Nothing here yet. Start the conversation!</p>`}</div>`}
+function bPick(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
+ if(f.type&&!/^image\//.test(f.type)){toast("Please choose an image");return}
+ if(f.size>40*1048576){toast("That photo is too large. Try a smaller one.");return}
+ const url=URL.createObjectURL(f),im=new Image();
+ im.onload=()=>{URL.revokeObjectURL(url);try{const w=im.naturalWidth,h=im.naturalHeight;if(!w||!h){toast("Couldn’t read that image");return}let k=Math.min(1,1080/Math.max(w,h)),q=.8,out="";
+  for(let i=0;i<8;i++){const c=document.createElement("canvas");c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);out=c.toDataURL("image/jpeg",q);if(out.length<=350000)break;q=Math.max(.5,q-.1);k*=.85}
+  if(!bImgOk(out)||out.length>700000){toast("That photo is too large. Try a smaller one.");return}
+  BD.img=out;if(S.view==="board")render()}catch(e){toast("Couldn’t prepare that photo. Try another one.")}};
+ im.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t read that photo. Try a JPG or PNG.")};im.src=url}
+function bClearImg(){BD.img="";render()}
+function bPost(e){e.preventDefault();const t=(document.getElementById("cbt").value||"").trim().slice(0,1000);if(!t&&!BD.img){toast("Write something or add a photo");return}
+ const o={id:bId(),by:S.name,t,img:BD.img,ts:Date.now()};S.posts.unshift(o);
+ try{save()}catch(err){}BD.draft="";BD.img="";render();scrollTo(0,0);cSched();toast("Posted to the Community Board")}
+function bDelPost(id){if(!confirm("Delete this post? This can’t be undone."))return;const p=S.posts.find(x=>String(x.id)===String(id));if(!p||(p.by!==S.name&&!isAdmin()))return;
+ S.posts=S.posts.filter(x=>String(x.id)!==String(id));S.plikes=S.plikes.filter(x=>String(x.pid)!==String(id));S.pcmts=S.pcmts.filter(x=>String(x.pid)!==String(id));save();render();cSched();toast("Post deleted")}
+function bLike(id){if(!S.posts.some(x=>String(x.id)===String(id)))return;const k=String(id)+"|"+S.name,i=S.plikes.findIndex(l=>l.id===k);
+ if(i>=0)S.plikes.splice(i,1);else S.plikes.push({id:k,by:S.name,pid:String(id),ts:Date.now()});save();render();cSched()}
+function bToggle(id){id=String(id);BD.open.has(id)?BD.open.delete(id):BD.open.add(id);render();if(BD.open.has(id)){const f=document.querySelector('.bpost[data-id="'+CSS.escape(id)+'"] .bcf input');if(f)f.focus({preventScroll:true})}}
+function bComment(e,id){e.preventDefault();const f=e.target.c,t=(f.value||"").replace(/\s+/g," ").trim().slice(0,300);if(!t)return;
+ if(!S.posts.some(x=>String(x.id)===String(id)))return;S.pcmts.push({id:bId(),by:S.name,pid:String(id),t,ts:Date.now()});save();BD.open.add(String(id));render();cSched()}
+function bDelCm(id){const c=S.pcmts.find(x=>String(x.id)===String(id));if(!c||(c.by!==S.name&&!isAdmin()))return;S.pcmts=S.pcmts.filter(x=>String(x.id)!==String(id));save();render();cSched()}
+async function bShare(id){const p=S.posts.find(x=>String(x.id)===String(id));if(!p)return;const url=location.href.split("#")[0],txt=(p.by+" on the RoyalCub Jobs Community Board: "+(p.t||"Shared a photo")).slice(0,200);
+ try{if(navigator.share){await navigator.share({title:"RoyalCub Jobs Community Board",text:txt,url});return}}catch(e){if(e&&e.name==="AbortError")return}
+ try{await navigator.clipboard.writeText(txt+" "+url);toast("Link copied to clipboard")}catch(e){toast("Couldn’t share from this browser")}}
 function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.ts)x.ts=n});const k=L.filter(x=>n-x.ts<864e5);if(k.length===L.length)return false;S.stories=k;try{save()}catch(e){}return true}
-function render(){pruneStories();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("tncv",!S.out&&!needTnc()&&S.view==="terms");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("fullv",!S.out&&(S.view==="profile"||S.view==="settings"));document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("tnc2",!S.out&&needTnc()&&onbStep===2);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
+function render(){pruneStories();pruneBoard();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("tncv",!S.out&&!needTnc()&&S.view==="terms");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("fullv",!S.out&&(S.view==="profile"||S.view==="settings"));document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("tnc2",!S.out&&needTnc()&&onbStep===2);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
   if(needTnc()){view.innerHTML=onbView();lastV="";return}
- const VIEWS={home,add,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
+ const VIEWS={home,add,board,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
 
 function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u.title;if(u.role==="worker"&&ROLE[u.cat])return ROLE[u.cat]}
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
@@ -1971,7 +2044,7 @@ function scrollCats(d){const c=document.getElementById("cats");if(c)c.scrollBy({
 function catEdges(){const c=document.getElementById("cats"),l=document.getElementById("cl"),r=document.getElementById("cr");if(!c||!l||!r)return;l.disabled=c.scrollLeft<4;r.disabled=c.scrollLeft+c.clientWidth>=c.scrollWidth-4}
 function home(){
  syncCats();const prevC=document.getElementById("cats"),y0=prevC?scrollY:null;{const a=document.getElementById("cats"),b=document.querySelector("#view .status");if(a)HS.cats=a.scrollLeft;if(b)HS.st=b.scrollLeft}
- const jobs=shown(),svcs=shownS(),aus=authors(),isS=S.tab==="services",src=isS?S.services:S.jobs;
+ const jobs=shown(),svcs=shownS(),aus=authors(),src=[...S.services,...S.jobs];
  view.innerHTML=`<div class="sbar ${(S.q.trim()||(S.qloc||"").trim()||sOpen)?"act":""}" id="sbar" role="search">
  <div class="sbox">
  <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Search name, designation or location…" aria-label="Search by name, designation or location" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
@@ -1986,8 +2059,8 @@ function home(){
  <div class="row"><h2>Categories</h2><span>${String(CATS.length-1).padStart(2,"0")}</span></div>
  <div class="catwrap"><button class="cnav l" id="cl" onclick="scrollCats(-1)" aria-label="Scroll categories left" disabled>${CHL}</button><div class="cats" id="cats" role="group" aria-label="Filter posts by category" onscroll="catEdges()"><button class="cat" style="--c:#6d28d9;--ct:#6d28d926" aria-pressed="${S.cat==='All'}" onclick="pickCat('All')" aria-label="All categories, ${src.length} posts"><span class="ce" aria-hidden="true">${FALL}</span><b>All</b><small>${src.length} post${src.length===1?"":"s"}</small></button>${CATS.slice(1).map(c=>{const n=src.filter(j=>j.c===c).length;return `<button class="cat" style="${cTile(c)}" aria-pressed="${S.cat===c}" onclick="toggleCat('${c}')" aria-label="${c}, ${n} posts"><span class="ce" aria-hidden="true">${cIcon(c)}</span><b>${c}</b><small>${n} post${n===1?"":"s"}</small></button>`}).join("")}</div><button class="cnav r" id="cr" onclick="scrollCats(1)" aria-label="Scroll categories right">${CHR}</button></div>
  <p class="cnt" style="margin:-4px 0 12px;min-height:0" id="locnote"><span id="syncchip">${syncChip()}</span></p>
- <div class="row wkrow"><div class="wkh"><h2>${isS?"Workers":"Job vacancies"}</h2><span>${String(isS?svcs.length:jobs.length).padStart(2,"0")}</span></div><div class="wksel"><select aria-label="Show" onchange="setTab(this.value)"><option value="services" ${isS?"selected":""}>Workers</option><option value="jobs" ${isS?"":"selected"}>Job vacancies</option></select></div></div>
- <div class="list">${isS?listS(svcs):listHTML(jobs)}</div>`;
+ <section class="feedsec" aria-label="Workers"><div class="row"><h2>Workers</h2><span>${String(svcs.length).padStart(2,"0")}</span></div><div class="list">${listS(svcs)}</div></section>
+ <section class="feedsec" aria-label="Job vacancies"><div class="row"><h2>Job vacancies</h2><span>${String(jobs.length).padStart(2,"0")}</span></div><div class="list">${listHTML(jobs)}</div></section>`;
  const stl=document.querySelector("#view .status");if(stl)stl.scrollLeft=HS.st;const c=document.getElementById("cats");if(c){c.scrollLeft=HS.cats;const sel=HS.reveal?c.querySelector("[aria-pressed=true]"):null;HS.reveal=0;if(sel){const cr=c.getBoundingClientRect(),sr=sel.getBoundingClientRect();if(sr.left<cr.left)c.scrollLeft+=sr.left-cr.left-8;else if(sr.right>cr.right)c.scrollLeft+=sr.right-cr.right+8}catEdges()}
  if(y0!==null&&Math.abs(scrollY-y0)>2)scrollTo(0,y0)}
 function historyView(){const h=S.hist;
