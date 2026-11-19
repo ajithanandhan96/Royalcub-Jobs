@@ -1258,6 +1258,21 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .pvbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}.pvbar h2{margin:0}
 .pvback{width:44px;height:44px;border-radius:12px;background:var(--soft);font-size:22px;font-weight:800;display:grid;place-items:center}
 .cav{margin:0;width:34px;height:34px;border-radius:10px;font-size:12px;flex:none}
+
+#newPostD{width:min(720px,calc(100vw - 24px));padding:28px 32px}
+#newPostD .bform{width:100%;max-width:none;margin:0;display:flex;flex-direction:column;gap:18px}
+.bfh h3{margin:0;font-size:22px}.bfh p{margin:4px 0 0;color:var(--mute);font-size:14px}
+.bfr{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#newPostD label:not(.bpick){display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:14px;min-width:0}
+#newPostD input[type=text],#newPostD textarea{width:100%;box-sizing:border-box;min-height:50px;font-weight:400}
+#newPostD textarea{min-height:140px;resize:vertical}
+#newPostD .bpick{display:flex;flex-direction:row!important;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;border:1.5px dashed var(--line);border-radius:14px;background:var(--soft);color:var(--plum);font-weight:700;cursor:pointer;margin:0}
+#newPostD .bpick:hover,#newPostD .bpick:focus-within{border-color:var(--plum)}
+#newPostD .bprev{margin:0}#newPostD .bprev img{width:100%;max-height:240px;object-fit:cover;border-radius:14px}
+.bfa{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding-top:16px;border-top:1px solid var(--line)}
+.btn.ghost{background:transparent;border:0;box-shadow:none;color:var(--mute);padding:11px 18px}.btn.ghost:hover{color:var(--ink);background:var(--soft)}
+.bfa .bpost-go{min-width:160px}
+@media (max-width:600px){#newPostD{padding:22px 18px}.bfr{grid-template-columns:1fr}.bfa{flex-direction:column-reverse;align-items:stretch}.bfa .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -1952,13 +1967,13 @@ function board(){const P=bPosts();
 function bNew(){let d=document.getElementById("newPostD");if(!d){d=document.createElement("dialog");d.id="newPostD";d.setAttribute("aria-labelledby","npT");document.body.appendChild(d)}bDlgUI();if(!d.open)d.showModal()}
 function bClose(){const d=document.getElementById("newPostD");if(d&&d.open)d.close()}
 function bDlgUI(){const d=document.getElementById("newPostD");if(!d)return;
- d.innerHTML=`<form class="bform" onsubmit="bPost(event)"><div class="dh"><h3 id="npT" style="margin:0">Add Post</h3></div>
- <label>Title<input id="cti" type="text" maxlength="80" placeholder="Add a title" value="${esc(BD.ti||"")}" oninput="BD.ti=this.value"></label>
- <label>Subject<input id="csu" type="text" maxlength="120" placeholder="What is this about?" value="${esc(BD.su||"")}" oninput="BD.su=this.value"></label>
+ d.innerHTML=`<form class="bform" onsubmit="bPost(event)"><header class="bfh"><h3 id="npT">Add Post</h3><p>Share news, tips or photos with everyone. Posts disappear after 1 month.</p></header>
+ <div class="bfr"><label>Title<input id="cti" type="text" maxlength="80" placeholder="Add a title" value="${esc(BD.ti||"")}" oninput="BD.ti=this.value"></label>
+ <label>Subject<input id="csu" type="text" maxlength="120" placeholder="What is this about?" value="${esc(BD.su||"")}" oninput="BD.su=this.value"></label></div>
  <label>Details<textarea id="cbt" maxlength="1000" placeholder="Write the details" oninput="BD.draft=this.value">${esc(BD.draft)}</textarea></label>
  ${BD.img?`<div class="bprev"><img src="${BD.img}" alt="Selected photo"><button type="button" class="bdel" onclick="bClearImg()" aria-label="Remove photo">✕</button></div>`:""}
- <label class="btn alt bpick"><input type="file" accept="image/*" hidden onchange="bPick(this)">📷 ${BD.img?"Change photo":"Upload photo"}</label>
- <div class="acts"><button type="submit" class="btn">Post</button><button type="button" class="btn alt" onclick="bClose()">Cancel</button></div></form>`}
+ <label class="bpick"><input type="file" accept="image/*" hidden onchange="bPick(this)"><span aria-hidden="true">📷</span> ${BD.img?"Change photo":"Upload a photo (optional)"}</label>
+ <div class="bfa"><button type="button" class="btn ghost" onclick="bClose()">Cancel</button><button type="submit" class="btn bpost-go">Post</button></div></form>`}
 function bPick(inp){const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
  if(f.type&&!/^image\//.test(f.type)){toast("Please choose an image");return}
  if(f.size>40*1048576){toast("That photo is too large. Try a smaller one.");return}
