@@ -1254,6 +1254,10 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .btf{display:flex;gap:10px;font-size:12px;color:var(--mute);flex:none}.btd{margin-left:auto}
 #postViewD{width:min(720px,calc(100vw - 24px));max-height:92vh;overflow:auto;padding:14px;position:relative}
 #postViewD .bpost{margin:0;border:0;padding:0;background:none}.pvx{position:sticky;top:0;float:right;z-index:35;width:36px;height:36px;border-radius:10px;background:var(--soft);font-weight:800}
+
+.pvbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}.pvbar h2{margin:0}
+.pvback{width:44px;height:44px;border-radius:12px;background:var(--soft);font-size:22px;font-weight:800;display:grid;place-items:center}
+.cav{margin:0;width:34px;height:34px;border-radius:10px;font-size:12px;flex:none}
 </style>
 </head>
 <body>
@@ -1313,6 +1317,19 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 <dialog id="delAccD" aria-labelledby="delAccT"><h3 id="delAccT">Delete account permanently?</h3><p style="color:var(--mute)">Are you sure? Your profile, vacancies, services, status stories and chats will be deleted for good. This can’t be undone.</p><div class="acts"><button type="button" id="delAccGo" class="btn danger" onclick="deleteAccount()">Yes, delete my account</button><button type="button" class="btn alt" onclick="delAccD.close()">Cancel</button></div></dialog>
 <dialog id="outD"><h3>Log out?</h3><p style="color:var(--mute)">You can log back in any time. Your vacancies and chats stay saved.</p><div class="acts"><button class="btn" onclick="outD.close();try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view='home';au='home';pgReset();save();render()">Log out</button><button class="btn alt" onclick="outD.close()">Stay logged in</button></div></dialog>
 <dialog id="exitD" aria-labelledby="exT"><h3 id="exT">Exit RoyalCub Jobs?</h3><p style="color:var(--mute)">Are you sure you want to leave the app?</p><div class="acts"><button class="btn" id="exYes" type="button" onclick="exitApp()">Exit</button><button class="btn alt" id="exNo" type="button" onclick="exitD.close()">Stay</button></div></dialog>
+<script>
+/* Firebase web config for push notifications (FCM). */
+window.RC_CONFIG=Object.assign(window.RC_CONFIG||{},{firebase:{
+  apiKey:"AIzaSyCoNyCPesv19o1KbYrY9q-E7siv6Oe7O5I",
+  authDomain:"royalcub.firebaseapp.com",
+  projectId:"royalcub",
+  storageBucket:"royalcub.firebasestorage.app",
+  messagingSenderId:"88865217328",
+  appId:"1:88865217328:web:1ac15bcf04cdc841ad06f5",
+  measurementId:"G-5CYN0VLBG3",
+  vapidKey:"BM9PjHjm3PbG8WBoK9Eb287LuHvVcweoqHPgWZ-l7NpsG1j1Kssp6ER8GwDFOpd_XaqGJLL1i5NnerYlfK9dXq4"
+}});
+</script>
 <script>
 /* one-time fresh start: clears accounts, posts, stories and chats saved on this device */
 try{var RV="fresh-2026-11-15";if(localStorage.getItem("rc_reset")!==RV){["rcj","rc_mbox","rc_privacy","rc_terms"].forEach(function(k){localStorage.removeItem(k)});try{sessionStorage.clear()}catch(e){}localStorage.setItem("rc_reset",RV)}}catch(e){}
@@ -1411,6 +1428,7 @@ function markAll(){S.notifs.forEach(n=>n.read=1);save();notifView();nav()}
 function openNotif(id){const n=S.notifs.find(x=>x.id===id);if(!n)return;n.read=1;save();nav();const a=n.act||{};
  if(a.k==="chat"){msgTo(a.n);return}
  if(a.k==="service"){if(!S.services.some(z=>z.id===a.id)){toast("That post is no longer available");notifView();return}S.tab="services";S.cat="All";go("home");openService(a.id);return}
+ if(a.k==="post"){if(!S.posts.some(z=>String(z.id)===String(a.id))){toast("That post is no longer available");notifView();return}bOpen(a.id);return}
  if(a.k==="plans"){notifView();openPlans();return}notifView()}
 function openPlans(){planD.innerHTML=`<div class="dh"><h3 style="margin:0">Subscription plans</h3><button type="button" class="x" aria-label="Close" onclick="planD.close()">✕</button></div>
  <div class="plans" role="list">${PLANS.map(pl=>`<div class="plan ${pl.pop?"pop":""} ${S.plan===pl.id?"cur":""}" role="listitem">${pl.pop?`<span class="ptag">Most popular</span>`:""}<h4>${pl.n}</h4><div class="pr"><b>${pl.p?"₹"+pl.p:"Free"}</b>${pl.p?"<small>/month</small>":""}</div><ul>${pl.f.map(t=>`<li>${t}</li>`).join("")}</ul><button class="btn ${S.plan===pl.id?"alt":""}" ${S.plan===pl.id?"disabled":""} onclick="choosePlan('${pl.id}')">${S.plan===pl.id?"Current plan":"Choose "+pl.n}</button></div>`).join("")}</div><p class="fine" style="margin:0">Demo only: no payment is collected in this build.</p>`;if(!planD.open)planD.showModal()}
@@ -1470,7 +1488,7 @@ async function cViews(){if(cOff||cVDead||S.out||!S.me||!canView())return false;l
   if(!Array.isArray(o.v))o.v=[];if(!o.v.includes(d.viewer)&&realUser(d.viewer)){o.v.push(d.viewer);ch=true}}
  }catch(e){if(!cVW){cVW=true;console.warn("RoyalCub: view sync skipped ("+e.message+"). If this is an HTTP 400/403, allow kind 'view' in the rc_content policy (supabase_setup.sql).")}}return ch}
 /* Board rows travel as kind "story" (already allowed by the rc_content policy) with data.bk = post | plike | pcmt, so no database change is needed */
-const wK=k=>BRK[k]?"story":k,wId=(k,id)=>BRK[k]?k+":"+id:String(id),bkOf=r=>r&&r.kind==="story"&&r.data&&typeof r.data==="object"&&BRK[r.data.bk]?r.data.bk:r.kind;
+const wK=k=>BRK[k]?"story":k,wId=(k,id)=>BRK[k]?k+":"+id:String(id),bkOf=r=>r&&r.kind==="story"&&r.data&&typeof r.data==="object"?(BRK[r.data.bk]?r.data.bk:r.data.bk==="fcm"?"fcm":r.kind):r.kind;
 async function cPush(){S.sy=S.sy||{};const up=[],del=[];
  for(const [k,col] of CK){const L=S[col]||[],have=new Set(L.map(x=>String(x.id)));
   for(const id of (S.sy[k]||[]))if(!have.has(String(id)))del.push([k,String(id)]);
@@ -1649,7 +1667,7 @@ function tncCard(gate){const u=meU(),at=u&&u.tnc&&u.tnc.at,ad=at?new Date(at).to
 function terms(){const u=meU();if(u&&(!u.tnc||!u.tnc.at))u.tnc={v:TNC_V,at:Date.now()};view.innerHTML=tncCard(false)}
 
 const NAV=[["home",FI.home,"Home"],["add",FI.add,"Add Post"],["board",FI.board,"Feed"],["chat",FI.chat,"Chat"],["profile",FI.person,"Profile"]];
-function nav(){const h=NAV.map(([k,i,l])=>`<button ${S.view===k?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
+function nav(){const h=NAV.map(([k,i,l])=>`<button ${(S.view===k||(S.view==="post"&&k==="board"))?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
  botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.style.visibility=un?"visible":"hidden";const uc=unread(),cb=document.getElementById("cn");cb.textContent=uc>9?"9+":uc;cb.style.visibility=uc?"visible":"hidden";document.getElementById("chatB").setAttribute("aria-label",uc?"Chat, "+uc+" unread":"Chat");document.getElementById("bellB").setAttribute("aria-label",un?"Notifications, "+un+" unread":"Notifications")}
 const BASE_T=document.title;
 const unread=()=>S.threads.reduce((a,t)=>a+(+t.u||0),0);
@@ -1909,15 +1927,14 @@ function bCard(x,full){const me=S.name,id=esc(x.id),L=bLk(x.id),liked=L.some(l=>
   <div class="bmw"><button type="button" class="bdel bdots" aria-haspopup="true" aria-expanded="false" aria-label="More options" onclick="bMenu(event,this)">⋮</button><div class="bmenu hide" role="menu">${mine?"":`<button type="button" role="menuitem" onclick="bReport(this.closest('.bpost').dataset.id)">⚑ Report</button>`}${own?`<button type="button" role="menuitem" class="dng" onclick="bDelPost(this.closest('.bpost').dataset.id)">🗑 Delete</button>`:""}</div></div></header>
   ${x.ti?`<h3 class="bti">${esc(x.ti)}</h3>`:""}${x.su?`<p class="bsu">${esc(x.su)}</p>`:""}${x.t?`<p class="bpt">${esc(x.t)}</p>`:""}${bImgOk(x.img)?`<img class="bpi" src="${x.img}" alt="Photo shared by ${esc(x.by)}" loading="lazy" onclick="viewImg(this.src)">`:""}
   <div class="bpa"><button type="button" class="${liked?"on":""}" aria-pressed="${liked}" onclick="bLike(this.closest('.bpost').dataset.id)"><span aria-hidden="true">${liked?"♥":"♡"}</span> Like${L.length?` · ${L.length}`:""}</button><button type="button" aria-expanded="${open}" onclick="bToggle(this.closest('.bpost').dataset.id)"><span aria-hidden="true">💬</span> Comment${C.length?` · ${C.length}`:""}</button><button type="button" onclick="bShare(this.closest('.bpost').dataset.id)"><span aria-hidden="true">↗</span> Share</button></div>
-  ${open?`<div class="bcm">${C.map(c=>`<div class="bc" data-cid="${esc(c.id)}"><div class="bcb"><b>${esc(c.by)}</b> <small>${esc(ago(c.ts))}</small><p>${esc(c.t)}</p></div>${c.by===me||isAdmin()?`<button type="button" class="bdel" onclick="bDelCm(this.closest('.bc').dataset.cid)" aria-label="Delete comment">✕</button>`:""}</div>`).join("")||`<p class="bnone">No comments yet. Be the first.</p>`}
+  ${open?`<div class="bcm">${C.map(c=>`<div class="bc" data-cid="${esc(c.id)}"><div class="av cav" style="${abg(c.by)}" aria-hidden="true">${ait(c.by)}</div><div class="bcb"><b>${esc(c.by)}</b> <small>${esc(ago(c.ts))}</small><p>${esc(c.t)}</p></div>${c.by===me||isAdmin()?`<button type="button" class="bdel" onclick="bDelCm(this.closest('.bc').dataset.cid)" aria-label="Delete comment">✕</button>`:""}</div>`).join("")||`<p class="bnone">No comments yet. Be the first.</p>`}
   <form class="bcf" onsubmit="bComment(event,this.closest('.bpost').dataset.id)"><input type="text" name="c" maxlength="300" placeholder="Write a comment (text only)" aria-label="Write a comment" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>`:""}</article>`}
 function bTile(x){const id=esc(x.id),L=bLk(x.id).length,C=bCm(x.id).length,des=roleOf(x.by),t=x.ti||x.su||"";
  return `<div class="btile" role="button" tabindex="0" data-id="${id}" onclick="bOpen(this.dataset.id)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();bOpen(this.dataset.id)}" aria-label="Open post by ${esc(x.by)}"><div class="btph"><div class="av" style="${abg(x.by)}">${ait(x.by)}</div><div class="bpn"><b>${esc(x.by)}</b><small>${des?esc(des):esc(ago(x.ts))}</small></div></div>
   ${t?`<h3 class="btt">${esc(t)}</h3>`:""}${x.t?`<p class="btx">${esc(x.t)}</p>`:""}<div class="btm">${bImgOk(x.img)?`<img src="${x.img}" alt="" loading="lazy">`:""}</div><div class="btf"><span>♡ ${L}</span><span>💬 ${C}</span><span class="btd">${bLeft(x)} d left</span></div></div>`}
-function bOpen(id){const x=S.posts.find(z=>String(z.id)===String(id));if(!x)return;BD.view=String(id);let d=document.getElementById("postViewD");if(!d){d=document.createElement("dialog");d.id="postViewD";d.setAttribute("aria-label","Post details");d.addEventListener("click",e=>{if(e.target===d)d.close()});d.addEventListener("close",()=>{BD.view=null});document.body.appendChild(d)}bViewUI();if(!d.open)d.showModal()}
-function bViewUI(){const d=document.getElementById("postViewD");if(!d||!d.open&&!BD.view)return;const x=S.posts.find(z=>String(z.id)===String(BD.view));if(!x){if(d.open)d.close();return}
- const keep=(d.querySelector(".bcf input")||{}).value||"";d.innerHTML=`<button type="button" class="pvx" onclick="document.getElementById('postViewD').close()" aria-label="Close">✕</button>${bCard(x,true)}`;const i=d.querySelector(".bcf input");if(i&&keep)i.value=keep}
-const __render=render;render=function(){__render.apply(this,arguments);if(BD.view)bViewUI()};
+function bOpen(id){if(!S.posts.some(z=>String(z.id)===String(id)))return;S.pv=String(id);go("post")}
+function postPage(){const x=S.posts.find(z=>String(z.id)===String(S.pv));
+ view.innerHTML=`<div class="pvbar"><button type="button" class="pvback" onclick="goBack()" aria-label="Back to feed">←</button><h2>Post</h2></div>${x?bCard(x,true):`<p class="bnone">This post is no longer available.</p>`}`}
 const bPosts=()=>{pruneBoard();return S.posts.filter(x=>x&&live(x.by)).sort((a,b)=>b.ts-a.ts)};
 const bNotice=`<p class="bnote" role="note">ⓘ All posts disappear automatically within 1 month.</p>`;
 function feedHTML(){const P=bPosts();return `<section class="feedsec" id="feedsec" aria-label="Feed"><aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>${bNotice}<div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button></div><div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing in the feed yet. Be the first to post!</p>`}</div></section>`}
@@ -1956,7 +1973,7 @@ function bPost(e){e.preventDefault();const t=(document.getElementById("cbt").val
  const ti=((document.getElementById("cti")||{}).value||"").trim().slice(0,80),su=((document.getElementById("csu")||{}).value||"").trim().slice(0,120);const o={id:bId(),by:S.name,ti,su,t,img:BD.img,ts:Date.now()};S.posts.unshift(o);
  try{save()}catch(err){}BD.draft="";BD.img="";BD.ti="";BD.su="";bClose();render();scrollTo(0,0);cSched();toast("Posted to the feed")}
 function bDelPost(id){if(!confirm("Delete this post? This can’t be undone."))return;const p=S.posts.find(x=>String(x.id)===String(id));if(!p||(p.by!==S.name&&!isAdmin()))return;
- S.posts=S.posts.filter(x=>String(x.id)!==String(id));S.plikes=S.plikes.filter(x=>String(x.pid)!==String(id));S.pcmts=S.pcmts.filter(x=>String(x.pid)!==String(id));save();render();cSched();toast("Post deleted")}
+ S.posts=S.posts.filter(x=>String(x.id)!==String(id));S.plikes=S.plikes.filter(x=>String(x.pid)!==String(id));S.pcmts=S.pcmts.filter(x=>String(x.pid)!==String(id));save();if(S.view==="post"){S.pv=null;goBack()}else render();cSched();toast("Post deleted")}
 function bLike(id){if(!S.posts.some(x=>String(x.id)===String(id)))return;const k=String(id)+"|"+S.name,i=S.plikes.findIndex(l=>l.id===k);
  if(i>=0)S.plikes.splice(i,1);else S.plikes.push({id:k,by:S.name,pid:String(id),ts:Date.now()});save();render();cSched()}
 function bToggle(id){id=String(id);BD.open.has(id)?BD.open.delete(id):BD.open.add(id);render();if(BD.open.has(id)){const f=document.querySelector('.bpost[data-id="'+CSS.escape(id)+'"] .bcf input');if(f)f.focus({preventScroll:true})}}
@@ -1970,7 +1987,7 @@ function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.t
 function render(){pruneStories();pruneBoard();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("tncv",!S.out&&!needTnc()&&S.view==="terms");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("fullv",!S.out&&(S.view==="profile"||S.view==="settings"));document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("tnc2",!S.out&&needTnc()&&onbStep===2);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
   if(needTnc()){view.innerHTML=onbView();lastV="";return}
- const VIEWS={home,add,board,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
+ const VIEWS={home,add,board,post:postPage,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
 
 function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u.title;if(u.role==="worker"&&ROLE[u.cat])return ROLE[u.cat]}
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
@@ -2581,26 +2598,49 @@ const RT={ok:null,err:undefined,at:0,me:"",since:0,first:true,timer:null,ch:null
 addEventListener("storage",ev=>{if(ev.key==="rc_mbox")RT.poll()});
 /* ---------- Push notifications (Web Push via service worker + Supabase Edge Function) ---------- */
 const PUSH_OK=()=>SB_ON&&!!VAPID_PUBLIC_KEY&&"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
-const pushBanner=()=>PUSH_OK()&&Notification.permission==="default"&&!S.pushNo&&!S.out&&!S.thread?`<div class="pbn" role="region" aria-label="Message alerts"><span>🔔 Get an alert when someone messages you, even when the app is closed.</span><button type="button" class="btn" onclick="enablePush()">Turn on</button><button type="button" class="x" aria-label="Dismiss" onclick="S.pushNo=1;save();ui()">✕</button></div>`:"";
+const pushBanner=()=>(PUSH_OK()||FCM_OK())&&Notification.permission==="default"&&!S.pushNo&&!S.out&&!S.thread?`<div class="pbn" role="region" aria-label="Message alerts"><span>🔔 Get an alert for messages, comments and new posts, even when the app is closed.</span><button type="button" class="btn" onclick="enablePush()">Turn on</button><button type="button" class="x" aria-label="Dismiss" onclick="S.pushNo=1;save();ui()">✕</button></div>`:"";
 const b64u=v=>{const p="=".repeat((4-v.length%4)%4),r=atob((v+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(r,c=>c.charCodeAt(0))};
 const rpcUrl=n=>SUPABASE_URL.trim().replace(/\/$/,"")+"/rest/v1/rpc/"+n;
-async function pushSync(){if(!PUSH_OK()||S.out||!S.name||Notification.permission!=="granted")return false;
+async function pushSync(){if(FCM_OK()&&!S.out&&S.name&&Notification.permission==="granted")fcmSync();if(!PUSH_OK()||S.out||!S.name||Notification.permission!=="granted")return false;
  try{const reg=await navigator.serviceWorker.register("sw.js");await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
   if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID_PUBLIC_KEY)});
   const j=sub.toJSON();if(!j.endpoint||!j.keys)return false;
   const r=await fetch(rpcUrl("rc_push_register"),{method:"POST",headers:cHead(),body:JSON.stringify({p_endpoint:j.endpoint,p_name:S.name,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth})});
   if(!r.ok)throw new Error("HTTP "+r.status);return true}
  catch(e){console.warn("RoyalCub: push subscription not saved ("+(e&&e.message)+"). Run supabase_chat_media.sql to create the push functions.");return false}}
-async function enablePush(){if(!PUSH_OK()){toast("Alerts aren’t available in this browser");return}
+async function enablePush(){if(FCM_OK()){let p="denied";try{p=await Notification.requestPermission()}catch(e){}if(p!=="granted"){toast(p==="denied"?"Alerts are blocked in your browser settings":"Alerts not turned on");ui();return}const ok=await fcmSync(true);if(PUSH_OK())await pushSync();toast(ok?"Alerts are on":"Couldn’t turn on alerts. Please try again.");ui();return}if(!PUSH_OK()){toast("Alerts aren’t available in this browser");return}
  let p="denied";try{p=await Notification.requestPermission()}catch(e){}
  if(p!=="granted"){toast(p==="denied"?"Alerts are blocked in your browser settings":"Alerts not turned on");ui();return}
  const ok=await pushSync();toast(ok?"Message alerts are on":"Couldn’t turn on alerts. Please try again.");ui()}
 async function pushOff(){try{if(!("serviceWorker" in navigator))return;const reg=await navigator.serviceWorker.getRegistration();const sub=reg&&await reg.pushManager.getSubscription();
  if(sub)await fetch(rpcUrl("rc_push_unregister"),{method:"POST",headers:cHead(),body:JSON.stringify({p_endpoint:sub.endpoint})}).catch(()=>{})}catch(e){}}
-function openFromPush(){let p="";try{const u=new URL(location.href);p=u.searchParams.get("chat")||sessionStorage.getItem("rc_open_chat")||"";if(u.searchParams.has("chat")){u.searchParams.delete("chat");history.replaceState(null,"",u.pathname+u.search+u.hash)}}catch(e){}
+function openFromPush(){try{const u=new URL(location.href),pid=u.searchParams.get("post");if(pid){u.searchParams.delete("post");history.replaceState(null,"",u.pathname+u.search+u.hash);if(!S.out&&S.me)setTimeout(()=>{if(S.posts.some(z=>String(z.id)===pid))bOpen(pid)},1200)}}catch(e){}let p="";try{const u=new URL(location.href);p=u.searchParams.get("chat")||sessionStorage.getItem("rc_open_chat")||"";if(u.searchParams.has("chat")){u.searchParams.delete("chat");history.replaceState(null,"",u.pathname+u.search+u.hash)}}catch(e){}
  if(!p)return;if(S.out||!S.me){try{sessionStorage.setItem("rc_open_chat",p)}catch(e){}return}
  try{sessionStorage.removeItem("rc_open_chat")}catch(e){}if(p!==S.name)msgTo(p)}
 try{if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",ev=>{const d=ev.data;if(d&&d.type==="open-chat"&&d.peer&&!S.out){try{msgTo(String(d.peer))}catch(e){}}})}catch(e){}
+/* ---------- Firebase Cloud Messaging (push to web, Android and iOS home-screen installs) ----------
+   Define window.RC_CONFIG.firebase = {apiKey,authDomain,projectId,messagingSenderId,appId,vapidKey} before this script runs.
+   Host firebase-messaging-sw.js at the site root (same folder as index.html). Empty config = FCM stays off. See FIREBASE_SETUP.md */
+const FB=Object.assign({},(window.RC_CONFIG&&window.RC_CONFIG.firebase)||{});
+const FCM_OK=()=>!!(FB.apiKey&&FB.projectId&&FB.messagingSenderId&&FB.appId&&FB.vapidKey)&&"serviceWorker" in navigator&&"Notification" in window&&location.protocol!=="file:";
+let FCMS=null;
+async function fcmInit(){if(FCMS)return FCMS;const B="https://www.gstatic.com/firebasejs/10.14.1/";
+ const [A,M]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-messaging.js")]);
+ if(!(await M.isSupported()))throw new Error("FCM is not supported in this browser");
+ const app=A.getApps().length?A.getApp():A.initializeApp({apiKey:FB.apiKey,authDomain:FB.authDomain,projectId:FB.projectId,messagingSenderId:FB.messagingSenderId,appId:FB.appId});
+ const reg=await navigator.serviceWorker.register("firebase-messaging-sw.js");await navigator.serviceWorker.ready;
+ const m=M.getMessaging(app);
+ M.onMessage(m,pl=>{const n=pl.notification||{},d=pl.data||{};toast((n.title||d.title||"New alert")+(n.body||d.body?": "+(n.body||d.body):""));try{Notify.add({t:n.title||d.title||"New alert",b:n.body||d.body||"",act:d.post?{k:"post",id:d.post}:{}})}catch(e){}});
+ return FCMS={M,m,reg}}
+async function fcmSync(force){if(!FCM_OK()||S.out||!S.name||Notification.permission!=="granted")return false;
+ try{const f=await fcmInit(),tok=await f.M.getToken(f.m,{vapidKey:FB.vapidKey,serviceWorkerRegistration:f.reg});if(!tok)return false;
+  const key="rc_fcm_"+S.name;let had="";try{had=localStorage.getItem(key)||""}catch(e){}
+  if(had===tok&&!force)return true;
+  if(!SB_ON)return true;
+  const id="fcm:"+tok.slice(-40);
+  await cFetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify([{kind:"story",id,owner:S.name,data:{bk:"fcm",by:S.name,token:tok,ts:Date.now()},updated_at:new Date().toISOString()}])});
+  try{localStorage.setItem(key,tok)}catch(e){}return true}
+ catch(e){console.warn("RoyalCub: FCM setup failed ("+(e&&e.message)+")");return false}}
 /* ---------- Keyboard-aware layout (mobile chat) and form behaviour ---------- */
 let kbBase=innerHeight,kbSeen=false;
 function vv(){const v=window.visualViewport,h=v?v.height:innerHeight,t=v?v.offsetTop:0,a=document.activeElement,
