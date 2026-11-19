@@ -2617,7 +2617,7 @@ async function pushOff(){try{if(!("serviceWorker" in navigator))return;const reg
 function openFromPush(){try{const u=new URL(location.href),pid=u.searchParams.get("post");if(pid){u.searchParams.delete("post");history.replaceState(null,"",u.pathname+u.search+u.hash);if(!S.out&&S.me)setTimeout(()=>{if(S.posts.some(z=>String(z.id)===pid))bOpen(pid)},1200)}}catch(e){}let p="";try{const u=new URL(location.href);p=u.searchParams.get("chat")||sessionStorage.getItem("rc_open_chat")||"";if(u.searchParams.has("chat")){u.searchParams.delete("chat");history.replaceState(null,"",u.pathname+u.search+u.hash)}}catch(e){}
  if(!p)return;if(S.out||!S.me){try{sessionStorage.setItem("rc_open_chat",p)}catch(e){}return}
  try{sessionStorage.removeItem("rc_open_chat")}catch(e){}if(p!==S.name)msgTo(p)}
-try{if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",ev=>{const d=ev.data;if(d&&d.type==="open-chat"&&d.peer&&!S.out){try{msgTo(String(d.peer))}catch(e){}}})}catch(e){}
+try{if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",ev=>{const d=ev.data;if(d&&d.type==="open-post"&&d.post&&!S.out){try{if(S.posts.some(z=>String(z.id)===String(d.post)))bOpen(d.post)}catch(e){}}if(d&&d.type==="fcm-refresh"&&!S.out){try{fcmSync(true)}catch(e){}}if(d&&d.type==="open-chat"&&d.peer&&!S.out){try{msgTo(String(d.peer))}catch(e){}}})}catch(e){}
 /* ---------- Firebase Cloud Messaging (push to web, Android and iOS home-screen installs) ----------
    Define window.RC_CONFIG.firebase = {apiKey,authDomain,projectId,messagingSenderId,appId,vapidKey} before this script runs.
    Host firebase-messaging-sw.js at the site root (same folder as index.html). Empty config = FCM stays off. See FIREBASE_SETUP.md */
@@ -2628,7 +2628,7 @@ async function fcmInit(){if(FCMS)return FCMS;const B="https://www.gstatic.com/fi
  const [A,M]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-messaging.js")]);
  if(!(await M.isSupported()))throw new Error("FCM is not supported in this browser");
  const app=A.getApps().length?A.getApp():A.initializeApp({apiKey:FB.apiKey,authDomain:FB.authDomain,projectId:FB.projectId,messagingSenderId:FB.messagingSenderId,appId:FB.appId});
- const reg=await navigator.serviceWorker.register("firebase-messaging-sw.js");await navigator.serviceWorker.ready;
+ const reg=await navigator.serviceWorker.register("firebase-messaging-sw.js",{scope:"firebase-cloud-messaging-push-scope"});await new Promise((ok,no)=>{const w=reg.installing||reg.waiting||reg.active;if(!w)return no(new Error("no worker"));if(w.state==="activated")return ok();const t=setTimeout(()=>no(new Error("service worker timeout")),15000);w.addEventListener("statechange",()=>{if(w.state==="activated"){clearTimeout(t);ok()}else if(w.state==="redundant"){clearTimeout(t);no(new Error("service worker failed"))}})});
  const m=M.getMessaging(app);
  M.onMessage(m,pl=>{const n=pl.notification||{},d=pl.data||{};toast((n.title||d.title||"New alert")+(n.body||d.body?": "+(n.body||d.body):""));try{Notify.add({t:n.title||d.title||"New alert",b:n.body||d.body||"",act:d.post?{k:"post",id:d.post}:{}})}catch(e){}});
  return FCMS={M,m,reg}}
