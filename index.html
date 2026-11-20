@@ -1309,6 +1309,8 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 
 .m .mdots{margin-left:6px;padding:0 6px;min-width:28px;min-height:24px;font-size:18px;line-height:1;font-weight:800;color:inherit;opacity:.75;border-radius:8px;vertical-align:middle;background:none;border:0;cursor:pointer}
 .m .mdots:hover,.m .mdots:focus-visible{opacity:1;background:rgba(127,127,127,.2)}
+
+.rstar{color:#c0261c;font-weight:800}.reqnote{margin:0;color:var(--mute);font-size:13px}
 </style>
 </head>
 <body>
@@ -2485,13 +2487,22 @@ function drRead(){if(!DR||!DR.s){toast("Pick the dates on the calendar");return 
  if(DR.t==="long"&&!DR.on&&!DR.e){toast("Tap an end date, or tick “No fixed end date”");return null}
  return{t:DR.t,s:DR.s,e:DR.t==="long"?(DR.on?"":DR.e):drEnd(DR.t,DR.s),on:DR.t==="long"&&DR.on}}
 /* ---------- category with an “Other” text field ---------- */
-const catSel=(id,oid,cur)=>{const L=CATS.slice(1),other=!!cur&&!L.includes(cur);return `<div class="catbox"><label>Category<select id="${id}" onchange="catPick('${id}','${oid}')">${L.map(c=>`<option ${cur===c?"selected":""}>${esc(c)}</option>`).join("")}<option value="Other" ${other?"selected":""}>Other</option></select></label><label id="${oid}L" class="${other?"":"hide"}">Your category<input id="${oid}" maxlength="20" autocomplete="off" placeholder="e.g. Photography" value="${other?esc(cur):""}"></label></div>`};
+const catSel=(id,oid,cur)=>{const L=CATS.slice(1),other=!!cur&&!L.includes(cur);return `<div class="catbox"><label>Category<select id="${id}" required onchange="catPick('${id}','${oid}')">${L.map(c=>`<option ${cur===c?"selected":""}>${esc(c)}</option>`).join("")}<option value="Other" ${other?"selected":""}>Other</option></select></label><label id="${oid}L" class="${other?"":"hide"}">Your category<input id="${oid}" maxlength="20" autocomplete="off" placeholder="e.g. Photography" value="${other?esc(cur):""}"></label></div>`};
 function catPick(id,oid){const o=document.getElementById(id).value==="Other";document.getElementById(oid+"L").classList.toggle("hide",!o);const i=document.getElementById(oid);i.required=o;if(o)i.focus()}
 function catVal(id,oid){const v=document.getElementById(id).value;if(v!=="Other")return v;const el=document.getElementById(oid),t=el.value.trim();const had=CATS.some(c=>c.toLowerCase()===t.toLowerCase()),c=regCat(t);if(!c){toast("Enter a category name (2 to 20 letters or numbers)");el.focus();return null}if(!had){S.cats=S.cats||[];S.cats.push(c)}return c}
 /* ---------- Add Post: two categories ---------- */
 function setAdd(k){at=k;add()}
-function add(){const k=at||"service"; view.innerHTML=`<div class="addhead"><h2>Add post</h2></div> <div class="addcard">${k==="job"?jobForm():svcForm()}</div>`;
- if(k==="service")setRT(document.getElementById("svRT").value)}
+const SMALL=new Set(["and","or","of"]);
+const tcase=t=>t.replace(/[A-Za-z][A-Za-z'’]*/g,(w,i)=>{const l=w.toLowerCase();return i>0&&SMALL.has(l)?l:l[0].toUpperCase()+l.slice(1)});
+/* Title Case for every field header, and a red asterisk on each mandatory field */
+function decorate(root){if(!root)return;
+ root.querySelectorAll("label,.fl").forEach(l=>{let h=null;for(const n of l.childNodes){if(n.nodeType===3&&n.textContent.trim()){const w=document.createElement("span");w.className="lh";w.textContent=n.textContent;n.replaceWith(w);h=w;break}if(n.nodeType===1&&/^(SPAN|B)$/.test(n.tagName)&&!n.querySelector("input,select,textarea")&&n.textContent.replace("*","").trim()){h=n;break}}
+  if(!h)return;const star=h.querySelector(".rstar");if(star)star.remove();h.textContent=tcase(h.textContent.replace(/\s*\*\s*$/,""));
+  const need=l.matches(".fl")?l.hasAttribute("data-req"):!!l.querySelector("[required],[data-req]")||l.id==="jcoL"||l.id==="svCoL";
+  if(need){const m=document.createElement("span");m.className="rstar";m.setAttribute("aria-hidden","true");m.textContent=" *";h.append(m)}});
+ const f=root.matches&&root.matches("form")?root:root.querySelector("form");if(f&&!f.querySelector(":scope > .reqnote")){const n=document.createElement("p");n.className="reqnote";n.innerHTML='<span class="rstar">*</span> Required field';f.prepend(n)}}
+function add(){const k=at||"service"; view.innerHTML=`<div class="addhead"><h2>Add Post</h2></div> <div class="addcard">${k==="job"?jobForm():svcForm()}</div>`;
+ if(k==="service")setRT(document.getElementById("svRT").value);decorate(view)}
 const bRange=o=>{const m=String(o.b||"").replace(/,/g,"").match(/\d+/g)||[];return[o.bmin||m[0]||"",o.bmax||m[1]||m[0]||""]};
 const jobForm=o=>{const[bn,bx]=o?bRange(o):["",""],pr=o&&["full","contract","freelance"].includes(o.per)?o.per:"full";return `<form class="pform" onsubmit="${o?"saveEdit(event)":"postJob(event)"}"><label>Job title<input id="jt" required maxlength="70" placeholder="e.g. Install a new water heater" value="${o?esc(o.t):""}"></label>
  <label>Job description<textarea id="jd" required placeholder="Describe the work, timing and any tools or certificates needed.">${o?esc(o.d):""}</textarea></label>
@@ -2504,18 +2515,18 @@ const svcForm=o=>{const rt=o&&RTS[rtk(o)]&&o.rt?o.rt:"hour",fx=o&&o.fx==="perm"?
  ${catSel("svC","svCo",o&&o.c)}
  <label>Description<textarea id="svD" required placeholder="Experience, tools, certificates and anything clients should know.">${o?esc(o.d):""}</textarea></label>
  <input type="hidden" id="svFx" value="${fx}">
- <div class="fgrp"><div class="duo rtduo"><label>Pricing type<select id="svRT" onchange="setRT(this.value)">${(()=>{const L=[["hour","per hour"],["day","per day"],["minute","per minute"]];if(!L.some(a=>a[0]===rt))L.push([rt,"per "+(RTS[rt==="flex"?"project":rt][0])]);return L.map(([v,t])=>`<option value="${v}" ${rt===v?"selected":""}>${t}</option>`).join("")})()}</select></label><div id="svHbox"><label>Minimum hours work<select id="svH">${Array.from({length:24},(_,i)=>i+1).map(n=>`<option value="${n}" ${n===((o&&o.hrs)||1)?"selected":""}>${n}</option>`).join("")}</select></label></div></div>
+ <div class="fgrp"><div class="duo rtduo"><label>Pricing type<select id="svRT" required onchange="setRT(this.value)">${(()=>{const L=[["hour","per hour"],["day","per day"],["month","permanent"]],cur=({hour:"hour",day:"day",month:"month",minute:"hour",week:"day",year:"month",flex:"month",project:"month"})[rt]||"hour";return L.map(([v,t])=>`<option value="${v}" ${cur===v?"selected":""}>${t}</option>`).join("")})()}</select></label><div id="svHbox"><label>Minimum hours work<select id="svH" data-req="1">${Array.from({length:24},(_,i)=>i+1).map(n=>`<option value="${n}" ${n===((o&&o.hrs)||1)?"selected":""}>${n}</option>`).join("")}</select></label></div></div>
  <div class="duo"><label><span id="svMinL">Hourly rate from (₹)</span><input id="svMin" type="number" min="1" required placeholder="200" value="${o?o.min:""}"></label><label><span id="svMaxL">Hourly rate to (₹)</span><input id="svMax" type="number" min="1" required placeholder="400" value="${o?o.max:""}"></label></div></div>
- <div class="fgrp"><b class="fl">Available Hours and Day</b><div class="duo"><label>From<input id="svF" type="time" value="${o?o.from:"09:00"}" required></label><label>To<input id="svU" type="time" value="${o?o.to:"18:00"}" required></label></div>
+ <div class="fgrp"><b class="fl" data-req="1">Available Hours and Day</b><div class="duo"><label>From<input id="svF" type="time" value="${o?o.from:"09:00"}" required></label><label>To<input id="svU" type="time" value="${o?o.to:"18:00"}" required></label></div>
   <div class="days" role="group" aria-label="Available days">${DAYS.map(d=>`<label class="dchip"><input type="checkbox" name="sd" value="${d}" ${(o?o.days.includes(d):d!=="Sun")?"checked":""}><span>${d}</span></label>`).join("")}</div></div>
  <label>Location<input id="svL" required placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label>
  <div class="duo"><label>Experience<select id="svX">${expOpts(o&&o.exp,0)}</select></label><label>Qualifications<input id="svQ" maxlength="80" placeholder="e.g. ITI Plumbing, diploma, licence" value="${o?esc(o.qual||""):""}"></label></div>
  <button class="btn" style="justify-self:start">${o?"Save changes":"Publish"}</button></form>`};
-function setRT(v){const i=document.getElementById("svRT");if(!i)return;if(!RTS[v==="flex"?"project":v])v="hour";i.value=v;document.querySelectorAll("#rtSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
- const f=v==="flex",fxs=document.getElementById("svFx"),fx=f&&fxs&&fxs.value==="perm"?"perm":"free",w=f?(fx==="perm"?"Monthly salary":"Project fee"):{hour:"Hourly rate",minute:"Per-minute rate",day:"Daily rate",week:"Weekly rate",month:"Monthly rate",year:"Yearly package"}[v],ph=RTP[f?fx:v];
+function setRT(v){const i=document.getElementById("svRT");if(!i)return;if(!RTS[v==="flex"?"project":v])v="hour";v=({minute:"hour",week:"day",year:"month",flex:"month",project:"month"})[v]||v;i.value=v;document.querySelectorAll("#rtSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
+ const f=v==="flex",fxs=document.getElementById("svFx"),fx=f&&fxs&&fxs.value==="perm"?"perm":"free",w=f?(fx==="perm"?"Monthly salary":"Project fee"):{hour:"Hourly rate",minute:"Per-minute rate",day:"Daily rate",week:"Weekly rate",month:"Permanent salary",year:"Yearly package"}[v],ph=RTP[f?fx:v];
  const fb=document.getElementById("svFxBox");if(fb)fb.classList.toggle("hide",!f);document.getElementById("svHbox").classList.toggle("hide",v!=="hour");document.getElementById("svH").disabled=v!=="hour";
  document.getElementById("svMinL").textContent=w+" from (₹)";document.getElementById("svMaxL").textContent=w+" to (₹)";
- const mn=document.getElementById("svMin"),mx=document.getElementById("svMax");mn.placeholder=ph[0];mx.placeholder=ph[1]}
+ const mn=document.getElementById("svMin"),mx=document.getElementById("svMax");mn.placeholder=ph[0];mx.placeholder=ph[1];decorate(document.getElementById("svRT").form)}
 function readSvc(){const rt=RTS[svRT.value==="flex"?"project":svRT.value]?svRT.value:"hour",mn=+svMin.value,mx=+svMax.value,hrs=rt==="hour"?+svH.value:null,ds=DAYS.filter(d=>document.querySelector(`input[name=sd][value=${d}]:checked`));
  if(!(mn>=1&&mx>=mn)){toast("The “to” price must be at least the “from” price");svMax.focus();return null}
  if(rt==="hour"&&!(Number.isInteger(hrs)&&hrs>=1&&hrs<=24)){toast("Enter minimum hours between 1 and 24");svH.focus();return null}
@@ -2533,7 +2544,7 @@ function postJob(e){e.preventDefault();const d=readJob();if(!d)return;const nj=O
 let ed=null;
 function ownPost(kind,id){const o=(kind==="job"?S.jobs:S.services).find(x=>x.id===id);return o&&o.by===S.name?o:null}
 function editPost(kind,id){const o=ownPost(kind,id);if(!o)return;ed={kind,id};shut("postD","profD","storyD","delD");
- editD.innerHTML=`<div class="dh"><h3 style="margin:0">Edit ${kind==="job"?"vacancy":"service"}</h3><button type="button" class="x" aria-label="Close" onclick="editD.close()">✕</button></div>${kind==="job"?jobForm(o):svcForm(o)}`;editD.showModal();if(kind==="service")setRT(o.rt||"hour");else{drInit(o);drRender()}}
+ editD.innerHTML=`<div class="dh"><h3 style="margin:0">Edit ${kind==="job"?"vacancy":"service"}</h3><button type="button" class="x" aria-label="Close" onclick="editD.close()">✕</button></div>${kind==="job"?jobForm(o):svcForm(o)}`;editD.showModal();if(kind==="service")setRT(o.rt||"hour");else{drInit(o);drRender()}decorate(editD)}
 function saveEdit(e){e.preventDefault();if(!ed)return;const o=ownPost(ed.kind,ed.id);if(!o){editD.close();return}const d=ed.kind==="service"?readSvc():readJob();if(!d)return;
  Object.assign(o,d);log("edited "+ed.kind,o.t);save();editD.close();toast("Post updated");render()}
 function delPost(kind,id){const o=ownPost(kind,id);if(!o)return;shut("postD","editD");const n=kind==="job"?o.p.length:o.b.length,w=kind==="job"?"request":"booking";
