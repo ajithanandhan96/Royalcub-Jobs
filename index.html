@@ -1343,6 +1343,27 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .btn.pitchb.booknow:hover,.btn.pitchb.booknow:focus-visible{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
 .btn.pitchb.booknow:active{background:#1e40af;color:#fff;border-color:#1e40af}
 @media (prefers-reduced-motion:reduce){.btn.pitchb.booknow{transition:none}}
+
+/* ===== Add Post: hide the "Required field" note; asterisks mark each mandatory field ===== */
+.addcard .reqnote{display:none!important}
+
+/* ===== Booking Requested pop-up: animated checkmark ===== */
+#bkOk{width:min(300px,86vw);text-align:center;padding:30px 24px 26px}
+#bkOk::backdrop{background:rgba(20,10,30,.6)}
+#bkOk .okx{width:84px;height:84px;display:block;margin:0 auto 14px}
+#bkOk .okc{fill:none;stroke:var(--ok);stroke-width:3;stroke-dasharray:151;stroke-dashoffset:151;stroke-linecap:round;transform-origin:center;transform:rotate(-90deg)}
+#bkOk .okp{fill:none;stroke:var(--ok);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40}
+#bkOk h3{margin:0 0 4px;font-size:20px;font-weight:800;letter-spacing:-.2px}
+#bkOk p{margin:0;color:var(--mute);font-size:14px;font-weight:600}
+@media (prefers-reduced-motion:no-preference){
+#bkOk[open]{animation:okpop .3s ease both}
+#bkOk .okc{animation:okdraw .55s ease .1s forwards}
+#bkOk .okp{animation:okdraw .35s ease .6s forwards}
+#bkOk .okx{animation:okbump .35s ease .95s both}
+@keyframes okdraw{to{stroke-dashoffset:0}}
+@keyframes okpop{from{opacity:0;transform:scale(.92)}}
+@keyframes okbump{50%{transform:scale(1.12)}}}
+@media (prefers-reduced-motion:reduce){#bkOk .okc,#bkOk .okp{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
@@ -1529,7 +1550,7 @@ function notifView(){const L=S.notifs||[],un=unreadN();
 function resumeNeg(){S.services.forEach(x=>x.b.forEach(b=>{if(!b.id)b.id="b"+uid();if(!b.status)b.status="pending";if(!b.mode)b.mode="listed";}))}
 S.notifs=S.notifs||[];S.plan=PLANS.some(q=>q.id===S.plan)?S.plan:"free";S.nf=S.nf||"all";
 const EXPL=[["fresher","Fresher (0–1 yr)",0,1,["fresher","beginner","entry level","entry-level","trainee","new"]],["1-3","1–3 years",1,3,["junior"]],["3-5","3–5 years",3,5,["intermediate","mid-level","mid level"]],["5-10","5–10 years",5,10,["senior","experienced"]],["10+","10+ years",10,99,["expert","veteran","master","highly experienced"]]];
-const expOpts=(v,job)=>[["",job?"Any":"Not set"],...EXPL].map(e=>`<option value="${e[0]}" ${v===e[0]?"selected":""}>${e[1]}</option>`).join("");
+const expOpts=(v,job)=>[["",job?"Any":"Select experience"],...EXPL].map(e=>`<option value="${e[0]}" ${v===e[0]?"selected":""}>${e[1]}</option>`).join("");
 const expTx=x=>{const e=EXPL.find(q=>q[0]===(x&&x.exp));return e?e[1]:""};
 const attrSpans=(x,job)=>`${expTx(x)?`<span>${DI.medal}${esc(expTx(x))}${job?" needed":""}</span>`:""}${x&&x.qual?`<span>${DI.cap}${esc(x.qual)}</span>`:""}`;
 const SAS={};
@@ -2320,6 +2341,10 @@ function bkNotifyUI(x){if(postD.open&&ck==="service"&&cp===x.id)openService(x.id
 const tm12=t=>{const[h,m]=String(t||"").split(":").map(Number);return isNaN(h)?"":`${h%12||12}:${String(m||0).padStart(2,"0")} ${h<12?"AM":"PM"}`};
 function bkMsg(x,b,upd){const c=v=>String(v||"").replace(/¦/g,"|").trim(),u=uOf(x),base=`${rateTx(x)}/${u}`;
  return[`Booking Request from ${S.name}`,upd?"Updated request":"",`Service: “${x.t}”`,`Base price: ${base}`,`Offer: ${b.mode==="offer"?`₹${b.offer}/${u} × ${qtyTx(x,b.hours)} = ₹${b.offer*b.hours}`:`Listed rate ${base} × ${qtyTx(x,b.hours)} = ${estTx(x,b.hours)}`}`,`Date: ${b.date}`,`Time: ${tm12(b.time)}`,`Duration: ${qtyTx(x,b.hours)}`,`Location: ${c(b.loc)}`,b.note?`Note: ${c(b.note)}`:""].filter(Boolean).join(" ¦ ")}
+function bookDone(name){let d=document.getElementById("bkOk");if(d&&d.open)return;if(!d){d=document.createElement("dialog");d.id="bkOk";d.setAttribute("role","status");d.setAttribute("aria-label","Booking requested");document.body.appendChild(d)}
+ d.innerHTML=`<svg class="okx" viewBox="0 0 52 52" aria-hidden="true"><circle class="okc" cx="26" cy="26" r="24"/><path class="okp" d="M14 27l8 8 16-17"/></svg><h3>Booking Requested</h3><p>Opening your chat…</p>`;
+ let done=false,t=0;const next=()=>{if(done)return;done=true;clearTimeout(t);shut("postD","profD","storyD","addD","pitchD");openChat(ensure(name).id)};
+ d.addEventListener("close",next,{once:true});t=setTimeout(()=>{if(d.open)d.close()},1900);d.showModal()}
 function sendBook(){const h=+bh.value,o=+bo.value,x=bj;if(!bd.value){toast("Pick a date");bd.focus();return}const lo=qMin(x),hi=qMax(x);if(!(h>=lo&&h<=hi)){toast(`Enter between ${lo} and ${hi} ${uOf(x)}s`);bh.focus();return}
  if(!bt.value){toast("Pick a time");bt.focus();return}if(!bl.value.trim()){toast("Enter the location");bl.focus();return}
  if(bmode==="offer"&&!(o>=1&&o<=99999)){toast("Enter a valid offer per "+uOf(x));bo.focus();return}
@@ -2329,7 +2354,7 @@ function sendBook(){const h=+bh.value,o=+bo.value,x=bj;if(!bd.value){toast("Pick
   S.hist.unshift({id:"h"+Date.now(),bid:b.id,t:x.t,who:x.by,d:dt,a:bmode==="offer"?"₹"+o*h:estTx(x,h),s:"Requested",k:"spend"});
   Chat.send(ensure(x.by).id,bkMsg(x,b,false)+mkTag("bk",x.id,b.id,"pending"))}
  log(bmode==="offer"?"offered":"booked",x.t,bmode==="offer"?`₹${o}/${uS(x)}`:"listed");Notify.add({type:"booking",title:`Booking request sent to ${x.by}`,body:`${x.t} · ${dt} · ${bmode==="offer"?"₹"+o+"/"+uS(x):"listed rate"} · Pending`,act:{k:"service",id:x.id},read:1});
- bookD.close();save();render();if(postD.open)openService(x.id);toast("Booking request sent to "+x.by+" · Pending")}
+ bookD.close();save();render();bookDone(x.by)}
 function negRespond(sid,bid){const x=S.services.find(z=>z.id===sid),b=x&&x.b.find(q=>q.id===bid);if(!b||b.status!=="pending"||b.by!==S.name)return;
  const mid=Math.ceil((x.min+x.max)/2);let ttl,body,peer;
  if(b.mode!=="offer"||b.offer>=mid){b.status="accepted";ttl=`${x.by} accepted your ${b.mode==="offer"?"offer":"booking"}`;body=b.mode==="offer"?`Agreed at ₹${b.offer}/${uS(x)} · ₹${b.offer*b.hours} total`:`Listed rate · ${estTx(x,b.hours)}`;peer=b.mode==="offer"?`Deal! ₹${b.offer}/${uS(x)} works for me. See you on ${b.date}.`:`Booking confirmed for ${b.date}. See you then!`}
@@ -2563,10 +2588,10 @@ const svcForm=o=>{const rt=o&&RTS[rtk(o)]&&o.rt?o.rt:"hour",fx=o&&o.fx==="perm"?
  <input type="hidden" id="svFx" value="${fx}">
  <div class="fgrp"><div class="duo rtduo"><label>Pricing type<select id="svRT" required onchange="setRT(this.value)">${(()=>{const L=[["hour","per hour"],["day","per day"],["month","permanent"]],cur=({hour:"hour",day:"day",month:"month",minute:"hour",week:"day",year:"month",flex:"month",project:"month"})[rt]||"hour";return L.map(([v,t])=>`<option value="${v}" ${cur===v?"selected":""}>${t}</option>`).join("")})()}</select></label><div id="svHbox"><label>Minimum hours work<select id="svH" data-req="1">${Array.from({length:24},(_,i)=>i+1).map(n=>`<option value="${n}" ${n===((o&&o.hrs)||1)?"selected":""}>${n}</option>`).join("")}</select></label></div></div>
  <div class="duo"><label><span id="svMinL">Hourly rate from (₹)</span><input id="svMin" type="number" min="1" required placeholder="200" value="${o?o.min:""}"></label><label><span id="svMaxL">Hourly rate to (₹)</span><input id="svMax" type="number" min="1" required placeholder="400" value="${o?o.max:""}"></label></div></div>
- <div class="fgrp"><b class="fl" data-req="1">Available Hours and Day</b><div class="duo"><label>From<input id="svF" type="time" value="${o?o.from:"09:00"}" required></label><label>To<input id="svU" type="time" value="${o?o.to:"18:00"}" required></label></div>
+ <div class="fgrp"><div class="duo"><label>Available Hours From<input id="svF" type="time" value="${o?o.from:"09:00"}" required></label><label>Available Hours To<input id="svU" type="time" value="${o?o.to:"18:00"}" required></label></div>
   <div class="days" role="group" aria-label="Available days">${DAYS.map(d=>`<label class="dchip"><input type="checkbox" name="sd" value="${d}" ${(o?o.days.includes(d):d!=="Sun")?"checked":""}><span>${d}</span></label>`).join("")}</div></div>
  <label>Location<input id="svL" required placeholder="Neighbourhood or city" value="${o?esc(o.loc):""}"></label>
- <div class="duo"><label>Experience<select id="svX">${expOpts(o&&o.exp,0)}</select></label><label>Qualifications<input id="svQ" maxlength="80" placeholder="e.g. ITI Plumbing, diploma, licence" value="${o?esc(o.qual||""):""}"></label></div>
+ <div class="duo"><label>Experience<select id="svX" required>${expOpts(o&&o.exp,0)}</select></label><label>Qualifications<input id="svQ" required maxlength="80" placeholder="e.g. ITI Plumbing, diploma, licence" value="${o?esc(o.qual||""):""}"></label></div>
  <button class="btn" style="justify-self:start">${o?"Save changes":"Publish"}</button></form>`};
 function setRT(v){const i=document.getElementById("svRT");if(!i)return;if(!RTS[v==="flex"?"project":v])v="hour";v=({minute:"hour",week:"day",year:"month",flex:"month",project:"month"})[v]||v;i.value=v;document.querySelectorAll("#rtSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
  const f=v==="flex",fxs=document.getElementById("svFx"),fx=f&&fxs&&fxs.value==="perm"?"perm":"free",w=f?(fx==="perm"?"Monthly salary":"Project fee"):{hour:"Hourly rate",minute:"Per-minute rate",day:"Daily rate",week:"Weekly rate",month:"Permanent salary",year:"Yearly package"}[v],ph=RTP[f?fx:v];
