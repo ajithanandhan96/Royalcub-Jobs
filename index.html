@@ -1364,6 +1364,66 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 @keyframes okpop{from{opacity:0;transform:scale(.92)}}
 @keyframes okbump{50%{transform:scale(1.12)}}}
 @media (prefers-reduced-motion:reduce){#bkOk .okc,#bkOk .okp{stroke-dashoffset:0}}
+
+/* ===== Landing redesign: slim top bar, compact tagline beside Chat, flat content area, tighter rhythm ===== */
+/* Top bar: logo and actions on one slim line (no tall gradient block) */
+body:not(.out,.onb,.adm,.tncv,.tnc2) .hero{padding-top:10px;padding-bottom:10px;border-bottom:1px solid color-mix(in srgb,var(--navytx) 10%,transparent)}
+body:not(.out,.onb,.adm,.tncv,.tnc2) .top{min-height:48px;gap:12px}
+body:not(.out,.onb,.adm,.tncv,.tnc2) .ic{width:42px;height:42px}
+/* Condensed tagline: hidden on phones (as before), shown beside the Chat button on larger screens */
+.tagl{display:none}
+@media (min-width:768px){
+ .tagl{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;text-align:right;line-height:1.25;padding:2px 16px 2px 0;margin-right:2px;border-right:1px solid color-mix(in srgb,var(--navytx) 22%,transparent)}
+ .tagl small{font-size:11.5px;font-weight:600;color:var(--mute);letter-spacing:.1px}
+ .tagl b{font-size:13.5px;font-weight:800;color:var(--navytx);letter-spacing:-.1px;white-space:nowrap}
+}
+@media (min-width:768px) and (max-width:899px){.tagl small{display:none}.tagl{padding-right:12px}}
+
+/* Content area starts right under the bar: no curved overlap, no dead band */
+body:not(.out,.onb,.adm,.tncv,.tnc2) .sheet{margin-top:0;border-radius:0;box-shadow:none}
+body:not(.out,.onb,.adm,.tncv,.tnc2,.chatopen) .sheet{padding-top:16px}
+
+/* Search */
+body:not(.out,.onb,.adm,.tncv,.tnc2) .sbar{padding:4px 0 8px}
+body:not(.out,.onb,.adm,.tncv,.tnc2) .sbar .sf{min-height:48px;border-radius:14px;background:var(--soft);border:1.5px solid var(--line)}
+body:not(.out,.onb,.adm,.tncv,.tnc2) .sbar .sf:focus-within{border-color:var(--plum)}
+body:not(.out,.onb,.adm,.tncv,.tnc2) .sbar .sf input{height:46px;font-size:15px}
+
+/* Section headings: title with its count right beside it */
+.sbar~.row,.sbar~.row.wkrow{justify-content:flex-start;align-items:center;gap:10px;margin:14px 0 8px}
+.sbar~.row.wkrow{justify-content:space-between;margin-top:6px}
+.sbar~.row h2,.sbar~.row .wkh h2{font-size:15px!important;font-weight:700!important;letter-spacing:-.005em!important;color:var(--ink)}
+.sbar~.row>span,.sbar~.row .wkh>span{display:inline-grid;place-items:center;min-width:26px;height:22px;padding:0 8px;border-radius:99px;background:var(--soft);color:var(--mute);font-size:12px!important;font-weight:700;line-height:1}
+.sbar~.row.wkrow .wkh{display:flex;align-items:center;gap:10px}
+
+/* Status + Categories: tidy and aligned to the same left edge */
+.sbar~.status{margin-bottom:4px}
+.sbar~.catwrap{margin-bottom:6px}
+.cats{padding:2px 2px 4px}
+.cats .cat{border-radius:16px;transition:border-color .15s,box-shadow .15s}
+.cats .cat b{letter-spacing:-.005em}
+.cats .cat small{color:var(--mute)}
+#locnote{margin:0 0 4px!important}
+#locnote:empty,#syncchip:empty{display:none}
+
+/* Post list: cards fill the full width instead of leaving a blank column */
+.list{grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))!important;gap:14px;align-items:start}
+.list .empty{grid-column:1/-1}
+.job{border-radius:20px;padding:18px;box-shadow:none;border:1px solid var(--line);background:var(--bg)}
+.job h3{font-size:17px;letter-spacing:-.01em;line-height:1.3}
+.job .meta{font-size:13.5px;gap:6px 14px;margin:8px 0 10px}
+.job p{font-size:14.5px;line-height:1.55;max-width:none}
+@media (hover:hover){.job:hover{border-color:color-mix(in srgb,var(--plum) 40%,var(--line))}}
+.empty{padding:26px 20px;border:1.5px dashed var(--line);background:transparent;border-radius:18px;font-size:14.5px;line-height:1.5}
+
+/* Phones: slimmer bar, tighter spacing */
+@media (max-width:767px){
+ body:not(.out,.onb,.adm,.tncv,.tnc2) .hero{padding-top:8px;padding-bottom:8px}
+ body:not(.out,.onb,.adm,.tncv,.tnc2,.chatopen) .sheet{padding-top:12px}
+ .sbar~.row,.sbar~.row.wkrow{margin-top:12px}
+}
+@media (prefers-reduced-motion:reduce){.cats .cat{transition:none}}
+
 </style>
 </head>
 <body>
@@ -1379,11 +1439,10 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
    <button class="ic backb" id="backB" type="button" aria-label="Go back" onclick="goBack()" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg></button>
    <button class="ic menu" aria-label="Open menu" onclick="toggleMenu()" aria-haspopup="dialog" aria-expanded="false" aria-controls="drawer" id="menuB"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v2.5H3zm0 5.75h18v2.5H3zM3 16.5h18V19H3z"/></svg></button>
    <div class="brand"><img class="hl lg-l" id="hlL" alt="RoyalCub Jobs" height="36"><img class="hl lg-d" id="hlD" alt="RoyalCub Jobs" height="36"></div>
+   <div class="tagl" role="note"><small>It’s a platform for</small><b>Hire fast. Work smart. Get it done.</b></div>
    <button class="bell chatb" id="chatB" type="button" aria-label="Chat" onclick="go('chat')"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><b id="cn">0</b></button>
    <button class="bell" id="bellB" aria-label="Notifications" onclick="go('notifications')"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9a6 6 0 1 1 12 0c0 6 2 7 2 7H4s2-1 2-7zM10 20h4"/></svg><b id="bn">0</b></button>
   </div>
-  <p>It’s a platform for,</p>
-  <h1>Hire fast. Work smart. Get it done.</h1>
  </header>
  <main class="sheet" id="view"></main>
 </div>
