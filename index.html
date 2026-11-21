@@ -466,7 +466,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .bpa .blk svg,.bpa .bcmb svg{width:18px;height:18px;display:block;flex:none;margin:0;vertical-align:0}
 /* minimal service cards + detail page */
 .list{grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))!important}
-.list .job.svcm{display:flex;flex-direction:column;gap:8px;height:216px;padding:16px;box-sizing:border-box;overflow:hidden;min-width:0}
+.list .job.svcm{display:flex;flex-direction:column;gap:8px;height:232px;padding:16px 16px 18px;box-sizing:border-box;overflow:hidden;min-width:0}
 .svcm .sm-top{display:flex;align-items:center;gap:10px;min-width:0}.svcm .sm-top .av{flex:none}
 .svcm .sm-id{min-width:0;flex:1;display:grid}.svcm .sm-id b,.svcm .sm-id small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.svcm .sm-id small{color:var(--mute);font-size:12.5px}
 .svcm .tag{flex:none;max-width:42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -475,8 +475,9 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .svcm .sm-meta span{display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis}.svcm .sm-meta span:first-child{flex:0 1 auto}
 .svcm .sm-meta svg{width:15px;height:15px;flex:none;margin-right:4px;vertical-align:0}
 .list .job.svcm>p.sm-d{display:block;flex:none;-webkit-line-clamp:1;line-clamp:1;margin:0;font-size:14px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.8}
-.svcm .sm-rate{margin-top:auto;display:flex;align-items:baseline;gap:6px;padding:10px 14px;border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--plum) 16%,transparent),color-mix(in srgb,var(--plum) 6%,transparent));color:var(--plum)}
-.svcm .sm-rate b{font-size:20px;font-weight:800;letter-spacing:-.01em;white-space:nowrap}.svcm .sm-rate small{color:var(--mute);font-weight:600;font-size:13px}
+.svcm .sm-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:4px}
+.svcm .sm-rate{display:flex;align-items:baseline;gap:6px;min-width:0;color:var(--ink);background:none;padding:0}
+.svcm .sm-rate b{font-size:20px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;color:var(--ink)}.svcm .sm-rate small{color:var(--mute);font-weight:600;font-size:13px}
 .svcm:focus-visible{outline:2px solid var(--plum);outline-offset:2px}
 .svgrid{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
 @media (min-width:900px){.svgrid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
@@ -487,6 +488,12 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .svsel select{width:100%;min-height:44px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:700}
 @media (min-width:900px){.svsel{justify-self:end;width:200px}}
 .svbody{display:grid;gap:10px;align-content:start}.svbody .pscroll{overflow:visible}
+.svcm .smbk{flex:none;min-height:40px;padding:0 18px;font-size:14.5px;border-radius:99px;width:auto}
+.svcm .ypb{flex:none;padding:7px 14px;border-radius:99px;font-size:13px;font-weight:700;color:var(--plum);background:color-mix(in srgb,var(--plum) 14%,transparent);border:1px solid color-mix(in srgb,var(--plum) 35%,transparent)}
+.sbar~.row>span,.sbar~.row .wkh>span,.sheet:has(#sbar) .sbar~.row>span,.sheet:has(#sbar) .sbar~.row .wkh>span{background:none!important;border:0!important;min-width:0!important;height:auto!important;padding:0!important;border-radius:0!important}
+.svgrid{align-items:stretch!important}
+.svsel{position:relative}.svsel select{appearance:none;-webkit-appearance:none;padding-right:40px}
+.svsel::after{content:"";position:absolute;right:14px;top:50%;width:9px;height:9px;border-right:2.5px solid var(--ink);border-bottom:2.5px solid var(--ink);transform:translateY(-70%) rotate(45deg);pointer-events:none}
 @media (max-height:700px) and (min-width:600px){.auth{place-items:start center}}
 .out .main,.out .sheet{max-width:none;width:100%;margin-left:0;margin-right:0}
 .out .app{display:block}
@@ -2652,13 +2659,13 @@ function home(){
 function historyView(){const h=S.hist;
  view.innerHTML=`<button class="btn alt" style="padding:6px 16px;margin-bottom:14px" onclick="go('profile')">‹ Back</button><div class="row"><h2>Booking history</h2><span>${String(h.length).padStart(2,"0")}</span></div>
  <div class="set hgrid">${h.length?h.map(x=>`<div class="hi"><div class="t"><b>${esc(x.t)}</b><span class="pill ${esc(x.s)}">${esc(x.s==="Requested"?"Pending":x.s)}</span></div><small>${esc(x.who)} · ${esc(x.d)}</small><b style="color:var(--plum)">${x.k==="earn"?mEarn():DI.rupee}${esc(x.a)}</b></div>`).join(""):`<div class="empty">No bookings yet. Requests you send will show up here.</div>`}</div>`}
-function svcCard(x){const des=roleOf(x.by),ex=expTx(x);
+function svcCard(x){const des=roleOf(x.by),ex=expTx(x),mine=x.by===S.name;
  return `<article class="job svcm" role="button" tabindex="0" onclick="openService(${x.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openService(${x.id})}" aria-label="Open ${esc(x.t)} by ${esc(x.by)}">
  <div class="sm-top"><div class="av sm" style="${abg(x.by)}" aria-hidden="true">${ait(x.by)}</div><div class="sm-id"><b>${esc(x.by)}</b><small>${esc(des||"")}</small></div><span class="tag">${esc(x.c)}</span></div>
  <h3 class="sm-h">${esc(x.t)}</h3>
  <div class="sm-meta"><span>${LOC}${esc(x.loc)}</span>${ex?`<span>${DI.medal}${esc(ex)}</span>`:""}</div>
  <p class="sm-d">${esc(x.d)}</p>
- <div class="sm-rate"><b>${rateTx(x)}</b><small>per ${uOf(x)}</small></div></article>`}
+ <div class="sm-foot"><div class="sm-rate"><b>${rateTx(x)}</b><small>per ${uOf(x)}</small></div>${mine?`<span class="ypb">Your Post</span>`:`<button type="button" class="btn booknow smbk" onclick="event.stopPropagation();book(${x.id})">Book Now</button>`}</div></article>`}
 const fmtS=t=>new Date(t).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
 const ago=t=>{const x=(Date.now()-t)/1e3;if(x<60)return"Just now";if(x<3600)return Math.floor(x/60)+" min ago";if(x<86400)return Math.floor(x/3600)+" h ago";if(x<604800)return Math.floor(x/86400)+" d ago";return fmtS(t)};
 const rvRow=(x,i)=>`<div class="cm ${i>2?"rv-x hide":""}"><div class="l1"><button class="rvwho" data-n="${esc(x.by)}" onclick="openProfile(this.dataset.n)" aria-label="View profile of ${esc(x.by)}"><span class="av tiny" style="${abg(x.by)}" aria-hidden="true">${ait(x.by)}</span><b>${esc(x.by)}</b></button><small>${fmtS(x.ts)}</small></div><div>${starTx(x.r)}</div>${x.t&&x.t!=="No comment left."?`<span>${esc(x.t)}</span>`:`<span class="cnt">Rated ${x.r} out of 5</span>`}</div>`;
