@@ -68,3 +68,14 @@ self.addEventListener("notificationclick", (event) => {
 self.addEventListener("pushsubscriptionchange", (event) => {
   event.waitUntil(self.clients.matchAll({ includeUncontrolled: true }).then((l) => l.forEach((c) => c.postMessage({ type: "fcm-refresh" }))));
 });
+
+// Background Sync: when the app could not reach the server, the browser wakes this worker once the
+// connection is back and we ask any open RoyalCub window to run a full data sync.
+self.addEventListener("sync", (event) => {
+  if (event.tag !== "rc-sync") return;
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((cs) => {
+      cs.forEach((c) => c.postMessage({ type: "rc-sync" }));
+    })
+  );
+});

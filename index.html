@@ -1731,7 +1731,7 @@ const sbGoogleOn=()=>sbSet||(sbSet=SB_ON?fetch(SUPABASE_URL.trim().replace(/\/$/
 const SB_SRC=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js","https://unpkg.com/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"];
 const loadSB=()=>sbP||(sbP=new Promise((ok,no)=>{if(window.supabase&&supabase.createClient)return ok();let i=0;const next=()=>{if(window.supabase&&supabase.createClient)return ok();if(i>=SB_SRC.length){sbP=null;return no(new Error("load"))}const sc=document.createElement("script");sc.src=SB_SRC[i++];sc.async=true;const t=setTimeout(()=>{sc.remove();next()},9000);sc.onload=()=>{clearTimeout(t);ok()};sc.onerror=()=>{clearTimeout(t);sc.remove();next()};document.head.appendChild(sc)};next()}));
 async function sbClient(){if(sb)return sb;await loadSB();sb=supabase.createClient(SUPABASE_URL.trim().replace(/\/$/,""),SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return sb}
-const sbOut=()=>{try{if(sb)sb.auth.signOut()}catch(e){}try{RT.stop()}catch(e){}try{pushOff()}catch(e){}};
+const sbOut=()=>{try{if(sb)sb.auth.signOut()}catch(e){}try{Auth.onLogout()}catch(e){}try{RT.stop()}catch(e){}try{pushOff()}catch(e){}};
 const CFG=Object.assign({googleClientId:GOOGLE_CLIENT_ID||((document.querySelector('meta[name="google-client-id"]')||{}).content||"").trim(),googleVerifyUrl:"",newProMs:45000},window.RC_CONFIG||{});
 const CATS=["All","Plumbing","Electrical","Nursing","Gardening","Cleaning","Carpentry","Driving","Painting","Cooking","Mechanic","Workshop","Tailoring","Salon","Repair Shop","Laundry","Printing"];
 const CMETA={Plumbing:{e:"🔧",k:["plumber","plumbing","pipe","tap","leak","drain"]},Electrical:{e:"⚡",k:["electrician","electrical","wiring","wire","socket","switch"]},Nursing:{e:"🩺",k:["nurse","nursing","caregiver","care","patient","elderly"]},Gardening:{e:"🌿",k:["gardener","gardening","garden","lawn","hedge","plants"]},Cleaning:{e:"🧹",k:["cleaner","cleaning","maid","housekeeping","sweep"]},Carpentry:{e:"🪑",k:["carpenter","carpentry","wood","furniture","door"]},Driving:{e:"🚗",k:["driver","driving","chauffeur","cab","taxi","car"]},Painting:{e:"🎨",k:["painter","painting","paint","wall","whitewash"]},Cooking:{e:"🍳",k:["cook","chef","cooking","kitchen","catering","food"]},Mechanic:{e:"🛠️",k:["mechanic","repair","garage","engine","bike","service"]},
@@ -1774,11 +1774,11 @@ let S={services:[],tab:"jobs",role:"client",name:"",theme:"dark",priv:{vis:true,
  jobs:[],stories:[],threads:[]};
 try{const x=JSON.parse(localStorage.getItem("rcj")||"null");if(x&&x.jobs)S=Object.assign(S,x,{view:"home",thread:null,out:false,sec:null,q:"",qloc:""})}catch(e){}
 /* Login persistence: a tiny separate record keeps people signed in even if the big app-state key can't be saved (storage full) or is cleared. */
-const SESS_KEY="rc_sess";
+const SESS_KEY="rc_sess",SESS_TTL=30*864e5;
 function sessSave(){try{if(S.me&&!S.out){const u=(S.users||[]).find(x=>x&&x.email===S.me);if(u&&u.role!=="admin")localStorage.setItem(SESS_KEY,JSON.stringify({v:1,email:u.email,name:u.name,role:u.role==="worker"?"worker":"client",phone:u.phone||"",age:u.age||"",cat:u.cat||"",title:u.title||"",loc:u.loc||"",at:Date.now()}))}else if(!S.me)localStorage.removeItem(SESS_KEY)}catch(e){}}
 function askPersist(){try{if(navigator.storage&&navigator.storage.persist&&!/firefox/i.test(navigator.userAgent))navigator.storage.persist()}catch(e){}}
 try{if(!S.me){const r=JSON.parse(localStorage.getItem(SESS_KEY)||"null");
- if(r&&r.v===1&&typeof r.email==="string"&&typeof r.name==="string"&&/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(r.email)&&r.name.length>1){
+ if(r&&r.v===1&&(Date.now()-(+r.at||0))<SESS_TTL&&typeof r.email==="string"&&typeof r.name==="string"&&/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(r.email)&&r.name.length>1){
   S.users=Array.isArray(S.users)?S.users:[];let u=S.users.find(x=>x&&x.email===r.email);
   if(!u){u={email:r.email,pw:"",name:String(r.name).slice(0,40),phone:r.phone||"",age:r.age||"",cat:r.cat||"Client",role:r.role==="worker"?"worker":"client",title:r.title||"",loc:r.loc||"",status:"active",joined:Date.now()};S.users.push(u)}
   S.me=u.email;S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false}}}catch(e){}
@@ -1848,14 +1848,68 @@ function syncUI(){const e=document.getElementById("syncchip");if(e)e.innerHTML=s
 const cBase=()=>SUPABASE_URL.trim().replace(/\/$/,"")+"/rest/v1/rc_content";
 const cHead=x=>Object.assign({apikey:SUPABASE_KEY,"Content-Type":"application/json"},x||{});
 const cData=o=>{const d=Object.assign({},o);delete d.v;delete d.p;delete d.b;return d};
-async function cFetch(url,opt){const r=await fetch(url,opt);if(!r.ok){if([401,403,404].includes(r.status)){cOff=true;cOffAt=Date.now();cState="off";syncUI();console.warn("RoyalCub: shared content is off (HTTP "+r.status+"). Run supabase_setup.sql in your Supabase project.")}throw new Error("HTTP "+r.status)}return r}
+/* ---------- Auth layer: request interceptor, session lifecycle, launch sync ----------
+   - apiFetch(): every server call goes through it (timeout, retry with backoff, one token refresh on 401, single-flight)
+   - Auth.gen: bumped on login/logout so a slow sync from an old session can never write into a new one
+   - Auth.check(): runs on launch, resume, reconnect and every minute (session age, other-tab logout, auto-refresh on/off, sync)
+   - forceSync(): full push + pull with retries; runs on launch, login, resume and when the service worker wakes us */
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const Auth={gen:0,bo:0,last:0,ref:null};
+Auth.useTok=()=>!!(window.RC_CONFIG&&window.RC_CONFIG.userToken===true);
+Auth.tok=async()=>{if(!Auth.useTok()||!sb)return null;try{const{data}=await sb.auth.getSession();return data&&data.session?data.session.access_token:null}catch(e){return null}};
+Auth.refresh=()=>Auth.ref||(Auth.ref=(async()=>{try{if(!sb)return null;const{data,error}=await sb.auth.refreshSession();return error||!data||!data.session?null:data.session.access_token}catch(e){return null}finally{setTimeout(()=>{Auth.ref=null},0)}})());
+Auth.dropSession=()=>{try{if(sb)sb.auth.signOut({scope:"local"})}catch(e){}};
+Auth.retryMs=()=>Math.min(300000,15000*Math.pow(2,Auth.bo));
+Auth.due=()=>cOff&&cOffAt&&Date.now()-cOffAt>Auth.retryMs();
+async function apiFetch(url,opt){
+ opt=Object.assign({},opt);const m=String(opt.method||"GET").toUpperCase();
+ const safe=m==="GET"||m==="DELETE"||m==="HEAD"||/on_conflict=/.test(url)||/\/rpc\/rc_(contact_taken|push_)/.test(url),own=!!opt.signal;
+ let tok=await Auth.tok(),used=!!tok,refreshed=false;
+ for(let n=0;;n++){
+  const h=Object.assign({},opt.headers);if(tok)h.Authorization="Bearer "+tok;
+  const ac=own?null:new AbortController(),tm=ac?setTimeout(()=>ac.abort(),45000):0;let r;
+  try{r=await fetch(url,Object.assign({},opt,{headers:h},ac?{signal:ac.signal}:{}))}
+  catch(e){if(tm)clearTimeout(tm);if(safe&&n<2&&!(own&&opt.signal.aborted)){await wait(600*Math.pow(2,n)+Math.random()*250);continue}throw e}
+  if(tm)clearTimeout(tm);
+  if(r.status===401&&used&&!refreshed){refreshed=true;const t=await Auth.refresh();if(t){tok=t;continue}tok=null;used=false;Auth.dropSession();continue}
+  if(safe&&n<2&&(r.status===429||(r.status>=502&&r.status<=504))){const ra=+r.headers.get("retry-after");await wait(ra>0&&ra<10?ra*1e3:600*Math.pow(2,n)+Math.random()*250);continue}
+  return r}}
+async function authRetry(fn){let r;for(let n=0;n<3;n++){try{r=await fn();const st=r&&r.error&&r.error.status;if(r&&r.error&&(!st||st===429||st>=500)&&n<2){await wait(800*Math.pow(2,n));continue}return r}catch(e){if(n<2){await wait(800*Math.pow(2,n));continue}throw e}}return r}
+Auth.onLogin=()=>{Auth.gen++;Auth.bo=0};
+Auth.onLogout=()=>{Auth.gen++;Auth.bo=0;Auth.last=0;cHash={};try{cPLast="1970-01-01T00:00:00Z"}catch(e){}cOff=!SB_ON;cOffAt=0;cState=SB_ON?"wait":"local";clearTimeout(cT);cT=null;
+ try{localStorage.removeItem(SESS_KEY);Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}};
+Auth.expire=msg=>{if(S.out||!S.me)return;try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view="home";au="home";pgReset();save();render();if(msg)toast(msg)};
+Auth.check=async why=>{if(S.out||!S.me)return;
+ try{const r=JSON.parse(localStorage.getItem(SESS_KEY)||"null");if(r&&r.at&&Date.now()-r.at>SESS_TTL)return Auth.expire("Your session expired. Please log in again.")}catch(e){}
+ if(sb){try{document.hidden?sb.auth.stopAutoRefresh():sb.auth.startAutoRefresh()}catch(e){}}
+ if(Date.now()-Auth.last>15000)forceSync(why)};
+Auth.bgReg=()=>{try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>{if(r.sync)r.sync.register("rc-sync").catch(()=>{})})).catch(()=>{})}catch(e){}};
+async function forceSync(why){if(!SB_ON||S.out||!S.me)return false;const g=Auth.gen;
+ for(let i=0;i<40&&cBusy;i++)await wait(250);
+ cOff=false;cOffAt=0;
+ for(let n=0;n<4;n++){if(g!==Auth.gen||S.out||!S.me)return false;
+  await cSync();
+  if(cState==="ok"){Auth.last=Date.now();Auth.bo=0;try{RT.poll()}catch(e){}return true}
+  if(n<3)await wait(1500*Math.pow(2,n))}
+ Auth.bgReg();return false}
+Auth.start=()=>{
+ addEventListener("storage",e=>{if(e.key!==SESS_KEY||S.out||!S.me)return;
+  if(!e.newValue)Auth.expire("You were logged out in another tab.");
+  else{try{const r=JSON.parse(e.newValue);if(r&&r.email&&r.email!==S.me)location.reload()}catch(_){}}});
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden)Auth.check("resume");else try{if(sb)sb.auth.stopAutoRefresh()}catch(e){}});
+ addEventListener("online",()=>Auth.check("online"));
+ addEventListener("pageshow",e=>{if(e.persisted)Auth.check("pageshow")});
+ setInterval(()=>{if(!document.hidden)Auth.check("tick")},60000);
+ try{if(navigator.serviceWorker)navigator.serviceWorker.addEventListener("message",e=>{if(e.data&&e.data.type==="rc-sync")forceSync("bg")})}catch(e){}};
+Auth.launch=async()=>{if(S.out||!S.me)return;await forceSync("launch")};
+async function cFetch(url,opt){const r=await apiFetch(url,opt);if(!r.ok){if([401,403,404].includes(r.status)){cOff=true;cOffAt=Date.now();Auth.bo=Math.min(Auth.bo+1,5);cState="off";syncUI();console.warn("RoyalCub: shared content is off (HTTP "+r.status+"). Run supabase_setup.sql in your Supabase project.")}throw new Error("HTTP "+r.status)}return r}
 /* ---------- Genuine views: only real accounts, synced between accounts as "view" rows ---------- */
 const realUser=n=>{if(!n||typeof n!=="string")return false;const u=(S.users||[]).find(x=>x&&x.name===n);return !!u&&u.status==="active"&&!isDemoN(n)};
 const canView=()=>!S.out&&!!S.me&&!!S.name&&(S.users||[]).some(u=>u&&u.email===S.me&&u.name===S.name&&u.status==="active");
 function scrubViews(){let ch=false;for(const [k,col] of CK)(S[col]||[]).forEach(o=>{const a=Array.isArray(o.v)?o.v:[],c=[...new Set(a.filter(n=>n!==o.by&&realUser(n)))];if(!Array.isArray(o.v)||c.length!==a.length){o.v=c;ch=true}});return ch}
 scrubViews();
 let cVW=false,cVDead=false;const cVSent=new Set();
-async function vFetch(url,opt){const r=await fetch(url,opt);if(!r.ok){if([400,401,403,404].includes(r.status))cVDead=true;throw new Error("HTTP "+r.status)}return r}
+async function vFetch(url,opt){const r=await apiFetch(url,opt);if(!r.ok){if([400,401,403,404].includes(r.status))cVDead=true;throw new Error("HTTP "+r.status)}return r}
 async function cViews(){if(cOff||cVDead||S.out||!S.me||!canView())return false;let ch=false;try{
  const me=S.name,rows=[];
  for(const [k,col] of CK)for(const o of (S[col]||[])){if(o.by===me||!Array.isArray(o.v)||!o.v.includes(me))continue;const id=k+":"+o.id+":"+me;if(cVSent.has(id))continue;rows.push({id,row:{kind:"view",id,owner:me,data:{k,oid:String(o.id),by:o.by,viewer:me,ts:Date.now()},updated_at:new Date().toISOString()}})}
@@ -1874,7 +1928,7 @@ async function cPush(){S.sy=S.sy||{};const up=[],del=[];
  if(up.length){await cFetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify(up.map(x=>x.row))});
   up.forEach(x=>{cHash[x.k+x.lid]=x.h;const a=S.sy[x.k]=S.sy[x.k]||[];if(!a.includes(x.lid))a.push(x.lid)})}
  for(const [k,id] of del){await cFetch(cBase()+"?kind=eq."+wK(k)+"&id=eq."+encodeURIComponent(wId(k,id)),{method:"DELETE",headers:cHead()});S.sy[k]=(S.sy[k]||[]).filter(x=>String(x)!==id)}}
-async function cPull(){const r=await cFetch(cBase()+"?kind=in.(job,service,story)&select=kind,id,owner,data,created_at&order=created_at.desc&limit=3000",{headers:cHead()});const rows=await r.json();
+async function cPull(){const g=Auth.gen;const r=await cFetch(cBase()+"?kind=in.(job,service,story)&select=kind,id,owner,data,created_at&order=created_at.desc&limit=3000",{headers:cHead()});const rows=await r.json();if(g!==Auth.gen)return false;
  if(!Array.isArray(rows))return false;S.sy=S.sy||{};let ch=false;const seen={job:new Set(),service:new Set(),story:new Set(),post:new Set(),plike:new Set(),pcmt:new Set()},pids=new Set(rows.filter(r=>bkOf(r)==="post").map(r=>String(r.id).replace(/^post:/,""))),bNow=Date.now();
  for(let row of rows.slice().reverse()){const k=bkOf(row);let d=row.data;if(BRK[k]&&d&&typeof d==="object"){d=Object.assign({},d);delete d.bk;row=Object.assign({},row,{id:String(row.id).replace(/^[a-z]+:/,"")})}if(!seen[k]||!d||typeof d!=="object"||isDemoN(row.owner||d.by)||(row.created_at&&Date.parse(row.created_at)<RESET_AT)||(BRK[k]&&(!(d.ts>0)||bNow-d.ts>BMONTH||(k!=="post"&&!pids.has(String(d.pid))))))continue;seen[k].add(String(row.id));
   const L=S[CK.find(x=>x[0]===k)[1]],i=L.findIndex(x=>String(x.id)===String(row.id));cHash[k+row.id]=JSON.stringify(d);
@@ -1906,14 +1960,15 @@ async function cProfiles(){if(cOff||S.out||!S.me)return false;let ch=false;try{
   if(typeof d.loc==="string"&&d.loc&&u.loc!==d.loc.slice(0,40)){u.loc=d.loc.slice(0,40);ch=true}
   if(typeof d.title==="string"&&u.title!==d.title.slice(0,40)){u.title=d.title.slice(0,40);ch=true}}
  }catch(e){if(!cFW){cFW=true;console.warn("RoyalCub: profile sync skipped ("+e.message+"). Re-run supabase_setup.sql to enable it.")}}return ch}
-async function cSync(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||cBusy||S.out||!S.me)return;cBusy=true;let ch=false;try{if(pruneBoard())ch=true}catch(e){}
- try{await cPush();ch=await cPull();if(!cOff)cState="ok"}catch(e){if(!cOff)cState="err";console.warn("RoyalCub sync:",e.message)}
+async function cSync(){if(Auth.due()){cOff=false;cOffAt=0}if(cOff||cBusy||S.out||!S.me)return;cBusy=true;const g0=Auth.gen;let ch=false;try{if(pruneBoard())ch=true}catch(e){}
+ try{await cPush();ch=await cPull();if(!cOff){cState="ok";Auth.bo=0;Auth.last=Date.now()}}catch(e){if(!cOff)cState="err";console.warn("RoyalCub sync:",e.message)}
  try{if(await cFollow())ch=true}catch(e){}
  try{if(await cProfiles())ch=true}catch(e){}
  try{if(await cViews())ch=true}catch(e){}
  try{if(scrubViews())ch=true}catch(e){}
+ if(g0!==Auth.gen){cBusy=false;return}
  try{if(ch){save();if((S.view==="home"||S.view==="board")&&!document.querySelector("dialog[open]")){if(typingNow()||sOpen)pendR=true;else render()}}}finally{cBusy=false;syncUI()}}
-function cSched(){if(cOff&&cOffAt&&Date.now()-cOffAt>60000){cOff=false;cOffAt=0}if(cOff||S.out)return;clearTimeout(cT);cT=setTimeout(()=>{cT=null;cSync()},900)}
+function cSched(){if(Auth.due()){cOff=false;cOffAt=0}if(cOff||S.out)return;clearTimeout(cT);cT=setTimeout(()=>{cT=null;cSync()},900)}
 setInterval(()=>{if(!document.hidden)cSync()},20000);setInterval(()=>{if(!S.out&&(pruneStories()|pruneBoard())&&!document.querySelector("dialog[open]")&&!typingNow())render()},60000);addEventListener("focus",cSync);
 const slimRep=(k,v)=>typeof v==="string"&&v.length>30000&&/^(?:data:image|(?:⟪rp\|[^⟫]*⟫\s*)?⟦img\|data:image)/.test(v)&&k!=="up"?(k==="photo"?undefined:"⟦img-expired⟧"):v;
 const save=()=>{sessSave();let done=false;try{localStorage.setItem("rcj",JSON.stringify(S));done=true}catch(e){}
@@ -2070,7 +2125,7 @@ function showAuth(k){if(!pgOk&&k!=="recover")k="home";au=k;if(k==="forgot")fp={s
 function setErr(m,id){document.getElementById("aerr").textContent=m;const f=id&&document.getElementById(id);if(f)f.focus();return false}
 function pwErr(p,c){if(p.length<8)return["Password must be at least 8 characters.",0];if(!/[A-Za-z]/.test(p)||!/\d/.test(p))return["Use at least one letter and one number.",0];if(p!==c)return["Passwords don’t match.",1];return null}
 function swapBoxes(n){S.box=S.box||{};if(S.boxFor===n)return;if(S.boxFor)S.box[S.boxFor]={t:S.threads,n:S.notifs};const b=S.box[n];S.threads=b?b.t:(S.boxFor?[]:S.threads);S.notifs=b?b.n:(S.boxFor?[]:S.notifs);S.boxFor=n;S.thread=null}
-function enter(u,msg){if(!u.tnc||!u.tnc.at)u.tnc={v:TNC_V,at:Date.now()};navJump=true;swapBoxes(u.name);S.me=u.email;u.last=Date.now();S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false;HS.st=HS.cats=0;S.view=u.role==="admin"?"admin":"home";S.cat="All";S.q="";S.thread=null;log("login");save();askPersist();render();scrollTo(0,0);resumeNeg();RT.start();pushSync();openFromPush();try{Chat.flush()}catch(_){}toast(msg||"Welcome back, "+u.name.split(" ")[0])}
+function enter(u,msg){Auth.onLogin();if(!u.tnc||!u.tnc.at)u.tnc={v:TNC_V,at:Date.now()};navJump=true;swapBoxes(u.name);S.me=u.email;u.last=Date.now();S.name=u.name;S.role=u.role||"client";S.profile={name:u.name,age:u.age,email:u.email,phone:u.phone,title:u.title||"",loc:u.loc||"Palakkad"};S.out=false;HS.st=HS.cats=0;S.view=u.role==="admin"?"admin":"home";S.cat="All";S.q="";S.thread=null;log("login");save();askPersist();render();scrollTo(0,0);resumeNeg();RT.start();pushSync();openFromPush();try{Chat.flush()}catch(_){}toast(msg||"Welcome back, "+u.name.split(" ")[0]);setTimeout(()=>forceSync("login"),400)}
 let loginBusy=false;
 function loginBtn(on){const b=document.querySelector('form[onsubmit="doLogin(event)"] .btn');if(b){b.disabled=on;b.textContent=on?"Logging in…":"Log in"}}
 function doLogin(e){e.preventDefault();if(loginBusy)return;const em=le.value.trim().toLowerCase();let pw=lp.value;
@@ -2122,7 +2177,7 @@ function regCertPick(inp){if(!inp){regKeep(()=>{regCert=""});return}const f=inp.
  const img=new Image(),url=URL.createObjectURL(f);
  img.onload=()=>{URL.revokeObjectURL(url);try{const k=Math.min(1,1200/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*k));c.height=Math.max(1,Math.round(img.height*k));const g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(img,0,0,c.width,c.height);const d=c.toDataURL("image/jpeg",.72);regKeep(()=>{regCert=d})}catch(e){toast("Couldn’t use that image")}};
  img.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t use that image")};img.src=url}
-async function contactTaken(em,ph){const r=await fetch(rpcUrl("rc_contact_taken"),{method:"POST",headers:cHead(),body:JSON.stringify({p_email:em,p_phone:ph})});
+async function contactTaken(em,ph){const r=await apiFetch(rpcUrl("rc_contact_taken"),{method:"POST",headers:cHead(),body:JSON.stringify({p_email:em,p_phone:ph})});
  if(!r.ok){console.warn(r.status===404?"RoyalCub: run supabase_unique_accounts.sql in Supabase so the database blocks duplicate emails and phone numbers.":"RoyalCub: contact check failed ("+r.status+")");return null}
  try{return await r.json()}catch(e){return null}}
 async function sbRegister(u){const net={err:"Couldn’t reach the server. Check your internet connection and try again."},tmo=(p,ms)=>Promise.race([p,new Promise((_,no)=>setTimeout(()=>no(new Error("timeout")),ms))]);
@@ -2175,12 +2230,16 @@ async function doRecover(e){e.preventDefault();const pe=pwErr(rnw.value,rncf.val
  catch(x){if(bt)bt.disabled=false;setErr("Couldn’t update the password. Please try again.","rnw")}}
 async function sbEnsure(u,pw){if(!SB_ON||!pw||!u||u.role==="admin"||/@example\.com$/i.test(u.email))return;sbQuiet++;
  try{const c=await sbClient();const r=await c.auth.signInWithPassword({email:u.email,password:pw});
-  if(r.error&&/invalid login/i.test(r.error.message||""))await c.auth.signUp({email:u.email,password:pw,options:{data:{name:u.name,phone:u.phone,age:u.age,cat:u.cat,role:u.role}}});
-  await c.auth.signOut({scope:"local"})}catch(e){console.warn("Supabase account sync skipped:",e.message)}finally{sbQuiet--}}
+  let stale=false;
+  if(r.error&&/invalid login/i.test(r.error.message||"")){const sg=await c.auth.signUp({email:u.email,password:pw,options:{data:{name:u.name,phone:u.phone,age:u.age,cat:u.cat,role:u.role}}});
+   /* the email already exists on the server but this password was refused: it was changed on another device */
+   if((sg.error&&/already (?:registered|exists)/i.test(sg.error.message||""))||(!sg.error&&sg.data&&sg.data.user&&Array.isArray(sg.data.user.identities)&&sg.data.user.identities.length===0))stale=true}
+  await c.auth.signOut({scope:"local"});
+  if(stale&&!S.out&&S.me===u.email){u.pw="";save();Auth.expire("Your password was changed on another device. Please log in again.")}}catch(e){console.warn("Supabase account sync skipped:",e.message)}finally{sbQuiet--}}
 async function sbLoginFallback(em,pw){const bad=()=>setErr("Incorrect email or password.","lp"),net=()=>setErr("Couldn’t reach the server. Check your internet connection and try again.");if(!SB_ON)return bad();loginBusy=true;loginBtn(true);sbQuiet++;
  const tmo=(p,ms)=>Promise.race([p,new Promise((_,no)=>setTimeout(()=>no(new Error("timeout")),ms))]);
- try{const c=await tmo(sbClient(),20000);let r=await tmo(c.auth.signInWithPassword({email:em,password:pw}),20000);
-  if((r.error||!r.data||!r.data.user)&&pw!==pw.trim()&&pw.trim()){const r2=await tmo(c.auth.signInWithPassword({email:em,password:pw.trim()}),20000);if(!r2.error&&r2.data&&r2.data.user){r=r2;pw=pw.trim()}}
+ try{const c=await tmo(sbClient(),20000);let r=await tmo(authRetry(()=>c.auth.signInWithPassword({email:em,password:pw})),45000);
+  if((r.error||!r.data||!r.data.user)&&pw!==pw.trim()&&pw.trim()){const r2=await tmo(authRetry(()=>c.auth.signInWithPassword({email:em,password:pw.trim()})),45000);if(!r2.error&&r2.data&&r2.data.user){r=r2;pw=pw.trim()}}
   const {data,error}=r;
   if(error||!data||!data.user){const m=String(error&&error.message||""),st=error&&error.status;if(/not confirmed/i.test(m))return setErr("Please confirm your email address from the link we sent, then log in.","le");if(!error||/invalid|credentials/i.test(m)||st===400||st===401)return bad();return net()}
   if(data.user.created_at&&Date.parse(data.user.created_at)<RESET_AT){try{await c.auth.signOut({scope:"local"})}catch(_){}return bad()}
@@ -3028,7 +3087,7 @@ const Chat={pend:null,rep:null,busy:0,ackMs:10000,upMs:60000,max:5,base:800,rt:n
 /* ---------- Real-time direct messaging. Only real people reply: no bots. Transport: Supabase table rc_msgs (Realtime push + 5 s polling) or, when Supabase isn't configured, a shared mailbox in this browser (other tabs get messages instantly). ---------- */
 const RT={ok:null,err:undefined,at:0,me:"",since:0,first:true,timer:null,ch:null,pch:null,bc:null,
  base:()=>SUPABASE_URL.trim().replace(/\/$/,"")+"/rest/v1/rc_msgs",
- async req(q,opt){const r=await fetch(RT.base()+q,Object.assign({headers:cHead()},opt));if(!r.ok){if([401,403,404].includes(r.status)){RT.ok=false;RT.err=r.status;RT.at=Date.now()}throw new Error("HTTP "+r.status)}RT.ok=true;RT.err=undefined;return r},
+ async req(q,opt){const r=await apiFetch(RT.base()+q,Object.assign({headers:cHead()},opt));if(!r.ok){if([401,403,404].includes(r.status)){RT.ok=false;RT.err=r.status;RT.at=Date.now()}throw new Error("HTTP "+r.status)}RT.ok=true;RT.err=undefined;return r},
  lm(){try{const a=JSON.parse(localStorage.getItem("rc_mbox")||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}},
  lmSave(a){try{localStorage.setItem("rc_mbox",JSON.stringify(a.slice(-2000)))}catch(e){}},
  ping(k){try{if(RT.bc)RT.bc.postMessage(k)}catch(e){}},
@@ -3065,19 +3124,19 @@ const PUSH_OK=()=>SB_ON&&!!VAPID_PUBLIC_KEY&&"serviceWorker" in navigator&&"Push
 const pushBanner=()=>(PUSH_OK()||FCM_OK())&&Notification.permission==="default"&&!S.pushNo&&!S.out&&!S.thread?`<div class="pbn" role="region" aria-label="Message alerts"><span>🔔 Get an alert for messages, comments and new posts, even when the app is closed.</span><button type="button" class="btn" onclick="enablePush()">Turn on</button><button type="button" class="x" aria-label="Dismiss" onclick="S.pushNo=1;save();ui()">✕</button></div>`:"";
 const b64u=v=>{const p="=".repeat((4-v.length%4)%4),r=atob((v+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(r,c=>c.charCodeAt(0))};
 const rpcUrl=n=>SUPABASE_URL.trim().replace(/\/$/,"")+"/rest/v1/rpc/"+n;
-async function pushSync(){if(FCM_OK()&&!S.out&&S.name&&Notification.permission==="granted")fcmSync();if(!PUSH_OK()||S.out||!S.name||Notification.permission!=="granted")return false;
+async function pushSync(){if(FCM_OK()){if(!S.out&&S.name&&Notification.permission==="granted")return fcmSync();return false}if(!PUSH_OK()||S.out||!S.name||Notification.permission!=="granted")return false;
  try{const reg=await navigator.serviceWorker.register("sw.js");await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
   if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(VAPID_PUBLIC_KEY)});
   const j=sub.toJSON();if(!j.endpoint||!j.keys)return false;
-  const r=await fetch(rpcUrl("rc_push_register"),{method:"POST",headers:cHead(),body:JSON.stringify({p_endpoint:j.endpoint,p_name:S.name,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth})});
+  const r=await apiFetch(rpcUrl("rc_push_register"),{method:"POST",headers:cHead(),body:JSON.stringify({p_endpoint:j.endpoint,p_name:S.name,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth})});
   if(!r.ok)throw new Error("HTTP "+r.status);return true}
  catch(e){console.warn("RoyalCub: push subscription not saved ("+(e&&e.message)+"). Run supabase_chat_media.sql to create the push functions.");return false}}
-async function enablePush(){if(FCM_OK()){let p="denied";try{p=await Notification.requestPermission()}catch(e){}if(p!=="granted"){toast(p==="denied"?"Alerts are blocked in your browser settings":"Alerts not turned on");ui();return}const ok=await fcmSync(true);if(PUSH_OK())await pushSync();toast(ok?"Alerts are on":"Couldn’t turn on alerts. Please try again.");ui();return}if(!PUSH_OK()){toast("Alerts aren’t available in this browser");return}
+async function enablePush(){if(FCM_OK()){let p="denied";try{p=await Notification.requestPermission()}catch(e){}if(p!=="granted"){toast(p==="denied"?"Alerts are blocked in your browser settings":"Alerts not turned on");ui();return}const ok=await fcmSync(true);toast(ok?"Alerts are on":"Couldn’t turn on alerts. Please try again.");ui();return}if(!PUSH_OK()){toast("Alerts aren’t available in this browser");return}
  let p="denied";try{p=await Notification.requestPermission()}catch(e){}
  if(p!=="granted"){toast(p==="denied"?"Alerts are blocked in your browser settings":"Alerts not turned on");ui();return}
  const ok=await pushSync();toast(ok?"Message alerts are on":"Couldn’t turn on alerts. Please try again.");ui()}
-async function pushOff(){try{if(!("serviceWorker" in navigator))return;const reg=await navigator.serviceWorker.getRegistration();const sub=reg&&await reg.pushManager.getSubscription();
- if(sub)await fetch(rpcUrl("rc_push_unregister"),{method:"POST",headers:cHead(),body:JSON.stringify({p_endpoint:sub.endpoint})}).catch(()=>{})}catch(e){}}
+async function pushOff(){try{const n=S.name,tk=n&&localStorage.getItem("rc_fcm_"+n);if(tk&&SB_ON){localStorage.removeItem("rc_fcm_"+n);apiFetch(cBase()+"?kind=eq.story&id=eq."+encodeURIComponent("fcm:"+tk.slice(-40))+"&owner=eq."+encodeURIComponent(n),{method:"DELETE",headers:cHead()}).catch(()=>{})}}catch(e){}try{if(!PUSH_OK())return;if(!("serviceWorker" in navigator))return;const reg=await navigator.serviceWorker.getRegistration();const sub=reg&&await reg.pushManager.getSubscription();
+ if(sub)await apiFetch(rpcUrl("rc_push_unregister"),{method:"POST",headers:cHead(),body:JSON.stringify({p_endpoint:sub.endpoint})}).catch(()=>{})}catch(e){}}
 function openFromPush(){try{const u=new URL(location.href),pid=u.searchParams.get("post");if(pid){u.searchParams.delete("post");history.replaceState(null,"",u.pathname+u.search+u.hash);if(!S.out&&S.me)setTimeout(()=>{if(S.posts.some(z=>String(z.id)===pid))bOpen(pid)},1200)}}catch(e){}let p="";try{const u=new URL(location.href);p=u.searchParams.get("chat")||sessionStorage.getItem("rc_open_chat")||"";if(u.searchParams.has("chat")){u.searchParams.delete("chat");history.replaceState(null,"",u.pathname+u.search+u.hash)}}catch(e){}
  if(!p)return;if(S.out||!S.me){try{sessionStorage.setItem("rc_open_chat",p)}catch(e){}return}
  try{sessionStorage.removeItem("rc_open_chat")}catch(e){}if(p!==S.name)msgTo(p)}
@@ -3088,11 +3147,25 @@ try{if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("me
 const FB=Object.assign({},(window.RC_CONFIG&&window.RC_CONFIG.firebase)||{});
 const FCM_OK=()=>!!(FB.apiKey&&FB.projectId&&FB.messagingSenderId&&FB.appId&&FB.vapidKey)&&"serviceWorker" in navigator&&"Notification" in window&&location.protocol!=="file:";
 let FCMS=null;
+/* Registers firebase-messaging-sw.js once (shared promise): checks HTTPS and that the file is really there, uses its own scope
+   so it never clashes with another worker, waits until it is active, and checks for a newer version. */
+const FCMDBG={saved:false,err:""};
+let FCMR=null;
+function fcmRegister(){return FCMR||(FCMR=(async()=>{
+ if(!("serviceWorker" in navigator))throw new Error("Service workers are not supported in this browser");
+ if(location.protocol!=="https:"&&!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))throw new Error("Push alerts need HTTPS (or localhost)");
+ const url=new URL("firebase-messaging-sw.js",location.href).href;
+ let h=null;try{h=await fetch(url,{method:"HEAD",cache:"no-store"})}catch(e){}
+ if(h&&!h.ok)throw new Error("firebase-messaging-sw.js was not found (HTTP "+h.status+"). Upload it next to index.html.");
+ const reg=await navigator.serviceWorker.register(url,{scope:"firebase-cloud-messaging-push-scope",updateViaCache:"none"});
+ await new Promise((ok,no)=>{const w=reg.active||reg.waiting||reg.installing;if(!w)return no(new Error("no worker"));if(w.state==="activated")return ok();const t=setTimeout(()=>no(new Error("service worker timeout")),15000);w.addEventListener("statechange",()=>{if(w.state==="activated"){clearTimeout(t);ok()}else if(w.state==="redundant"){clearTimeout(t);no(new Error("service worker failed"))}})});
+ try{reg.update()}catch(e){}
+ return reg})().catch(e=>{FCMR=null;FCMDBG.err=String(e&&e.message||e);throw e}))}
 async function fcmInit(){if(FCMS)return FCMS;const B="https://www.gstatic.com/firebasejs/10.14.1/";
  const [A,M]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-messaging.js")]);
  if(!(await M.isSupported()))throw new Error("FCM is not supported in this browser");
  const app=A.getApps().length?A.getApp():A.initializeApp({apiKey:FB.apiKey,authDomain:FB.authDomain,projectId:FB.projectId,messagingSenderId:FB.messagingSenderId,appId:FB.appId});
- const reg=await navigator.serviceWorker.register("firebase-messaging-sw.js",{scope:"firebase-cloud-messaging-push-scope"});await new Promise((ok,no)=>{const w=reg.installing||reg.waiting||reg.active;if(!w)return no(new Error("no worker"));if(w.state==="activated")return ok();const t=setTimeout(()=>no(new Error("service worker timeout")),15000);w.addEventListener("statechange",()=>{if(w.state==="activated"){clearTimeout(t);ok()}else if(w.state==="redundant"){clearTimeout(t);no(new Error("service worker failed"))}})});
+ const reg=await fcmRegister();
  const m=M.getMessaging(app);
  M.onMessage(m,pl=>{const n=pl.notification||{},d=pl.data||{};toast((n.title||d.title||"New alert")+(n.body||d.body?": "+(n.body||d.body):""));try{Notify.add({t:n.title||d.title||"New alert",b:n.body||d.body||"",act:d.post?{k:"post",id:d.post}:{}})}catch(e){}});
  return FCMS={M,m,reg}}
@@ -3102,11 +3175,10 @@ async function fcmSync(force){if(!FCM_OK()||S.out||!S.name||Notification.permiss
   if(had===tok&&!force)return true;
   if(!SB_ON)return true;
   const id="fcm:"+tok.slice(-40);
-  const r=await fetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify([{kind:"story",id,owner:S.name,data:{bk:"fcm",by:S.name,token:tok,ts:Date.now()},updated_at:new Date().toISOString()}])});
+  const r=await apiFetch(cBase()+"?on_conflict=kind,id",{method:"POST",headers:cHead({Prefer:"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify([{kind:"story",id,owner:S.name,data:{bk:"fcm",by:S.name,token:tok,ts:Date.now()},updated_at:new Date().toISOString()}])});
   if(!r.ok)throw new Error("saving the device token failed: HTTP "+r.status+" (check the rc_content policy allows kind 'story')");
   try{localStorage.setItem(key,tok)}catch(e){}FCMDBG.saved=true;return true}
  catch(e){FCMDBG.err=String(e&&e.message||e);console.warn("RoyalCub: FCM setup failed ("+FCMDBG.err+")");return false}}
-const FCMDBG={saved:false,err:""};
 async function fcmTest(){try{const f=await fcmInit();await f.reg.showNotification("RoyalCub Jobs",{body:"Test alert. Alerts work on this device.",tag:"rc-test"});toast("Test alert sent. Close the app and send a real one to check background delivery.")}catch(e){toast("Test failed: "+(e&&e.message||e))}}
 async function fcmCopy(){try{const f=await fcmInit(),tok=await f.M.getToken(f.m,{vapidKey:FB.vapidKey,serviceWorkerRegistration:f.reg});await navigator.clipboard.writeText(tok);toast("Device token copied. Paste it in Firebase console > Messaging > Send test message.")}catch(e){toast("Couldn’t get the token: "+(e&&e.message||e))}}
 const pushPanel=()=>{if(!FCM_OK()||S.out)return"";const p=Notification.permission;
@@ -3319,7 +3391,7 @@ spl.src=LG.s;document.querySelector(".app").inert=true;
 function hideSplash(){if(!window.splash)return;const sp=document.getElementById("splash");if(!sp)return;sp.classList.add("leave");document.querySelector(".app").inert=false;setTimeout(()=>sp.remove(),reduce?0:550)}
 setTimeout(hideSplash,reduce?700:2700);
 render();
-resumeNeg();sbInit();RT.start();pushSync();openFromPush();try{Chat.flush()}catch(e){}
+Auth.start();try{if(FCM_OK())fcmRegister().catch(()=>{})}catch(e){}resumeNeg();Promise.resolve(sbInit()).catch(()=>{}).then(()=>Auth.launch());RT.start();pushSync();openFromPush();try{Chat.flush()}catch(e){}
 </script>
 <datalist id="locdl2"></datalist>
 </body>
