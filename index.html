@@ -464,6 +464,29 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .locbtn svg,.locbtn .mi{margin:0!important;vertical-align:0!important;display:block;flex:none}
 .bpa .blk,.bpa .bcmb{flex:1 1 0;min-width:0;display:inline-flex;align-items:center;justify-content:center;line-height:1;gap:7px}
 .bpa .blk svg,.bpa .bcmb svg{width:18px;height:18px;display:block;flex:none;margin:0;vertical-align:0}
+/* minimal service cards + detail page */
+.list{grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))!important}
+.list .job.svcm{display:flex;flex-direction:column;gap:8px;height:216px;padding:16px;box-sizing:border-box;overflow:hidden;min-width:0}
+.svcm .sm-top{display:flex;align-items:center;gap:10px;min-width:0}.svcm .sm-top .av{flex:none}
+.svcm .sm-id{min-width:0;flex:1;display:grid}.svcm .sm-id b,.svcm .sm-id small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.svcm .sm-id small{color:var(--mute);font-size:12.5px}
+.svcm .tag{flex:none;max-width:42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.svcm .sm-h{margin:2px 0 0;font-size:16.5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.svcm .sm-meta{display:flex;gap:6px 14px;font-size:13px;color:var(--mute);min-height:20px;overflow:hidden;white-space:nowrap}
+.svcm .sm-meta span{display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis}.svcm .sm-meta span:first-child{flex:0 1 auto}
+.svcm .sm-meta svg{width:15px;height:15px;flex:none;margin-right:4px;vertical-align:0}
+.list .job.svcm>p.sm-d{display:block;flex:none;-webkit-line-clamp:1;line-clamp:1;margin:0;font-size:14px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.8}
+.svcm .sm-rate{margin-top:auto;display:flex;align-items:baseline;gap:6px;padding:10px 14px;border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--plum) 16%,transparent),color-mix(in srgb,var(--plum) 6%,transparent));color:var(--plum)}
+.svcm .sm-rate b{font-size:20px;font-weight:800;letter-spacing:-.01em;white-space:nowrap}.svcm .sm-rate small{color:var(--mute);font-weight:600;font-size:13px}
+.svcm:focus-visible{outline:2px solid var(--plum);outline-offset:2px}
+.svgrid{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){.svgrid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
+.svl,.svr2{background:var(--bg);border:1px solid var(--line);border-radius:22px;padding:20px;display:grid;gap:12px;align-content:start;min-width:0}
+.svt{margin:0;font-size:22px;line-height:1.25}.svl .phead{padding:0;border:0}
+.svrate{font-weight:800;color:var(--plum)}
+.svact{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.svsel select{width:100%;min-height:44px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:700}
+@media (min-width:900px){.svsel{justify-self:end;width:200px}}
+.svbody{display:grid;gap:10px;align-content:start}.svbody .pscroll{overflow:visible}
 @media (max-height:700px) and (min-width:600px){.auth{place-items:start center}}
 .out .main,.out .sheet{max-width:none;width:100%;margin-left:0;margin-right:0}
 .out .app{display:block}
@@ -2110,7 +2133,7 @@ function tncCard(gate){const u=meU(),at=u&&u.tnc&&u.tnc.at,ad=at?new Date(at).to
 function terms(){const u=meU();if(u&&(!u.tnc||!u.tnc.at))u.tnc={v:TNC_V,at:Date.now()};view.innerHTML=tncCard(false)}
 
 const NAV=[["home",FI.home,"Home"],["add",FI.add,"Add Post"],["board",FI.board,"Feed"],["chat",FI.chat,"Chat"],["profile",FI.person,"Profile"]];
-function nav(){const h=NAV.map(([k,i,l])=>`<button ${(S.view===k||((S.view==="post"||S.view==="likes")&&k==="board"))?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
+function nav(){const h=NAV.map(([k,i,l])=>`<button ${(S.view===k||(S.view==="svc"&&k==="home")||((S.view==="post"||S.view==="likes")&&k==="board"))?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
  botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.style.visibility=un?"visible":"hidden";const uc=unread(),cb=document.getElementById("cn");cb.textContent=uc>9?"9+":uc;cb.style.visibility=uc?"visible":"hidden";document.getElementById("chatB").setAttribute("aria-label",uc?"Chat, "+uc+" unread":"Chat");document.getElementById("bellB").setAttribute("aria-label",un?"Notifications, "+un+" unread":"Notifications")}
 const BASE_T=document.title;
 const unread=()=>S.threads.reduce((a,t)=>a+(+t.u||0),0);
@@ -2466,7 +2489,7 @@ function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.t
 function render(){pruneStories();pruneBoard();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("tncv",!S.out&&!needTnc()&&S.view==="terms");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("fullv",!S.out&&(S.view==="profile"||S.view==="settings"));document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("tnc2",!S.out&&needTnc()&&onbStep===2);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
   if(needTnc()){view.innerHTML=onbView();lastV="";return}
- const VIEWS={home,add,board,post:postPage,likes:likedPage,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
+ const VIEWS={home,add,board,svc:svcPage,post:postPage,likes:likedPage,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
 
 function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u.title;if(u.role==="worker"&&ROLE[u.cat])return ROLE[u.cat]}
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
@@ -2480,7 +2503,7 @@ function reviewsHTML(n){const l=revOf(n).sort((a,b)=>b.ts-a.ts),me=n===S.name,mi
  <input id="rvt" maxlength="200" aria-label="Your review" placeholder="Share your experience (optional)"><button class="btn" style="justify-self:start">Submit review</button></form>`}`}
 function addReview(e,n){e.preventDefault();const c=document.querySelector("input[name=rv]:checked");if(!c){toast("Choose a star rating");return}
  if(n===S.name||S.reviews.some(x=>x.to===n&&x.by===S.name))return;
- S.reviews.unshift({id:"rv"+uid(),to:n,by:S.name,r:+c.value,t:document.getElementById("rvt").value.trim(),ts:Date.now()});log("reviewed",n,c.value+" stars");save();toast("Thanks for your review");(ck==="service"?openService:openPost)(cp)}
+ S.reviews.unshift({id:"rv"+uid(),to:n,by:S.name,r:+c.value,t:document.getElementById("rvt").value.trim(),ts:Date.now()});log("reviewed",n,c.value+" stars");save();toast("Thanks for your review");if(S.view==="svc")svcPage();else(ck==="service"?openService:openPost)(cp)}
 const fmtT=t=>{const[h,m]=t.split(":").map(Number),ap=h>=12?"PM":"AM";return (h%12||12)+(m?":"+String(m).padStart(2,"0"):"")+" "+ap};
 function daysText(a){const ix=DAYS.map((d,i)=>a.includes(d)?i:-1).filter(i=>i>=0);if(ix.length===7)return"Every day";if(ix.length>=3&&ix[ix.length-1]-ix[0]===ix.length-1)return DAYS[ix[0]]+"–"+DAYS[ix[ix.length-1]];return ix.map(i=>DAYS[i]).join(", ")}
 const uOf=x=>RTS[rtk(x)][0],uS=x=>RTS[rtk(x)][1],qtyTx=(x,n)=>`${n} ${uOf(x)}${n===1?"":"s"}`,qMin=x=>rtk(x)==="hour"?(x.hrs||1):1,qMax=x=>({hour:24,minute:180,day:30,week:12,month:12,year:5,project:10})[rtk(x)];
@@ -2505,7 +2528,7 @@ function toggleFollow(n){if(S.out||!n||n===S.name||!S.users.some(u=>u.name===n))
 const nv=o=>`${o.v.length} view${o.v.length===1?"":"s"}`;
 /* A view is recorded only when a real, signed-in, active account opens someone else's post or status. Nothing is ever simulated. */
 function addView(o){if(!o||!Array.isArray(o.v)||!o.by||o.by===S.name||o.v.includes(S.name)||!canView())return false;o.v.push(S.name);try{cSched()}catch(e){}return true}
-function refresh(o){if(postD.open&&cp===o.id)(ck==="service"?openService:openPost)(o.id);else if(storyD.open&&sv.n===o.by)showStory();else if(S.view==="home"&&!S.out&&!document.querySelector("dialog[open]")){if(typingNow()||sOpen)pendR=true;else render()}}
+function refresh(o){if(S.view==="svc"&&S.sv===o.id&&!S.out&&!document.querySelector("dialog[open]")){if(typingNow())pendR=true;else svcPage()}else if(postD.open&&cp===o.id)(ck==="service"?openService:openPost)(o.id);else if(storyD.open&&sv.n===o.by)showStory();else if(S.view==="home"&&!S.out&&!document.querySelector("dialog[open]")){if(typingNow()||sOpen)pendR=true;else render()}}
 const nearOk=x=>true;
 const shown=()=>fFirst(S.jobs.filter(j=>live(j.by)&&nearOk(j)&&(S.cat==="All"||j.c===S.cat)));
 const shownS=()=>fFirst(S.services.filter(x=>live(x.by)&&nearOk(x)&&(S.cat==="All"||x.c===S.cat)));
@@ -2629,24 +2652,27 @@ function home(){
 function historyView(){const h=S.hist;
  view.innerHTML=`<button class="btn alt" style="padding:6px 16px;margin-bottom:14px" onclick="go('profile')">‹ Back</button><div class="row"><h2>Booking history</h2><span>${String(h.length).padStart(2,"0")}</span></div>
  <div class="set hgrid">${h.length?h.map(x=>`<div class="hi"><div class="t"><b>${esc(x.t)}</b><span class="pill ${esc(x.s)}">${esc(x.s==="Requested"?"Pending":x.s)}</span></div><small>${esc(x.who)} · ${esc(x.d)}</small><b style="color:var(--plum)">${x.k==="earn"?mEarn():DI.rupee}${esc(x.a)}</b></div>`).join(""):`<div class="empty">No bookings yet. Requests you send will show up here.</div>`}</div>`}
-function svcCard(x){const mine=x.by===S.name,n=x.v.length;
- return `<article class="job" onclick="openService(${x.id})"><div class="jh">${who(x.by,byLine(x.by))}<span class="tag">${x.c}</span></div>
- <h3><button class="lnk">${esc(x.t)}</button></h3>
- <div class="meta"><span>${LOC}${esc(x.loc)}${nearPill(x.loc)}</span><span>${mPrice(x.c)}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${mClock(x.c)}${esc(availTx(x))}</span>${attrSpans(x)}${mine?`<span>${DI.eye}${n} view${n===1?"":"s"}</span><span class="earn">${mEarn()}${earnTx(x)}</span>`:""}</div>
- <p>${esc(x.d)}</p>${x.start?`<div style="margin-bottom:12px"><span class="pill Completed">${mDate(x.c)}Available ${esc(x.start.toLowerCase())}</span></div>`:""}
- <div class="acts pm">${mine?`<span class="cnt">${DI.cal}${x.b.length} booking${x.b.length===1?"":"s"} received</span>`:`<button class="btn pitchb booknow" onclick="event.stopPropagation();book(${x.id})">Book now</button>`}</div></article>`}
+function svcCard(x){const des=roleOf(x.by),ex=expTx(x);
+ return `<article class="job svcm" role="button" tabindex="0" onclick="openService(${x.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openService(${x.id})}" aria-label="Open ${esc(x.t)} by ${esc(x.by)}">
+ <div class="sm-top"><div class="av sm" style="${abg(x.by)}" aria-hidden="true">${ait(x.by)}</div><div class="sm-id"><b>${esc(x.by)}</b><small>${esc(des||"")}</small></div><span class="tag">${esc(x.c)}</span></div>
+ <h3 class="sm-h">${esc(x.t)}</h3>
+ <div class="sm-meta"><span>${LOC}${esc(x.loc)}</span>${ex?`<span>${DI.medal}${esc(ex)}</span>`:""}</div>
+ <p class="sm-d">${esc(x.d)}</p>
+ <div class="sm-rate"><b>${rateTx(x)}</b><small>per ${uOf(x)}</small></div></article>`}
 const fmtS=t=>new Date(t).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
 const ago=t=>{const x=(Date.now()-t)/1e3;if(x<60)return"Just now";if(x<3600)return Math.floor(x/60)+" min ago";if(x<86400)return Math.floor(x/3600)+" h ago";if(x<604800)return Math.floor(x/86400)+" d ago";return fmtS(t)};
 const rvRow=(x,i)=>`<div class="cm ${i>2?"rv-x hide":""}"><div class="l1"><button class="rvwho" data-n="${esc(x.by)}" onclick="openProfile(this.dataset.n)" aria-label="View profile of ${esc(x.by)}"><span class="av tiny" style="${abg(x.by)}" aria-hidden="true">${ait(x.by)}</span><b>${esc(x.by)}</b></button><small>${fmtS(x.ts)}</small></div><div>${starTx(x.r)}</div>${x.t&&x.t!=="No comment left."?`<span>${esc(x.t)}</span>`:`<span class="cnt">Rated ${x.r} out of 5</span>`}</div>`;
-const postShell=o=>{const rl=revOf(o.by).sort((a,b)=>b.ts-a.ts),me=o.by===S.name,mineR=rl.find(x=>x.by===S.name),a=avgR(o.by),fn=esc(o.by.split(" ")[0]);
- const rform=me?`<div class="pnote">This is your own profile, so you can’t review yourself.</div>`:mineR?`<div class="pnote">You’ve already reviewed ${fn} as <b>${esc(S.name)}</b>. Thanks!</div>`:`<form class="rform" onsubmit="addReview(event,this.dataset.n)" data-n="${esc(o.by)}"><div class="top2"><b>Review ${fn} as ${esc(S.name)}</b><div class="rate" role="radiogroup" aria-label="Rating">${[5,4,3,2,1].map(i=>`<input type="radio" name="rv" id="rv${i}" value="${i}"><label for="rv${i}" title="${i} star${i>1?"s":""}"><span aria-hidden="true">★</span></label>`).join("")}</div></div><input id="rvt" maxlength="200" aria-label="Your review" placeholder="Share your experience (optional)"><button class="btn">Submit review</button></form>`;
+const revHTML=by=>{const rl=revOf(by).sort((a,b)=>b.ts-a.ts),me=by===S.name,mineR=rl.find(x=>x.by===S.name),a=avgR(by),fn=esc(by.split(" ")[0]);
+ const rform=me?`<div class="pnote">This is your own profile, so you can’t review yourself.</div>`:mineR?`<div class="pnote">You’ve already reviewed ${fn} as <b>${esc(S.name)}</b>. Thanks!</div>`:`<form class="rform" onsubmit="addReview(event,this.dataset.n)" data-n="${esc(by)}"><div class="top2"><b>Review ${fn} as ${esc(S.name)}</b><div class="rate" role="radiogroup" aria-label="Rating">${[5,4,3,2,1].map(i=>`<input type="radio" name="rv" id="rv${i}" value="${i}"><label for="rv${i}" title="${i} star${i>1?"s":""}"><span aria-hidden="true">★</span></label>`).join("")}</div></div><input id="rvt" maxlength="200" aria-label="Your review" placeholder="Share your experience (optional)"><button class="btn">Submit review</button></form>`;
+ return `<h4>Reviews of ${fn}<em>${rl.length?`<span class="stars">★</span> ${a.toFixed(1)} · ${rl.length}`:""}</em></h4>
+  <div class="pscroll" id="rvl">${rl.length?rl.map(rvRow).join(""):`<p class="cnt" style="margin:0">No reviews yet.</p>`}</div>
+  ${rl.length>3?`<button class="vmore" id="rvm" aria-expanded="false" onclick="toggleRev()">View more (${rl.length-3})</button>`:""}${rform}`};
+const postShell=o=>{
  postD.innerHTML=`<div class="phead">${who(o.by,byLine(o.by))}<button class="x" aria-label="Close" onclick="postD.close()">✕</button></div>
  <div class="pgrid">
  <section class="pcol" aria-label="Details"><div><span class="tag">${o.c}</span></div><h3>${esc(o.t)}</h3>${o.meta}<p class="pdesc">${esc(o.d)}</p>${o.views}
   <h4>${o.listT}</h4><div class="pscroll">${o.list}</div></section>
- <section class="pcol" aria-label="Reviews"><h4>Reviews of ${fn}<em>${rl.length?`<span class="stars">★</span> ${a.toFixed(1)} · ${rl.length}`:""}</em></h4>
-  <div class="pscroll" id="rvl">${rl.length?rl.map(rvRow).join(""):`<p class="cnt" style="margin:0">No reviews yet.</p>`}</div>
-  ${rl.length>3?`<button class="vmore" id="rvm" aria-expanded="false" onclick="toggleRev()">View more (${rl.length-3})</button>`:""}${rform}</section>
+ <section class="pcol" aria-label="Reviews">${revHTML(o.by)}</section>
  </div>
  <div class="pfoot">${o.foot}</div>`;
  if(!postD.open)postD.showModal()};
@@ -2661,14 +2687,21 @@ function bkCard(x,b,mine){const st=BKS[b.status]||BKS.pending,me=b.by===S.name,i
  if(!mine&&me&&b.status==="countered")a=`<div class="bka"><button class="btn" onclick="bkAct(${id},'caccept')">Accept ₹${b.counter}/${uS(x)}</button><button class="btn alt" onclick="book(${x.id},'${b.id}')">Negotiate</button><button class="btn alt" onclick="bkAct(${id},'cwithdraw')">Withdraw</button></div>`;
  if(!mine&&me&&b.status==="pending")a=`<div class="bka"><button class="btn alt" onclick="bkAct(${id},'cwithdraw')">Withdraw</button></div>`;
  return `<div class="req bk"><div class="l1"><b>${esc(b.by)}${me?" (You)":""}</b><span class="pill ${st[1]}">${st[0]}</span></div><small>${mDate(x.c)}${esc(b.date)}${b.time?" · "+esc(tm12(b.time)):""} · ${mClock(x.c)}${qtyTx(x,b.hours)}</small>${b.loc?`<small>Location: ${esc(b.loc)}</small>`:""}<small>Base price: ${rateTx(x)}/${uOf(x)}</small><div>${mine?mEarn():mPrice(x.c)}${bkPrice(x,b)}</div>${b.counter&&b.status==="countered"?`<div class="ctr">${mine?"You":esc(x.by)} countered: ₹${b.counter}/${uS(x)} · ₹${b.counter*b.hours} total</div>`:""}${b.note?`<span style="color:var(--mute)">${esc(b.note)}</span>`:""}${a}${mine?`<div class="bka"><button class="btn alt" data-n="${esc(b.by)}" onclick="msgTo(this.dataset.n)">Message</button></div>`:""}</div>`}
-function openService(id){const x=S.services.find(z=>z.id===id);if(!x)return;cp=id;ck="service";shut("profD","storyD");addView(x);save();
- const mine=x.by===S.name,n=x.v.length,own=x.b.filter(b=>b.by===S.name);
- const bk=mine?(x.b.length?x.b.map(b=>bkCard(x,b,true)).join(""):`<div class="empty" style="padding:18px">No bookings yet.</div>`):(own.length?own.map(b=>bkCard(x,b,false)).join(""):`<p class="cnt" style="margin:0">You haven’t booked yet. Book at the listed rate or make an offer.</p>`);
- postShell({by:x.by,c:x.c,t:x.t,d:x.d,
-  meta:`<div class="meta" style="margin:0"><span>${LOC}${esc(x.loc)}</span><span>${mPrice(x.c)}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${mClock(x.c)}${esc(availTx(x))}</span>${x.start?`<span class="pill Completed">${mDate(x.c)}Available ${esc(x.start.toLowerCase())}</span>`:""}${attrSpans(x)}${rtk(x)==="hour"&&x.hrs>1?`<span class="pill Requested">Min. ${x.hrs} hours</span>`:""}</div>`,
-  views:mine?`<div class="vw" style="margin:0">${DI.eye}${n} view${n===1?"":"s"}${n?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:"",
-  listT:mine?`Bookings (${x.b.length})`:`Your bookings (${own.length})`,list:bk,
-  foot:mine?`<button class="btn pitchb" onclick="editPost('service',${x.id})">Edit</button><button class="btn alt dng" onclick="delPost('service',${x.id})">Delete</button><span class="hint">This is your service. Bookings and offers appear above.</span>`:`<button class="btn pitchb booknow" onclick="book(${x.id})">Book now</button><button class="btn alt ico" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">${IC.chat}Message</button><span class="hint">Book, negotiate, message and review in one place</span>`})}
+function openService(id){const x=S.services.find(z=>z.id===id);if(!x)return;cp=id;ck="service";shut("profD","storyD","postD","bookD");addView(x);save();S.sv=id;
+ if(S.view==="svc"){render();return}S.svt="reviews";go("svc")}
+function setSvTab(v){S.svt=v==="bookings"?"bookings":"reviews";const e=document.getElementById("svr");if(e){e.innerHTML=svRight(S.services.find(z=>z.id===S.sv))}}
+function svRight(x){if(!x)return"";if(S.svt==="bookings"){const mine=x.by===S.name,own=x.b.filter(b=>b.by===S.name);
+ return mine?(x.b.length?x.b.map(b=>bkCard(x,b,true)).join(""):`<div class="empty" style="padding:18px">No bookings yet.</div>`):(own.length?own.map(b=>bkCard(x,b,false)).join(""):`<p class="cnt" style="margin:0">You haven’t booked yet. Book at the listed rate or make an offer.</p>`)}
+ return revHTML(x.by)}
+function svcPage(){const x=S.services.find(z=>z.id===S.sv),bar=`<div class="pvbar"><button type="button" class="pvback" onclick="goBack()" aria-label="Back">${ARW}</button><h2>Service details</h2></div>`;
+ if(!x){view.innerHTML=bar+`<p class="bnone">This post is no longer available.</p>`;return}
+ const mine=x.by===S.name,n=x.v.length,own=x.b.filter(b=>b.by===S.name),tab=S.svt==="bookings"?"bookings":"reviews";
+ view.innerHTML=bar+`<div class="svgrid"><section class="svl" aria-label="Details"><div class="phead">${who(x.by,byLine(x.by))}</div><div><span class="tag">${esc(x.c)}</span></div><h3 class="svt">${esc(x.t)}</h3>
+  <div class="meta" style="margin:0"><span>${LOC}${esc(x.loc)}</span><span class="svrate">${mPrice(x.c)}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${mClock(x.c)}${esc(availTx(x))}</span>${x.start?`<span class="pill Completed">${mDate(x.c)}Available ${esc(x.start.toLowerCase())}</span>`:""}${attrSpans(x)}${rtk(x)==="hour"&&x.hrs>1?`<span class="pill Requested">Min. ${x.hrs} hours</span>`:""}</div>
+  <p class="pdesc">${esc(x.d)}</p>${mine?`<div class="vw" style="margin:0">${DI.eye}${n} view${n===1?"":"s"}${n?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:""}
+  <div class="svact">${mine?`<button class="btn pitchb" onclick="editPost('service',${x.id})">Edit</button><button class="btn alt dng" onclick="delPost('service',${x.id})">Delete</button><span class="hint">This is your service. Bookings and offers appear on the right.</span>`:`<button class="btn pitchb booknow" onclick="book(${x.id})">Book now</button><button class="btn alt ico" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">${IC.chat}Message</button>`}</div></section>
+  <section class="svr2" aria-label="Reviews and bookings"><div class="svsel"><select aria-label="Show reviews or bookings" onchange="setSvTab(this.value)"><option value="reviews" ${tab==="reviews"?"selected":""}>Reviews</option><option value="bookings" ${tab==="bookings"?"selected":""}>Bookings (${mine?x.b.length:own.length})</option></select></div><div id="svr" class="svbody">${svRight(x)}</div></section></div>`}
+const ARW='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg>';
 let bj=null,bmode="listed",bedit=null;
 const mid5=x=>Math.round((x.min+x.max)/2/5)*5;
 function book(id,bid){bj=S.services.find(z=>z.id===id);if(!bj)return;bedit=bid?bj.b.find(b=>b.id===bid)||null:null;bmode=bedit?bedit.mode:"listed";
@@ -2693,7 +2726,7 @@ function bookEst(){const h=Math.max(1,+bh.value||1),o=+bo.value,x=bj,mid=(x.min+
   f=!(o>0)?"":o>=x.max?"At or above the top of their range, so it will very likely be accepted.":o>=mid?"Within their range, so it will likely be accepted or lightly countered.":o>=x.min?"In the lower half of their range. Expect a counter-offer.":`Below their ₹${x.min}/${uS(x)} minimum. They will probably counter at ₹${x.min}.`}
  else t=`Estimated cost: <b>${estTx(x,h)}</b> for ${qtyTx(x,h)}`;
  bookE.innerHTML=t;bookFit.textContent=f;bkGo.textContent=bedit?"Send new offer":bmode==="offer"?"Send offer":"Book now"}
-function bkNotifyUI(x){if(postD.open&&ck==="service"&&cp===x.id)openService(x.id);else if(S.view==="history")historyView();nav()}
+function bkNotifyUI(x){if(S.view==="svc"&&S.sv===x.id)svcPage();else if(postD.open&&ck==="service"&&cp===x.id)openService(x.id);else if(S.view==="history")historyView();nav()}
 const tm12=t=>{const[h,m]=String(t||"").split(":").map(Number);return isNaN(h)?"":`${h%12||12}:${String(m||0).padStart(2,"0")} ${h<12?"AM":"PM"}`};
 function bkMsg(x,b,upd){const c=v=>String(v||"").replace(/¦/g,"|").trim(),u=uOf(x),base=`${rateTx(x)}/${u}`;
  return[`Booking Request from ${S.name}`,upd?"Updated request":"",`Service: “${x.t}”`,`Base price: ${base}`,`Offer: ${b.mode==="offer"?`₹${b.offer}/${u} × ${qtyTx(x,b.hours)} = ₹${b.offer*b.hours}`:`Listed rate ${base} × ${qtyTx(x,b.hours)} = ${estTx(x,b.hours)}`}`,`Date: ${b.date}`,`Time: ${tm12(b.time)}`,`Duration: ${qtyTx(x,b.hours)}`,`Location: ${c(b.loc)}`,b.note?`Note: ${c(b.note)}`:""].filter(Boolean).join(" ¦ ")}
@@ -2977,7 +3010,7 @@ function saveEdit(e){e.preventDefault();if(!ed)return;const o=ownPost(ed.kind,ed
 function delPost(kind,id){const o=ownPost(kind,id);if(!o)return;shut("postD","editD");const n=kind==="job"?o.p.length:o.b.length,w=kind==="job"?"request":"booking";
  delD.innerHTML=`<div class="dh"><h3 style="margin:0">Delete this post?</h3></div><p style="margin:0">“${esc(o.t)}” will be removed${n?`, along with its ${n} ${w}${n===1?"":"s"}`:""}. This can’t be undone.</p><div class="acts"><button type="button" class="btn danger" onclick="confirmDel('${kind}',${id})">Delete</button><button type="button" class="btn alt" onclick="delD.close()">Cancel</button></div>`;delD.showModal()}
 function confirmDel(kind,id){const L=kind==="job"?S.jobs:S.services,i=L.findIndex(x=>x.id===id&&x.by===S.name);if(i<0){delD.close();return}const t=L[i].t;L.splice(i,1);
- S.notifs=S.notifs.filter(n=>!(kind==="service"&&n.act&&n.act.k==="service"&&n.act.id===id));log("deleted "+kind,t);save();delD.close();toast("Post deleted");render();nav()}
+ S.notifs=S.notifs.filter(n=>!(kind==="service"&&n.act&&n.act.k==="service"&&n.act.id===id));log("deleted "+kind,t);save();delD.close();toast("Post deleted");if(S.view==="svc")goBack();else{render();nav()}}
 
 /* Conversations are ordered by their most recent message, newest first (incoming and sent alike) */
 const lastMsg=t=>t.m.reduce((a,m)=>(!a||(m.ts||0)>=(a.ts||0))?m:a,null);
