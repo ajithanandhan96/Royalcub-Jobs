@@ -447,6 +447,15 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .demo{justify-self:center;color:var(--plum);font-weight:700;font-size:14px;padding:6px 12px;text-decoration:underline;text-underline-offset:3px}
 .secure{margin:0;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--mute);font-size:12px;font-weight:600;text-align:center}.secure svg{width:14px;height:14px;fill:currentColor;flex:none}
 @media (max-width:400px){.acard{padding:24px 18px;border-radius:26px}.ahead h2{font-size:22px}}
+/* create-account page */
+.acard.reg{position:relative}
+.abk{position:absolute;left:14px;top:14px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:transparent;border:0;color:var(--ink,inherit);cursor:pointer;z-index:2}
+.abk:hover{background:var(--soft,rgba(120,100,180,.12))}.abk svg{width:22px;height:22px;fill:currentColor}
+.acard.reg .rstar{font-style:normal}
+.rcert{display:grid;gap:6px}.rcl{font-weight:600;font-size:14px}.rcb{min-height:44px!important;font-size:15px!important}
+.rcp{display:flex;align-items:center;gap:12px}.rcp:empty{display:none}.rcp img{width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.acard.reg .sub{white-space:nowrap;font-size:clamp(11px,3.5vw,14px)}
+@media (max-width:600px){.acard.reg{padding-top:22px}.acard.reg .ahead .al{height:30px}.acard.reg .ahead h2{font-size:19px;margin-top:2px}.acard.reg .ahead{gap:4px}.abk{left:8px;top:8px}}
 @media (max-height:700px) and (min-width:600px){.auth{place-items:start center}}
 .out .main,.out .sheet{max-width:none;width:100%;margin-left:0;margin-right:0}
 .out .app{display:block}
@@ -1599,6 +1608,23 @@ body:not(.out,.onb,.adm,.tncv,.tnc2) .sheet:has(#sbar){margin-top:-30px}
  .sbar~.row,.sbar~.row.wkrow{margin-top:8px;margin-bottom:6px}
 }
 @media (min-width:768px){.locpg{display:none!important}}
+
+/* ===== Round 9: filled like/comment icons, Likes button, locked likes ===== */
+.ic-h,.ic-c{width:18px;height:18px;fill:currentColor;flex:none}
+.btf span{display:inline-flex;align-items:center;gap:5px}
+.btf .lk{color:var(--mute)}.btf .lk svg{opacity:.55}
+.btf .lk.on{color:#e5334b;font-weight:700}.btf .lk.on svg{opacity:1;width:20px;height:20px;filter:drop-shadow(0 1px 2px rgba(229,51,75,.35))}
+.btf .cm{color:#4f7cfa}.btf .cm svg{width:17px;height:17px}
+.bpa button{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.bpa .blk svg{color:var(--mute);opacity:.6}.bpa .blk.on,.bpa .blk.on svg{color:#e5334b;opacity:1}
+.bpa .blk:disabled{cursor:default;opacity:1}
+.bpa .bcmb svg{color:#4f7cfa}
+.bfeedh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.blikes{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 8px 0 14px;border-radius:99px;background:var(--cardbg,var(--soft));border:1.5px solid var(--line);font-weight:700;font-size:14px;color:var(--ink);margin-left:auto}
+.blikes svg{width:19px;height:19px;fill:#e5334b}
+.blikes b{display:inline-grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:99px;background:color-mix(in srgb,#e5334b 14%,transparent);color:#e5334b;font-size:13px}
+.blikes:hover,.blikes:focus-visible{border-color:#e5334b;outline:none}
+.pvbar .bcount{margin-left:auto;display:inline-grid;place-items:center;min-width:26px;height:22px;padding:0 8px;border-radius:99px;background:var(--soft);color:var(--mute);font-size:12px;font-weight:700}
 </style>
 </head>
 <body>
@@ -2021,7 +2047,7 @@ function tncCard(gate){const u=meU(),at=u&&u.tnc&&u.tnc.at,ad=at?new Date(at).to
 function terms(){const u=meU();if(u&&(!u.tnc||!u.tnc.at))u.tnc={v:TNC_V,at:Date.now()};view.innerHTML=tncCard(false)}
 
 const NAV=[["home",FI.home,"Home"],["add",FI.add,"Add Post"],["board",FI.board,"Feed"],["chat",FI.chat,"Chat"],["profile",FI.person,"Profile"]];
-function nav(){const h=NAV.map(([k,i,l])=>`<button ${(S.view===k||(S.view==="post"&&k==="board"))?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
+function nav(){const h=NAV.map(([k,i,l])=>`<button ${(S.view===k||((S.view==="post"||S.view==="likes")&&k==="board"))?'aria-current="page"':''} onclick="${k==='profile'?'editP=false;':''}go('${k}')"><i aria-hidden="true">${i}</i>${l}${k==="chat"&&unread()?`<span class="dot" aria-hidden="true">${unread()>99?"99+":unread()}</span>`:""}</button>`).join("");
  botNav.innerHTML=h;sideNav.innerHTML=(S.out?"":`<button class="sidepro" onclick="editP=false;go('profile')" aria-label="My profile"><div class="av" style="${abg(S.name)}">${ait(S.name)}</div><span style="min-width:0"><b>${esc(S.name)}</b><small>View profile</small></span></button>`)+h;updateBack();{const tn=unread()+unreadN();document.title=(tn?"("+(tn>99?"99+":tn)+") ":"")+BASE_T}const un=unreadN();bn.textContent=un>9?"9+":un;bn.style.visibility=un?"visible":"hidden";const uc=unread(),cb=document.getElementById("cn");cb.textContent=uc>9?"9+":uc;cb.style.visibility=uc?"visible":"hidden";document.getElementById("chatB").setAttribute("aria-label",uc?"Chat, "+uc+" unread":"Chat");document.getElementById("bellB").setAttribute("aria-label",un?"Notifications, "+un+" unread":"Notifications")}
 const BASE_T=document.title;
 const unread=()=>S.threads.reduce((a,t)=>a+(+t.u||0),0);
@@ -2029,7 +2055,7 @@ const stubUser=n=>{if(n&&!S.users.some(u=>u.name===n))S.users.push({email:n.toLo
 function shut(...ids){ids.forEach(i=>{const d=document.getElementById(i);if(d&&d.open)d.close()})}
 const GG=`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.46a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.27-2.09 3.58-5.17 3.58-8.81z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.91l-3.88-3A7.2 7.2 0 0 1 5.36 14.31H1.34v3.09A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.36 14.31a7.2 7.2 0 0 1 0-4.62V6.6H1.34a12 12 0 0 0 0 10.8l4.02-3.09z"/><path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.59 1.8l3.44-3.44A11.5 11.5 0 0 0 12 0 12 12 0 0 0 1.34 6.6l4.02 3.09A7.2 7.2 0 0 1 12 4.77z"/></svg>`;
 const LOCK=SV("M18 8h-1V6a5 5 0 0 0-10 0v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM9 6a3 3 0 0 1 6 0v2H9z");
-const pwField=(id,l,ac)=>`<label>${l}<div class="pw iw">${LOCK}<input id="${id}" type="password" autocomplete="${ac}" required><button type="button" class="eye" aria-label="Show password" aria-pressed="false" onclick="togglePw('${id}',this)">Show</button></div></label>`;
+const pwField=(id,l,ac,rq)=>`<label>${rq?`<span>${l}<i class="rstar" aria-hidden="true"> *</i></span>`:l}<div class="pw iw">${LOCK}<input id="${id}" type="password" autocomplete="${ac}" required><button type="button" class="eye" aria-label="Show password" aria-pressed="false" onclick="togglePw('${id}',this)">Show</button></div></label>`;
 const emField=(id,l,ac)=>`<label>${l}<div class="iw">${IC.mail}<input id="${id}" type="email" required autocomplete="${ac}" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com"></div></label>`;
 function togglePw(id,b){const i=document.getElementById(id),sh=i.type==="password";i.type=sh?"text":"password";b.textContent=sh?"Hide":"Show";b.setAttribute("aria-pressed",sh);b.setAttribute("aria-label",(sh?"Hide":"Show")+" password")}
 function showAuth(k){if(!pgOk&&k!=="recover")k="home";au=k;if(k==="forgot")fp={step:1,email:"",code:"",tries:0};render();setTimeout(()=>{const f=document.querySelector(".acard input,.acard select");if(f)f.focus()},60)}
@@ -2080,7 +2106,14 @@ function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.
 function sbUserSignIn(u){if(!u||!S.out||sbBusy||rcRec||sbQuiet||!(u.identities||[]).some(i=>i.provider==="google"))return;const m=u.user_metadata||{};googleSignIn({sub:String(m.sub||m.provider_id||u.id),email:u.email||m.email||"",email_verified:true,name:m.full_name||m.name||""})}
 function showRecover(em){rcRec=true;S.out=true;au="recover";fp={step:1,email:em||"",code:"",tries:0};render()}
 async function sbInit(){if(!SB_ON)return;sbGoogleOn();if(/type=recovery/.test(location.hash))rcRec=true;try{const c=await sbClient();c.auth.onAuthStateChange((ev,ss)=>{if(ev==="PASSWORD_RECOVERY"){showRecover(ss&&ss.user&&ss.user.email);return}if(ev==="SIGNED_IN"&&ss&&ss.user)sbUserSignIn(ss.user)});const {data}=await c.auth.getSession();if(rcRec&&data&&data.session)showRecover(data.session.user.email);else if(data&&data.session)sbUserSignIn(data.session.user);if(location.hash.includes("access_token")||location.search.includes("code="))history.replaceState(null,"",location.pathname)}catch(e){console.warn("Supabase init failed",e)}}
-let regBusy=false;
+let regBusy=false,regCert="";
+function regKeep(fn){const v={n:rn.value,a:ra.value,e:re.value,p:rph.value,c:rc.value,t:rt.value};fn();render();rn.value=v.n;ra.value=v.a;re.value=v.e;rph.value=v.p;rc.value=v.c;rt.value=v.t}
+function regCertPick(inp){if(!inp){regKeep(()=>{regCert=""});return}const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
+ if(!/^image\/(png|jpe?g|webp)$/.test(f.type)){toast("Choose a PNG, JPG or WebP image");return}
+ if(f.size>10*1024*1024){toast("That image is too large (max 10 MB)");return}
+ const img=new Image(),url=URL.createObjectURL(f);
+ img.onload=()=>{URL.revokeObjectURL(url);try{const k=Math.min(1,1200/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*k));c.height=Math.max(1,Math.round(img.height*k));const g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(img,0,0,c.width,c.height);const d=c.toDataURL("image/jpeg",.72);regKeep(()=>{regCert=d})}catch(e){toast("Couldn’t use that image")}};
+ img.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn’t use that image")};img.src=url}
 async function contactTaken(em,ph){const r=await fetch(rpcUrl("rc_contact_taken"),{method:"POST",headers:cHead(),body:JSON.stringify({p_email:em,p_phone:ph})});
  if(!r.ok){console.warn(r.status===404?"RoyalCub: run supabase_unique_accounts.sql in Supabase so the database blocks duplicate emails and phone numbers.":"RoyalCub: contact check failed ("+r.status+")");return null}
  try{return await r.json()}catch(e){return null}}
@@ -2102,7 +2135,7 @@ async function sbRegister(u){const net={err:"Couldn’t reach the server. Check 
   try{await c.auth.signOut({scope:"local"})}catch(_){}
   return{ok:true}}catch(e){return net}}
 async function doRegister(e){e.preventDefault();if(regBusy)return;const nm=rn.value.trim(),em=re.value.trim().toLowerCase(),ph=rph.value.trim(),ag=+ra.value,ct=rc.value;
- if(nm.length<2)return setErr("Enter your full name.","rn");
+ if(nm.length<2)return setErr("Enter your name.","rn");
  if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","re");
  if(S.users.some(x=>x.email.toLowerCase()===em))return setErr("An account with this email already exists. Try logging in.","re");
  if(!/^[0-9+\s\-]{7,16}$/.test(ph)||ph.replace(/\D/g,"").length<7)return setErr("Enter a valid phone number.","rph");
@@ -2110,12 +2143,12 @@ async function doRegister(e){e.preventDefault();if(regBusy)return;const nm=rn.va
  if(!(ag>=16&&ag<=99))return setErr("Age must be between 16 and 99.","ra");
  if(!ct)return setErr("Choose a category.","rc");
  const pe=pwErr(rpw.value,rcf.value);if(pe)return setErr(pe[0],pe[1]?"rcf":"rpw");
- const u={email:em,pw:rpw.value,name:nm,phone:ph,age:String(ag),cat:ct,role:ct==="Client"?"client":"worker",title:rt.value.trim()};
- if(!SB_ON){S.users.push(u);enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!");return}
+ const u={email:em,pw:rpw.value,name:nm,phone:ph,age:String(ag),cat:ct,role:ct==="Client"?"client":"worker",title:rt.value.trim()};if(regCert)u.cert=regCert;
+ if(!SB_ON){S.users.push(u);regCert="";enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!");return}
  regBusy=true;setErr("");const bt=document.querySelector('form[onsubmit="doRegister(event)"] .btn'),bl=bt&&bt.textContent;if(bt){bt.disabled=true;bt.textContent="Creating account…"}
  try{const r=await sbRegister(u);if(!r.ok){setErr(r.err,r.field);return}
   if(S.users.some(x=>x.email.toLowerCase()===em))return setErr("An account with this email already exists. Try logging in.","re");
-  S.users.push(u);enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!")}
+  S.users.push(u);regCert="";enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!")}
  finally{regBusy=false;const b=document.querySelector('form[onsubmit="doRegister(event)"] .btn');if(b&&b.disabled){b.disabled=false;if(bl)b.textContent=bl}}}
 async function doReset1(e){e.preventDefault();const em=fe.value.trim().toLowerCase();if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","fe");
  if(!SB_ON)return setErr("Password reset isn’t available right now. Please contact support.");
@@ -2152,19 +2185,19 @@ function authView(){
  if(au==="home")return `<div class="land${pgOk?"":" gate"}"><div class="lhero"><img class="al lg-l" src="${LG.l}" alt="RoyalCub Jobs"><img class="al lg-d" src="${LG.d}" alt="RoyalCub Jobs"><h1>Hire fast. Work smart. Get it done.</h1><p>RoyalCub Jobs connects people who need work done with trusted local professionals, from plumbers and electricians to nurses, drivers and repair shops.</p>${pgOk?`<div class="lcta"><button class="btn" onclick="showAuth('login')">Log in</button><button class="btn alt" onclick="showAuth('register')">Create account</button></div>`:`<section class="pgc" aria-labelledby="pgT"><h2 id="pgT">Terms &amp; Privacy</h2><p class="pgs">A quick summary of our Terms &amp; Conditions and Privacy Policy. Please read it before you continue.</p><ul class="pgl"><li><b>What we do:</b> connect clients and workers. Jobs and payments are agreed directly between you.</li><li><b>Your data:</b> used only to run your account and keep the service safe. We never sell it.</li><li><b>Your conduct:</b> be 16 or older, honest and respectful.</li><li><b>Your rights:</b> access, correct or delete your data any time.</li></ul><p class="tfull"><button type="button" class="link" id="pgMoreB" aria-haspopup="dialog" onclick="pgFull()">Read the full Terms &amp; Conditions</button></p><label class="pgck"><input id="pgCk" type="checkbox" onchange="pgCheck(this)"><span>I have read and agree to the Terms &amp; Conditions and Privacy Policy.</span></label><button id="pgBtn" class="btn" type="button" disabled aria-disabled="true" onclick="pgAgree()">Agree and Proceed</button></section>`}</div>
  <div class="lgrid"><section><h2>For clients</h2><p>Post a vacancy with your budget, location and dates, browse service providers near you, and chat directly to agree the details.</p></section><section><h2>For service providers</h2><p>Create a profile, list the services you offer with your availability and pricing, and get found by clients in your area.</p></section><section><h2>How it works</h2><ol><li>Create a free account as a client or service provider.</li><li>Post a vacancy or offer a service.</li><li>Chat, agree terms and pay each other directly.</li></ol></section></div></div>`;
  const head=(t,sub)=>`<div class="ahead"><img class="al lg-l" src="${LG.l}" alt="RoyalCub Jobs"><img class="al lg-d" src="${LG.d}" alt="RoyalCub Jobs"><h2>${t}</h2><p class="sub">${sub}</p></div>`;
- if(au==="register")return `<div class="auth"><div class="acard">${head("Create your account","Join to hire help or find work near you.")}
- 
+ if(au==="register")return `<div class="auth"><div class="acard reg"><button type="button" class="abk" aria-label="Back to log in" onclick="regCert='';showAuth('login')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg></button>${head("Create New Account","Join to hire help or find work near you.")}
  <form onsubmit="doRegister(event)" novalidate>
- <div class="two"><label>Name<input id="rn" required maxlength="40" autocomplete="name"></label><label>Age<input id="ra" type="number" inputmode="numeric" min="16" max="99" required></label></div>
- <label>Email ID<input id="re" type="email" required autocomplete="email"></label>
- <label>Phone Number<input id="rph" type="tel" required autocomplete="tel" placeholder="+91 98765 43210"></label>
- <label>Category<select id="rc" required><option value="">Choose a category</option><optgroup label="Client"><option value="Client">Client — I want to hire</option></optgroup><optgroup label="Service provider">${CATS.slice(1).map(c=>`<option value="${c}">${c}</option>`).join("")}</optgroup></select></label>
- <label>Company name or service role <span style="color:var(--mute);font-weight:500">(optional)</span><input id="rt" maxlength="40" placeholder="e.g. Plumber or Sharma Constructions"></label>
- ${pwField("rpw","Password","new-password")}<div class="fine">At least 8 characters, with a letter and a number.</div>
- ${pwField("rcf","Confirm Password","new-password")}
+ <div class="two"><label><span>Name<i class="rstar" aria-hidden="true"> *</i></span><input id="rn" required maxlength="40" autocomplete="name"></label><label><span>Age<i class="rstar" aria-hidden="true"> *</i></span><input id="ra" type="number" inputmode="numeric" min="16" max="99" required></label></div>
+ <label><span>Email ID<i class="rstar" aria-hidden="true"> *</i></span><input id="re" type="email" required autocomplete="email"></label>
+ <label><span>Phone Number<i class="rstar" aria-hidden="true"> *</i></span><input id="rph" type="tel" required autocomplete="tel" inputmode="tel"></label>
+ <label><span>Category<i class="rstar" aria-hidden="true"> *</i></span><select id="rc" required><option value="">Choose a category</option><optgroup label="User"><option value="Client">User — I want to hire</option></optgroup><optgroup label="Service provider">${CATS.slice(1).map(c=>`<option value="${c}">${c}</option>`).join("")}</optgroup></select></label>
+ <label><span>Company Name</span><input id="rt" maxlength="40" placeholder="e.g. Sharma Constructions"></label>
+ <div class="rcert"><span class="rcl">Experience Certificate</span><input id="rcf2" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="regCertPick(this)"><button type="button" class="btn alt rcb" onclick="document.getElementById('rcf2').click()">${regCert?"Change image":"Upload image"}</button><div class="rcp" id="rcp">${regCert?`<img src="${regCert}" alt="Experience certificate preview"><button type="button" class="link" onclick="regCertPick(null)">Remove</button>`:""}</div></div>
+ ${pwField("rpw","Password","new-password",1)}<div class="fine">At least 8 characters, with a letter and a number.</div>
+ ${pwField("rcf","Confirm Password","new-password",1)}
  <div class="err" id="aerr" role="alert"></div>
  <button class="btn">Create Account</button></form>
- <div class="or"><span>already registered?</span></div><button class="btn alt" onclick="showAuth('login')">Back to Log in</button><p class="plink">By creating an account you agree to our Terms &amp; Conditions and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p></div></div>`;
+ <p class="plink">By creating an account you agree to our Terms &amp; Conditions and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p></div></div>`;
  if(!pgOk&&au!=="recover"&&au!=="home")au="home";
  if(au==="recover")return `<div class="auth"><div class="acard">${head("Set a new password","Choose a new password for <b>"+esc(fp.email||"your account")+"</b>.")}
  <form onsubmit="doRecover(event)" novalidate>${pwField("rnw","New password","new-password")}<div class="fine">At least 8 characters, with a letter and a number.</div>${pwField("rncf","Confirm new password","new-password")}<div class="err" id="aerr" role="alert"></div><button class="btn">Update password</button></form>
@@ -2300,18 +2333,23 @@ function bCard(x,full){const me=S.name,id=esc(x.id),L=bLk(x.id),liked=L.some(l=>
  return `<article class="bpost" data-id="${id}"><header class="bph"><button type="button" class="plink" data-u="${esc(x.by)}" onclick="openProfile(this.dataset.u)" aria-label="View ${esc(x.by)}’s profile"><div class="av" style="${abg(x.by)}">${ait(x.by)}</div></button><div class="bpn"><button type="button" class="plink pname" data-u="${esc(x.by)}" onclick="openProfile(this.dataset.u)"><b>${esc(x.by)}</b></button>${des?`<span class="bdes">${esc(des)}</span>`:""}<small>${esc(ago(x.ts))} · disappears in ${bLeft(x)} d</small></div>
   <div class="bmw"><button type="button" class="bdel bdots" aria-haspopup="true" aria-expanded="false" aria-label="More options" onclick="bMenu(event,this)">⋮</button><div class="bmenu hide" role="menu"><button type="button" role="menuitem" onclick="bShare(this.closest('.bpost').dataset.id)">↗ Share</button>${mine?"":`<button type="button" role="menuitem" onclick="bReport(this.closest('.bpost').dataset.id)">⚑ Report</button>`}${own?`<button type="button" role="menuitem" class="dng" onclick="bDelPost(this.closest('.bpost').dataset.id)">🗑 Delete</button>`:""}</div></div></header>
   ${x.ti?`<h3 class="bti">${esc(x.ti)}</h3>`:""}${x.su?`<p class="bsu">${esc(x.su)}</p>`:""}${x.t?`<p class="bpt">${esc(x.t)}</p>`:""}${bImgOk(x.img)?`<img class="bpi" src="${x.img}" alt="Photo shared by ${esc(x.by)}" loading="lazy" onclick="viewImg(this.src)">`:""}
-  <div class="bpa"><button type="button" class="${liked?"on":""}" aria-pressed="${liked}" onclick="bLike(this.closest('.bpost').dataset.id)"><span aria-hidden="true">${liked?"♥":"♡"}</span> Like${L.length?` · ${L.length}`:""}</button><button type="button" aria-expanded="${open}" onclick="bToggle(this.closest('.bpost').dataset.id)"><span aria-hidden="true">💬</span> Comment${C.length?` · ${C.length}`:""}</button><button type="button" onclick="bShare(this.closest('.bpost').dataset.id)"><span aria-hidden="true">↗</span> Share</button></div>
+  <div class="bpa"><button type="button" class="blk${liked?" on":""}" aria-pressed="${liked}" ${liked?'disabled aria-label="You liked this post"':""} onclick="bLike(this.closest('.bpost').dataset.id)">${ICH} ${liked?"Liked":"Like"}${L.length?` · ${L.length}`:""}</button><button type="button" class="bcmb" aria-expanded="${open}" onclick="bToggle(this.closest('.bpost').dataset.id)">${ICC} Comment${C.length?` · ${C.length}`:""}</button><button type="button" onclick="bShare(this.closest('.bpost').dataset.id)"><span aria-hidden="true">↗</span> Share</button></div>
   ${open?`<div class="bcm">${C.map(c=>`<div class="bc" data-cid="${esc(c.id)}"><button type="button" class="plink" data-u="${esc(c.by)}" onclick="openProfile(this.dataset.u)" aria-label="View ${esc(c.by)}’s profile"><div class="av cav" style="${abg(c.by)}">${ait(c.by)}</div></button><div class="bcb"><button type="button" class="plink pname" data-u="${esc(c.by)}" onclick="openProfile(this.dataset.u)"><b>${esc(c.by)}</b></button> <small>${esc(ago(c.ts))}</small><p>${esc(c.t)}</p></div>${c.by===me||isAdmin()?`<button type="button" class="bdel" onclick="bDelCm(this.closest('.bc').dataset.cid)" aria-label="Delete comment">✕</button>`:""}</div>`).join("")||`<p class="bnone">No comments yet. Be the first.</p>`}
   <form class="bcf" onsubmit="bComment(event,this.closest('.bpost').dataset.id)"><input type="text" name="c" maxlength="300" placeholder="Write a comment (text only)" aria-label="Write a comment" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>`:""}</article>`}
+const ICH='<svg class="ic-h" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>',ICC='<svg class="ic-c" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>';
+const bMine=id=>bLk(id).some(l=>l.by===S.name);
+const bLikedPosts=()=>{const t=new Map(S.plikes.filter(l=>l.by===S.name).map(l=>[String(l.pid),l.ts||0]));return bPosts().filter(x=>t.has(String(x.id))).sort((a,b)=>t.get(String(b.id))-t.get(String(a.id)))};
+const likesBtn=()=>`<button type="button" class="blikes" onclick="go('likes')" aria-label="Posts you liked">${ICH}<span>Likes</span><b>${bLikedPosts().length}</b></button>`;
+function likedPage(){const P=bLikedPosts();view.innerHTML=`<div class="pvbar"><button type="button" class="pvback" onclick="goBack()" aria-label="Back to feed">←</button><h2>Liked posts</h2><span class="bcount">${String(P.length).padStart(2,"0")}</span></div><div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">You haven’t liked any posts yet. Posts you like will show up here.</p>`}</div>`}
 function bTile(x){const id=esc(x.id),L=bLk(x.id).length,C=bCm(x.id).length,des=roleOf(x.by),t=x.ti||x.su||"";
  return `<div class="btile" role="button" tabindex="0" data-id="${id}" onclick="bOpen(this.dataset.id)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();bOpen(this.dataset.id)}" aria-label="Open post by ${esc(x.by)}"><div class="btph"><div class="av" style="${abg(x.by)}">${ait(x.by)}</div><div class="bpn"><b>${esc(x.by)}</b><small>${des?esc(des):esc(ago(x.ts))}</small></div></div>
-  ${t?`<h3 class="btt">${esc(t)}</h3>`:""}${x.t?`<p class="btx">${esc(x.t)}</p>`:""}${bImgOk(x.img)?`<div class="btm"><img src="${x.img}" alt="" loading="lazy"></div>`:`<div class="btm btm-ph" style="${abg(x.by)}" aria-hidden="true"><span>${ait(x.by)}</span></div>`}<div class="btf"><span>♡ ${L}</span><span>💬 ${C}</span><span class="btd">${bLeft(x)} d left</span></div></div>`}
+  ${t?`<h3 class="btt">${esc(t)}</h3>`:""}${x.t?`<p class="btx">${esc(x.t)}</p>`:""}${bImgOk(x.img)?`<div class="btm"><img src="${x.img}" alt="" loading="lazy"></div>`:`<div class="btm btm-ph" style="${abg(x.by)}" aria-hidden="true"><span>${ait(x.by)}</span></div>`}<div class="btf"><span class="lk${bMine(x.id)?" on":""}" title="${bMine(x.id)?"You liked this":"Likes"}">${ICH}${L}</span><span class="cm">${ICC}${C}</span><span class="btd">${bLeft(x)} d left</span></div></div>`}
 function bOpen(id){if(!S.posts.some(z=>String(z.id)===String(id)))return;S.pv=String(id);go("post")}
 function postPage(){const x=S.posts.find(z=>String(z.id)===String(S.pv));
  view.innerHTML=`<div class="pvbar"><button type="button" class="pvback" onclick="goBack()" aria-label="Back to feed">←</button><h2>Post</h2></div>${x?bCard(x,true):`<p class="bnone">This post is no longer available.</p>`}`}
 const bPosts=()=>{pruneBoard();return S.posts.filter(x=>x&&live(x.by)).sort((a,b)=>b.ts-a.ts)};
 const bNotice=`<p class="bnote" role="note">ⓘ All posts disappear automatically within 1 month.</p>`;
-function feedHTML(){const P=bPosts();return `<section class="feedsec" id="feedsec" aria-label="Feed">${pushBanner()}<aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>${bNotice}<div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button></div><div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing in the feed yet. Be the first to post!</p>`}</div></section>`}
+function feedHTML(){const P=bPosts();return `<section class="feedsec" id="feedsec" aria-label="Feed">${pushBanner()}<aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>${bNotice}<div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button>${likesBtn()}</div><div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing in the feed yet. Be the first to post!</p>`}</div></section>`}
 function bMenu(e,b){e.stopPropagation();const m=b.nextElementSibling,was=m.classList.contains("hide");document.querySelectorAll(".bmenu").forEach(x=>x.classList.add("hide"));document.querySelectorAll(".bdots").forEach(x=>x.setAttribute("aria-expanded","false"));if(was){m.classList.remove("hide");b.setAttribute("aria-expanded","true")}}
 document.addEventListener("click",()=>{document.querySelectorAll(".bmenu:not(.hide)").forEach(x=>{x.classList.add("hide");const d=x.previousElementSibling;if(d)d.setAttribute("aria-expanded","false")})});
 function bReport(id){const p=S.posts.find(x=>String(x.id)===String(id));if(!p)return;document.querySelectorAll(".bmenu").forEach(x=>x.classList.add("hide"));toast("Thanks. Tell us what’s wrong with this post.");reportUser(p.by)}
@@ -2321,7 +2359,7 @@ function board(){const P=bPosts();
  view.innerHTML=`<div class="row"><h2>Feed</h2><span>${String(P.length).padStart(2,"0")}</span></div>
  ${pushBanner()}<aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>
  ${bNotice}
- <div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button></div>
+ <div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button>${likesBtn()}</div>
  <div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing here yet. Start the conversation!</p>`}</div>`}
 function bNew(){let d=document.getElementById("newPostD");if(!d){d=document.createElement("dialog");d.id="newPostD";d.setAttribute("aria-labelledby","npT");document.body.appendChild(d)}bDlgUI();if(!d.open)d.showModal()}
 function bClose(){const d=document.getElementById("newPostD");if(d&&d.open)d.close()}
@@ -2349,7 +2387,7 @@ function bPost(e){e.preventDefault();const t=(document.getElementById("cbt").val
 function bDelPost(id){if(!confirm("Delete this post? This can’t be undone."))return;const p=S.posts.find(x=>String(x.id)===String(id));if(!p||(p.by!==S.name&&!isAdmin()))return;
  S.posts=S.posts.filter(x=>String(x.id)!==String(id));S.plikes=S.plikes.filter(x=>String(x.pid)!==String(id));S.pcmts=S.pcmts.filter(x=>String(x.pid)!==String(id));save();if(S.view==="post"){S.pv=null;goBack()}else render();cSched();toast("Post deleted")}
 function bLike(id){if(!S.posts.some(x=>String(x.id)===String(id)))return;const k=String(id)+"|"+S.name,i=S.plikes.findIndex(l=>l.id===k);
- if(i>=0)S.plikes.splice(i,1);else S.plikes.push({id:k,by:S.name,pid:String(id),ts:Date.now()});save();render();cSched()}
+ if(i>=0){toast("You already liked this post");return}S.plikes.push({id:k,by:S.name,pid:String(id),ts:Date.now()});save();render();cSched()}
 function bToggle(id){id=String(id);BD.open.has(id)?BD.open.delete(id):BD.open.add(id);render();if(BD.open.has(id)){const f=document.querySelector('.bpost[data-id="'+CSS.escape(id)+'"] .bcf input');if(f)f.focus({preventScroll:true})}}
 function bComment(e,id){e.preventDefault();const f=e.target.c,t=(f.value||"").replace(/\s+/g," ").trim().slice(0,300);if(!t)return;
  if(!S.posts.some(x=>String(x.id)===String(id)))return;S.pcmts.push({id:bId(),by:S.name,pid:String(id),t,ts:Date.now()});save();BD.open.add(String(id));render();cSched()}
@@ -2361,7 +2399,7 @@ function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.t
 function render(){pruneStories();pruneBoard();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("tncv",!S.out&&!needTnc()&&S.view==="terms");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("fullv",!S.out&&(S.view==="profile"||S.view==="settings"));document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("tnc2",!S.out&&needTnc()&&onbStep===2);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
   if(needTnc()){view.innerHTML=onbView();lastV="";return}
- const VIEWS={home,add,board,post:postPage,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
+ const VIEWS={home,add,board,post:postPage,likes:likedPage,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
 
 function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u.title;if(u.role==="worker"&&ROLE[u.cat])return ROLE[u.cat]}
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
