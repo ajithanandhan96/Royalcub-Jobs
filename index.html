@@ -1475,8 +1475,6 @@ body.chatopen .sheet{border-radius:0}
 .cats .cat[aria-pressed=true]:not(.other){background:var(--ct,var(--soft))}
 .cats .cat .ce{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c,var(--plum)) 14%,transparent)}
 
-/* section headings: small accent mark */
-.sbar~.row h2::before{content:"";display:inline-block;width:4px;height:14px;border-radius:3px;margin-right:8px;vertical-align:-2px;background:linear-gradient(180deg,var(--plum2),var(--navytx))}
 @media (prefers-reduced-motion:reduce){.list .job,.sbar .sbox .sf{transition:none}}
 
 /* ===== Round 5: gray home panel shifted down, white cards, centred search text ===== */
@@ -1558,6 +1556,49 @@ body:not(.out,.onb,.adm,.tncv,.tnc2) .sheet:has(#sbar){margin-top:-30px}
  .bfeed .btx{font-size:14.5px;line-height:1.5}
  .bfeed .btf{font-size:13px}
 }
+
+/* ===== Round 8: no accent bars, tighter mobile spacing, location button + page ===== */
+.locbtn,.lchip{display:none}
+.locpg{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:var(--bg);color:var(--ink);display:none;flex-direction:column;z-index:210}
+.locpg[open]{display:flex}
+.locpg .lph{flex:none;display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px}
+.locpg .lph h2{margin:0;font-size:18px}
+.locpg .lpback{width:44px;height:44px;border-radius:12px;background:var(--soft);font-size:22px;font-weight:800;display:grid;place-items:center;color:var(--ink)}
+.locpg .lps{flex:none;display:flex;align-items:center;gap:10px;margin:4px 14px 8px;padding:0 14px;min-height:48px;border-radius:14px;background:var(--soft);border:1.5px solid var(--line)}
+.locpg .lps:focus-within{border-color:var(--plum)}
+.locpg .lps .sfi{display:grid;place-items:center}.locpg .lps svg{width:20px;height:20px;fill:#e5484d}
+.locpg .lps input{flex:1;min-width:0;height:46px;border:0;background:transparent;outline:0;font-size:16px;color:var(--ink);padding:0}
+.locpg .lpl{flex:1;min-height:0;overflow:auto;padding:4px 14px calc(16px + env(safe-area-inset-bottom,0px));display:grid;align-content:start;gap:6px}
+.locpg .lpo{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:8px 12px;border-radius:14px;text-align:left;font-size:15px;font-weight:600;color:var(--ink);background:transparent}
+.locpg .lpo:hover,.locpg .lpo:focus-visible{background:var(--soft);outline:none}
+.locpg .lpo.on{background:color-mix(in srgb,var(--plum) 12%,transparent);box-shadow:inset 0 0 0 1.5px var(--plum)}
+.locpg .lpo i{font-style:normal;flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--soft)}
+.locpg .lpo i svg{width:18px;height:18px;fill:#e5484d}
+.locpg .lpo.clr{color:var(--accent)}
+.locpg .lpe{margin:18px 6px;color:var(--mute);font-size:14.5px;line-height:1.5}
+@media (max-width:767px){
+ /* search row: shorter name field + small square location button */
+ .sbar .sbox{grid-template-columns:minmax(0,1fr) 48px!important;gap:8px}
+ .sbar .sbox #locsf{display:none!important}
+ .sbar .sbox .locbtn{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--soft);border:1.5px solid var(--line);color:var(--ink);position:relative}
+ .sheet:has(#sbar) .sbar .sbox .locbtn{background:var(--cardbg)}
+ .locbtn svg{width:22px;height:22px;fill:#e5484d}
+ .locbtn.on{border-color:var(--plum);box-shadow:0 0 0 3px color-mix(in srgb,var(--plum) 16%,transparent)}
+ .sbar .sbox .lchip{grid-column:1/-1;display:flex;align-items:center;justify-self:start;gap:6px;max-width:100%;padding:4px 6px 4px 10px;border-radius:99px;background:var(--cardbg);border:1px solid var(--line);font-size:13px;font-weight:600}
+ .lchip.hide{display:none!important}
+ .lchip span{display:flex;align-items:center;gap:6px;min-width:0}.lchip svg{width:14px;height:14px;fill:#e5484d;flex:none}
+ .lchip b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60vw}
+ .lchip button{width:22px;height:22px;border-radius:50%;background:var(--soft);font-size:11px;line-height:1;color:var(--mute)}
+ /* tighter spacing under header and around search */
+ body:not(.out,.onb,.adm,.tncv,.tnc2) .hero{padding-top:6px}
+ body:not(.out,.onb,.adm,.tncv,.tnc2) .top{min-height:44px}
+ body:not(.out,.onb,.adm,.tncv,.tnc2) .hero:has(~ .sheet #sbar){padding-bottom:34px}
+ body:not(.out,.onb,.adm,.tncv,.tnc2) .sheet:has(#sbar){margin-top:-22px}
+ body:not(.out,.onb,.adm,.tncv,.tnc2,.chatopen) .sheet:has(#sbar){padding-top:20px}
+ body:not(.out,.onb,.adm,.tncv,.tnc2) .sbar{padding:0 0 4px;margin-bottom:2px!important}
+ .sbar~.row,.sbar~.row.wkrow{margin-top:8px;margin-bottom:6px}
+}
+@media (min-width:768px){.locpg{display:none!important}}
 </style>
 </head>
 <body>
@@ -2411,7 +2452,8 @@ function results(){const m=searchModel();if(!m)return "";const{raw,ql,cs,ps,ss,p
 const UPI='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>';
 const DNI='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>';
 function searchActHTML(m){return m?`<button type="button" class="rbtn" aria-expanded="${sOpen}" aria-controls="sres" onclick="toggleRes()">${m.tot} result${m.tot===1?"":"s"}</button>`:""}
-function updateSearchUI(){const sb=document.getElementById("sbar");if(!sb)return;const m=searchModel();if(!m)sOpen=false;
+function syncLocBtn(){const b=document.getElementById("locBtn"),c=document.getElementById("lchip"),t=document.getElementById("lchipT");if(b)b.classList.toggle("on",!!S.qloc);if(c)c.classList.toggle("hide",!S.qloc);if(t)t.textContent=S.qloc||""}
+function updateSearchUI(){syncLocBtn();const sb=document.getElementById("sbar");if(!sb)return;const m=searchModel();if(!m)sOpen=false;
  const dd=document.getElementById("sres"),a=document.getElementById("sact"),y=dd?dd.scrollTop:0;
  sb.classList.toggle("act",!!m||sOpen);if(a)a.innerHTML=searchActHTML(m);
  if(dd){dd.className="sdd"+(sOpen&&m?" open":"");dd.innerHTML=sOpen&&m?results():"";dd.scrollTop=y}
@@ -2422,6 +2464,19 @@ function collapseSearch(){sOpen=false;sMore=false;const a=document.activeElement
 function sKey(e){if(e.key==="Enter"){e.preventDefault();doSearch()}else if(e.key==="Escape"){closeLocMenu();closeSug();if(sOpen){sOpen=false;updateSearchUI()}}}
 function setQ(v){S.q=v;sMore=false;updateSearchUI();save()}
 function setQL(v){S.qloc=String(v||"").slice(0,40);const i=document.getElementById("qloc");if(i&&i.value!==S.qloc)i.value=S.qloc;sMore=false;updateSearchUI();save()}
+
+/* ---------- dedicated location selection page (mobile) ---------- */
+function locPage(){let d=document.getElementById("locPg");if(!d){d=document.createElement("dialog");d.id="locPg";d.className="locpg";d.setAttribute("aria-label","Select location");document.body.appendChild(d)}
+ d.innerHTML=`<div class="lph"><button type="button" class="lpback" aria-label="Back" onclick="locPageClose()">←</button><h2>Select location</h2></div><div class="lps"><span class="sfi" aria-hidden="true">${LOC}</span><input id="lpq" type="search" placeholder="Search location" aria-label="Search location" autocomplete="off" autocapitalize="words" enterkeyhint="search" oninput="locPageList(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();const f=document.querySelector('#lpl button');if(f)f.click()}"></div><div class="lpl" id="lpl" role="listbox" aria-label="Locations"></div>`;
+ if(!d.open)d.showModal();locPageList("");const q=document.getElementById("lpq");if(q)setTimeout(()=>{try{q.focus()}catch(e){}},60)}
+function locPageClose(){const d=document.getElementById("locPg");if(d&&d.open)d.close();const b=document.getElementById("locBtn");if(b)try{b.focus()}catch(e){}}
+function locPageList(v){const l=document.getElementById("lpl");if(!l)return;const q=String(v||"").trim().toLowerCase(),all=allPlaces(),cur=(S.qloc||"").toLowerCase();
+ const items=all.filter(x=>!q||x.toLowerCase().includes(q));let h="";
+ if(S.qloc&&!q)h+=`<button type="button" role="option" class="lpo clr" data-v="" onclick="locPageSet(this.dataset.v)"><i aria-hidden="true">✕</i><span>Clear location</span></button>`;
+ h+=items.map(x=>`<button type="button" role="option" class="lpo${x.toLowerCase()===cur?" on":""}" data-v="${esc(x)}" aria-selected="${x.toLowerCase()===cur}" onclick="locPageSet(this.dataset.v)"><i aria-hidden="true">${LOC}</i><span>${esc(x)}</span></button>`).join("");
+ const typed=String(v||"").trim();if(typed&&!all.some(x=>x.toLowerCase()===typed.toLowerCase()))h+=`<button type="button" role="option" class="lpo" data-v="${esc(typed.slice(0,40))}" onclick="locPageSet(this.dataset.v)"><i aria-hidden="true">${LOC}</i><span>Search in “${esc(typed.slice(0,40))}”</span></button>`;
+ l.innerHTML=h||`<p class="lpe">No locations yet. Type a place name above to search there.</p>`}
+function locPageSet(v){const d=document.getElementById("locPg");if(d&&d.open)d.close();v=String(v||"").slice(0,40);if(!v){S.qloc="";const i=document.getElementById("qloc");if(i)i.value="";updateSearchUI();save();return}pickLoc(v)}
 function clearQL(){S.qloc="";const i=document.getElementById("qloc");if(i){i.value="";i.focus()}closeLocMenu();sMore=false;updateSearchUI();save()}
 function clearQ(){S.q="";const i=document.getElementById("q");if(i){i.value="";i.focus()}sMore=false;updateSearchUI();save()}
 let sSwallow=0;
@@ -2450,6 +2505,8 @@ function home(){
  <div class="sbox">
  <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Name or designation" aria-label="Search by name or designation" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
  <div class="sf sfl" id="locsf"><span class="sfi" aria-hidden="true">${LOC}</span><input id="qloc" type="search" value="${esc(S.qloc||"")}" oninput="setQL(this.value);openLocMenu(true)" onfocus="openLocMenu(true)" onkeydown="sKey(event)" placeholder="Location" aria-label="Location" aria-controls="locmenu" aria-expanded="false" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="clearQL()" aria-label="Clear location">✕</button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" hidden></div></div>
+ <button type="button" class="locbtn${S.qloc?" on":""}" id="locBtn" onclick="locPage()" aria-haspopup="dialog" aria-label="Choose location">${LOC}</button>
+ <div class="lchip${S.qloc?"":" hide"}" id="lchip"><span>${LOC}<b id="lchipT">${esc(S.qloc||"")}</b></span><button type="button" onclick="clearQL()" aria-label="Clear location">✕</button></div>
 </div>
  <div class="sact" id="sact">${searchActHTML(searchModel())}</div>
  <div id="sres" class="sdd ${sOpen&&searchModel()?"open":""}" aria-live="polite">${sOpen&&searchModel()?results():""}</div>
