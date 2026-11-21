@@ -1424,6 +1424,60 @@ body:not(.out,.onb,.adm,.tncv,.tnc2) .sbar .sf input{height:46px;font-size:15px}
 }
 @media (prefers-reduced-motion:reduce){.cats .cat{transition:none}}
 
+
+/* ===== Book now: blue in light and dark themes, green on hover ===== */
+.btn.pitchb.booknow{background:#1d4ed8;color:#fff;border:1.5px solid #1d4ed8;box-shadow:none;min-height:42px;padding:10px 20px;font-size:14.5px;font-weight:700;letter-spacing:.1px;transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.btn.pitchb.booknow:hover,.btn.pitchb.booknow:focus-visible{background:#16a34a;border-color:#16a34a;color:#fff}
+.btn.pitchb.booknow:active{background:#15803d;border-color:#15803d;color:#fff}
+.btn.pitchb.booknow:focus-visible{outline:3px solid color-mix(in srgb,#16a34a 55%,transparent);outline-offset:2px}
+.job .acts.pm{margin-top:4px}
+.job .acts.pm .booknow{width:100%}
+
+/* ===== Round 3: curved content panel, split search, uniform cards, polish ===== */
+/* curved top corners on the panel under the top bar */
+body:not(.out,.onb,.adm,.tncv,.tnc2) .hero{padding-bottom:34px;border-bottom:0;background:linear-gradient(120deg,var(--g1),color-mix(in srgb,var(--g1) 45%,var(--g2)) 50%,var(--g2))}
+body:not(.out,.onb,.adm,.tncv,.tnc2) .sheet{margin-top:-24px;border-radius:30px 30px 0 0;box-shadow:0 -8px 28px rgba(60,20,90,.10)}
+body:not(.out,.onb,.adm,.tncv,.tnc2,.chatopen) .sheet{padding-top:24px}
+@media (max-width:767px){
+ body:not(.out,.onb,.adm,.tncv,.tnc2) .hero{padding-bottom:30px}
+ body:not(.out,.onb,.adm,.tncv,.tnc2) .sheet{margin-top:-22px;border-radius:26px 26px 0 0}
+ body:not(.out,.onb,.adm,.tncv,.tnc2,.chatopen) .sheet{padding-top:20px}
+}
+body.chatopen .sheet{border-radius:0}
+
+/* search: two separate fields */
+.sbar .sbox{grid-template-columns:minmax(0,1fr)!important;gap:8px}
+@media (min-width:560px){.sbar .sbox{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)!important;gap:12px}}
+.sbar .sbox .sf,.sbar .sbox .sf.sfl{position:relative;min-height:48px;border-radius:14px;background:var(--soft);border:1.5px solid var(--line);transition:border-color .15s,box-shadow .15s}
+.sbar .sbox .sf:focus-within{border-color:var(--plum);box-shadow:0 0 0 3px color-mix(in srgb,var(--plum) 16%,transparent)}
+.sbar .sbox .sf input{height:46px;font-size:15px}
+.sbar .sbox .locmenu{left:0;right:0;width:auto;min-width:0;top:calc(100% + 6px)}
+
+/* uniform postcards: same width per column, same fixed height */
+.list{grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))!important;gap:16px;align-items:start}
+.list .job{height:300px;display:flex;flex-direction:column;overflow:hidden;padding:18px 18px 16px;border-radius:22px;background:var(--bg);border:1px solid var(--line);box-shadow:0 1px 2px rgba(40,20,60,.04),0 8px 22px -12px rgba(40,20,60,.14)}
+.list .job .jh{flex:none;align-items:center;gap:10px}
+.list .job h3{flex:none;margin:12px 0 0;font-size:17px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list .job h3 .lnk{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;text-align:left;font:inherit;color:inherit}
+.list .job .meta{flex:none;max-height:68px;overflow:hidden;margin:8px 0 8px;gap:5px 14px;align-content:flex-start}
+.list .job>p{flex:1 1 auto;min-height:0;margin:0 0 10px;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;font-size:14.5px;line-height:1.55;color:var(--ink);opacity:.82}
+.list .job>div[style]{flex:none;margin:0 0 10px!important}
+.list .job .acts.pm{flex:none;margin-top:auto;padding-top:2px}
+.list .job .acts.pm .cnt{display:flex;align-items:center;gap:6px;font-size:13.5px}
+.list .job .pill{font-size:12px}
+.list .empty{grid-column:1/-1;height:auto}
+
+/* softer, brand-tinted category tag and avatars */
+.list .job .tag{background:color-mix(in srgb,var(--plum2) 12%,transparent);color:var(--plum2);font-weight:700;border-radius:99px;padding:5px 11px}
+@media (hover:hover){.list .job{transition:border-color .2s,box-shadow .2s}.list .job:hover{box-shadow:0 1px 2px rgba(40,20,60,.04),0 14px 30px -14px rgba(109,0,72,.28)}}
+
+/* category tiles: selected state takes the category colour */
+.cats .cat[aria-pressed=true]:not(.other){background:var(--ct,var(--soft))}
+.cats .cat .ce{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c,var(--plum)) 14%,transparent)}
+
+/* section headings: small accent mark */
+.sbar~.row h2::before{content:"";display:inline-block;width:4px;height:14px;border-radius:3px;margin-right:8px;vertical-align:-2px;background:linear-gradient(180deg,var(--plum2),var(--navytx))}
+@media (prefers-reduced-motion:reduce){.list .job,.sbar .sbox .sf{transition:none}}
 </style>
 </head>
 <body>
@@ -2254,13 +2308,13 @@ function personScore(u,pq){if(pq.none)return-1;if(!pq.tokens.length&&pq.N===null
  const F=[[L(u.name),6],[L(roleOf(u.name)+" "+(u.title||"")+" "+(u.cat||"")+" "+(ROLE[u.cat]||"")),4],[L(att),2]];
  let sc=scoreFields(F,pq);if(sc<0)return-1;
  if(pq.N!==null){if(!mine.some(x=>{const y=yearsOf(x);return y&&(y[0]>=pq.N||y[1]>pq.N)}))return-1;sc+=2}return sc}
-function searchModel(){const raw=S.q.trim();if(!raw)return null;
+function searchModel(){const raw=S.q.trim(),loc=(S.qloc||"").trim();if(!raw&&!loc)return null;
  const lw=locWords(),lt=raw.toLowerCase().split(/[\s,;]+/).map(t=>t.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g,"")).filter(t=>t&&!STOPW.has(t)&&lw.has(t)),
-  ql=lt.map(t=>t[0].toUpperCase()+t.slice(1)).join(", "),inL=l=>!lt.length||lt.some(t=>locIn(l,t));
- let pq=parseQ(raw);if(pq.none&&lt.length)pq={tokens:[],N:pq.N,none:false};const q=raw.toLowerCase(),cs=raw?catsFor(raw):[];
+  ql=loc||lt.map(t=>t[0].toUpperCase()+t.slice(1)).join(", "),LT=loc?[loc.toLowerCase()]:lt,inL=l=>!LT.length||LT.some(t=>locIn(l,t));
+ let pq=raw?parseQ(raw):{tokens:[],N:null,none:false};if(pq.none&&lt.length)pq={tokens:[],N:pq.N,none:false};const q=raw.toLowerCase(),cs=raw?catsFor(raw):[];
  const rank=(L,f)=>L.map(x=>[x,f(x)]).filter(r=>r[1]>=0).sort((a,b)=>b[1]-a[1]).map(r=>r[0]);
  const ps=rank(S.jobs.filter(j=>live(j.by)&&inL(j.loc)),j=>postScore(j,pq)),ss=rank(S.services.filter(x=>live(x.by)&&inL(x.loc)),x=>postScore(x,pq)),
-  pe=rank(S.users.filter(u=>u.name&&u.name!==S.name&&u.role!=="admin"&&live(u.name)&&(!lt.length||userLocs(u.name).some(inL))),u=>personScore(u,pq)).slice(0,20);
+  pe=rank(S.users.filter(u=>u.name&&u.name!==S.name&&u.role!=="admin"&&live(u.name)&&(!LT.length||userLocs(u.name).some(inL))),u=>personScore(u,pq)).slice(0,20);
  return{raw,q,ql,cs,pq,ps,ss,pe,tot:ps.length+ss.length+pe.length}}
 const SLIM=5;
 function results(){const m=searchModel();if(!m)return "";const{raw,ql,cs,ps,ss,pe,tot}=m;
@@ -2288,6 +2342,7 @@ function collapseSearch(){sOpen=false;sMore=false;const a=document.activeElement
 function sKey(e){if(e.key==="Enter"){e.preventDefault();doSearch()}else if(e.key==="Escape"){closeLocMenu();closeSug();if(sOpen){sOpen=false;updateSearchUI()}}}
 function setQ(v){S.q=v;sMore=false;updateSearchUI();save()}
 function setQL(v){S.qloc=String(v||"").slice(0,40);const i=document.getElementById("qloc");if(i&&i.value!==S.qloc)i.value=S.qloc;sMore=false;updateSearchUI();save()}
+function clearQL(){S.qloc="";const i=document.getElementById("qloc");if(i){i.value="";i.focus()}closeLocMenu();sMore=false;updateSearchUI();save()}
 function clearQ(){S.q="";const i=document.getElementById("q");if(i){i.value="";i.focus()}sMore=false;updateSearchUI();save()}
 let sSwallow=0;
 document.addEventListener("pointerdown",e=>{const sb=document.getElementById("sbar");if(!sb||sb.contains(e.target))return;const a=document.activeElement,foc=!!(a&&a!==document.body&&sb.contains(a));if(!sOpen&&!foc)return;const was=sOpen;sOpen=false;sMore=false;if(foc&&a.blur)a.blur();try{closeSug();closeLocMenu()}catch(_){}updateSearchUI();if(was&&!(e.target.closest&&e.target.closest("#botNav,.side,dialog")))sSwallow=Date.now()},true);
@@ -2313,8 +2368,8 @@ function home(){
  const jobs=shown(),svcs=shownS(),aus=authors(),src=S.services;const web=isWeb();
  view.innerHTML=`<div class="sbar ${(S.q.trim()||(S.qloc||"").trim()||sOpen)?"act":""}" id="sbar" role="search">
  <div class="sbox">
- <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Search name, designation or location…" aria-label="Search by name, designation or location" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
- 
+ <div class="sf namesf" id="namesf"><span class="sfi" aria-hidden="true">${IC.search}</span><input id="q" type="search" value="${esc(S.q)}" oninput="setQ(this.value);nameSug()" onfocus="nameSug()" onkeydown="sKey(event)" placeholder="Name or designation" aria-label="Search by name or designation" aria-controls="nsug" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.q?"":"hide"}" id="qclr" onclick="clearQ()" aria-label="Clear name">✕</button><div class="nsug" id="nsug" role="listbox" aria-label="Name suggestions" hidden></div></div>
+ <div class="sf sfl" id="locsf"><span class="sfi" aria-hidden="true">${LOC}</span><input id="qloc" type="search" value="${esc(S.qloc||"")}" oninput="setQL(this.value);openLocMenu(true)" onfocus="openLocMenu(true)" onkeydown="sKey(event)" placeholder="Location" aria-label="Location" aria-controls="locmenu" aria-expanded="false" autocomplete="off" enterkeyhint="search" autocapitalize="words"><button type="button" class="clr ${S.qloc?"":"hide"}" id="qlclr" onclick="clearQL()" aria-label="Clear location">✕</button><div class="locmenu" id="locmenu" role="listbox" aria-label="Locations" hidden></div></div>
 </div>
  <div class="sact" id="sact">${searchActHTML(searchModel())}</div>
  <div id="sres" class="sdd ${sOpen&&searchModel()?"open":""}" aria-live="polite">${sOpen&&searchModel()?results():""}</div>
@@ -3048,9 +3103,9 @@ function nameSug(){const s=document.getElementById("nsug");if(!s)return;const q=
  allPlaces().filter(l=>l.toLowerCase().includes(q)).slice(0,2).forEach(l=>C.push({s:sc(l,2),k:"l",n:l,t:l,sub:"Location"}));
  const L=C.sort((a,b)=>a.s-b.s).slice(0,4);
  s.innerHTML=L.length?L.map(r=>`<button type="button" role="option" data-k="${r.k}" data-n="${esc(r.n||"")}" data-id="${r.id||""}" onclick="sugPick(this.dataset.k,this.dataset.n,this.dataset.id)">${r.k==="l"?`<span class="sugi" aria-hidden="true">${LOC}</span>`:r.k==="p"?`<span class="av sm" style="${abg(r.n)}" aria-hidden="true">${ait(r.n)}</span>`:`<span class="sugi" style="${cTile(r.c)}" aria-hidden="true">${cIcon(r.c)}</span>`}<span><b>${esc(r.t)}</b><small>${esc(r.sub)}</small></span></button>`).join("")+`<button type="button" class="nsall" onclick="doSearch()">See all results</button>`:`<div class="nsn">No results found</div>`;s.hidden=false}
-function sugPick(k,n,id){closeSug();if(k==="l"){S.q=n;const i=document.getElementById("q");if(i)i.value=n;save();doSearch();return}if(k==="p")openProfile(n);else if(k==="s")openService(+id);else openPost(+id)}
+function sugPick(k,n,id){closeSug();if(k==="l"){S.q="";S.qloc=n;const i=document.getElementById("q"),j=document.getElementById("qloc");if(i)i.value="";if(j)j.value=n;save();doSearch();return}if(k==="p")openProfile(n);else if(k==="s")openService(+id);else openPost(+id)}
 function doSearch(){closeLocMenu();closeSug();const a=document.activeElement;if(a&&a!==document.body&&a.blur)a.blur();
- if(!searchModel()){sOpen=false;updateSearchUI();toast("Type a name, designation or location to search");return}
+ if(!searchModel()){sOpen=false;updateSearchUI();toast("Enter a name, designation or location to search");return}
  sOpen=true;sMore=false;updateSearchUI();const sb=document.getElementById("sbar");if(sb)sb.scrollIntoView({block:"start",behavior:"auto"})}
 document.addEventListener("pointerdown",e=>{const t=e.target.closest?e.target:null;if(!t)return;const m=document.getElementById("locmenu");if(m&&!m.hidden&&!t.closest("#locsf"))closeLocMenu();const s=document.getElementById("nsug");if(s&&!s.hidden&&!t.closest("#namesf"))closeSug()},true);
 
