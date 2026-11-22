@@ -541,6 +541,21 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .abst{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));counter-reset:st}
 .abst li{counter-increment:st;display:grid;gap:4px;padding:14px 14px 14px 56px;border-radius:16px;background:var(--soft);position:relative}.abst li::before{content:counter(st);position:absolute;left:14px;top:14px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--plum);color:#fff;font-weight:800}.abst span{color:var(--mute);font-size:14px;line-height:1.45}
 .abct a{color:var(--plum);font-weight:700}.abbtn{display:flex;gap:10px;flex-wrap:wrap}.abft{text-align:center;color:var(--mute);font-size:13px;margin:0}
+#pwOk{width:min(300px,86vw);text-align:center;padding:30px 24px 26px}
+#pwOk::backdrop{background:rgba(20,10,30,.6)}
+#pwOk .okx{width:84px;height:84px;display:block;margin:0 auto 14px}
+#pwOk .okc{fill:none;stroke:var(--ok);stroke-width:3;stroke-dasharray:151;stroke-dashoffset:151;stroke-linecap:round;transform-origin:center;transform:rotate(-90deg)}
+#pwOk .okp{fill:none;stroke:var(--ok);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40}
+#pwOk h3{margin:0 0 4px;font-size:20px;font-weight:800;letter-spacing:-.2px}
+#pwOk p{margin:0;color:var(--mute);font-size:14px;font-weight:600}
+#pwOk[open]{animation:okpop .3s ease both}
+#pwOk .okc{animation:okdraw .55s ease .1s forwards}
+#pwOk .okp{animation:okdraw .35s ease .6s forwards}
+#pwOk .okx{animation:okbump .35s ease .95s both}
+#pwD{width:min(420px,calc(100vw - 24px))}
+.empty.sad,.bnone.sad,.lpe.sad,p.cnt.sad{display:grid!important;justify-items:center;gap:6px;text-align:center;padding:28px 20px!important;color:var(--mute);margin:10px 0}
+.sad .sadi{width:56px;height:56px;color:var(--mute);opacity:.85}.sad .sadt{color:var(--ink);font-size:16px;font-weight:800}.sad .sadm{font-size:14px;line-height:1.5;max-width:42ch}
+.bfeed .bnone.sad{grid-column:1/-1}
 @media (max-height:700px) and (min-width:600px){.auth{place-items:start center}}
 .out .main,.out .sheet{max-width:none;width:100%;margin-left:0;margin-right:0}
 .out .app{display:block}
@@ -1766,6 +1781,7 @@ body:not(.out,.onb,.adm,.tncv,.tnc2) .sheet:has(#sbar){margin-top:-30px}
 </form></dialog>
 
 <dialog id="delAccD" aria-labelledby="delAccT"><h3 id="delAccT">Delete account permanently?</h3><p style="color:var(--mute)">Are you sure? Your profile, vacancies, services, status stories and chats will be deleted for good. This can’t be undone.</p><div class="acts"><button type="button" id="delAccGo" class="btn danger" onclick="deleteAccount()">Yes, delete my account</button><button type="button" class="btn alt" onclick="delAccD.close()">Cancel</button></div></dialog>
+<dialog id="pwD" aria-labelledby="pwT"></dialog>
 <dialog id="outD"><h3>Log out?</h3><p style="color:var(--mute)">You can log back in any time. Your vacancies and chats stay saved.</p><div class="acts"><button class="btn" onclick="outD.close();try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view='home';au='home';pgReset();save();render()">Log out</button><button class="btn alt" onclick="outD.close()">Stay logged in</button></div></dialog>
 <dialog id="exitD" aria-labelledby="exT"><h3 id="exT">Exit RoyalCub Jobs?</h3><p style="color:var(--mute)">Are you sure you want to leave the app?</p><div class="acts"><button class="btn" id="exYes" type="button" onclick="exitApp()">Exit</button><button class="btn alt" id="exNo" type="button" onclick="exitD.close()">Stay</button></div></dialog>
 <script>
@@ -1807,8 +1823,12 @@ let sb=null,sbP=null,sbBusy=false,sbSet=null,rcRec=false,sbQuiet=0;
 const sbGoogleOn=()=>sbSet||(sbSet=SB_ON?fetch(SUPABASE_URL.trim().replace(/\/$/,"")+"/auth/v1/settings",{headers:{apikey:SUPABASE_KEY}}).then(r=>r.ok?r.json():null).then(j=>!!(j&&j.external&&j.external.google)).catch(()=>false):Promise.resolve(false));
 const SB_SRC=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js","https://unpkg.com/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"];
 const loadSB=()=>sbP||(sbP=new Promise((ok,no)=>{if(window.supabase&&supabase.createClient)return ok();let i=0;const next=()=>{if(window.supabase&&supabase.createClient)return ok();if(i>=SB_SRC.length){sbP=null;return no(new Error("load"))}const sc=document.createElement("script");sc.src=SB_SRC[i++];sc.async=true;const t=setTimeout(()=>{sc.remove();next()},9000);sc.onload=()=>{clearTimeout(t);ok()};sc.onerror=()=>{clearTimeout(t);sc.remove();next()};document.head.appendChild(sc)};next()}));
-async function sbClient(){if(sb)return sb;await loadSB();sb=supabase.createClient(SUPABASE_URL.trim().replace(/\/$/,""),SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return sb}
-const sbOut=()=>{try{if(sb)sb.auth.signOut()}catch(e){}try{Auth.onLogout()}catch(e){}try{RT.stop()}catch(e){}try{pushOff()}catch(e){}};
+const RC_MEM={};
+const RC_STORE={getItem:k=>{let v=null;try{v=localStorage.getItem(k)}catch(e){}return v===null&&Object.prototype.hasOwnProperty.call(RC_MEM,k)?RC_MEM[k]:v},setItem:(k,v)=>{try{localStorage.setItem(k,v);delete RC_MEM[k]}catch(e){RC_MEM[k]=v}},removeItem:k=>{try{localStorage.removeItem(k)}catch(e){}delete RC_MEM[k]}};
+/* drop a saved Supabase session that is corrupt (bad JSON / no refresh token) so it can never block a fresh login */
+function sbSanitizeStore(){try{Object.keys(localStorage).filter(k=>/^sb-.*-auth-token$/.test(k)).forEach(k=>{let v=null;try{v=JSON.parse(localStorage.getItem(k))}catch(e){}if(!v||typeof v!=="object"||typeof v.refresh_token!=="string"||!v.refresh_token)localStorage.removeItem(k)})}catch(e){}}
+async function sbClient(){if(sb)return sb;await loadSB();sbSanitizeStore();sb=supabase.createClient(SUPABASE_URL.trim().replace(/\/$/,""),SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:RC_STORE}});return sb}
+const sbOut=()=>{try{Auth.mute=Date.now()+5000;if(sb)sb.auth.signOut({scope:"local"}).catch(()=>{})}catch(e){}try{Auth.onLogout()}catch(e){}try{RT.stop()}catch(e){}try{pushOff()}catch(e){}};
 const CFG=Object.assign({googleClientId:GOOGLE_CLIENT_ID||((document.querySelector('meta[name="google-client-id"]')||{}).content||"").trim(),googleVerifyUrl:"",newProMs:45000},window.RC_CONFIG||{});
 const CATS=["All","Plumbing","Electrical","Nursing","Gardening","Cleaning","Carpentry","Driving","Painting","Cooking","Mechanic","Workshop","Tailoring","Salon","Repair Shop","Laundry","Printing"];
 const CMETA={Plumbing:{e:"🔧",k:["plumber","plumbing","pipe","tap","leak","drain"]},Electrical:{e:"⚡",k:["electrician","electrical","wiring","wire","socket","switch"]},Nursing:{e:"🩺",k:["nurse","nursing","caregiver","care","patient","elderly"]},Gardening:{e:"🌿",k:["gardener","gardening","garden","lawn","hedge","plants"]},Cleaning:{e:"🧹",k:["cleaner","cleaning","maid","housekeeping","sweep"]},Carpentry:{e:"🪑",k:["carpenter","carpentry","wood","furniture","door"]},Driving:{e:"🚗",k:["driver","driving","chauffeur","cab","taxi","car"]},Painting:{e:"🎨",k:["painter","painting","paint","wall","whitewash"]},Cooking:{e:"🍳",k:["cook","chef","cooking","kitchen","catering","food"]},Mechanic:{e:"🛠️",k:["mechanic","repair","garage","engine","bike","service"]},
@@ -1851,7 +1871,7 @@ let S={services:[],tab:"jobs",role:"client",name:"",theme:"dark",priv:{vis:true,
  jobs:[],stories:[],threads:[]};
 try{const x=JSON.parse(localStorage.getItem("rcj")||"null");if(x&&x.jobs)S=Object.assign(S,x,{view:"home",thread:null,out:false,sec:null,q:"",qloc:""})}catch(e){}
 /* Login persistence: a tiny separate record keeps people signed in even if the big app-state key can't be saved (storage full) or is cleared. */
-const SESS_KEY="rc_sess",SESS_TTL=30*864e5;
+const SESS_KEY="rc_sess",SESS_TTL=90*864e5;
 function sessSave(){try{if(S.me&&!S.out){const u=(S.users||[]).find(x=>x&&x.email===S.me);if(u&&u.role!=="admin")localStorage.setItem(SESS_KEY,JSON.stringify({v:1,email:u.email,name:u.name,role:u.role==="worker"?"worker":"client",phone:u.phone||"",age:u.age||"",cat:u.cat||"",title:u.title||"",loc:u.loc||"",at:Date.now()}))}else if(!S.me)localStorage.removeItem(SESS_KEY)}catch(e){}}
 function askPersist(){try{if(navigator.storage&&navigator.storage.persist&&!/firefox/i.test(navigator.userAgent))navigator.storage.persist()}catch(e){}}
 try{if(!S.me){const r=JSON.parse(localStorage.getItem(SESS_KEY)||"null");
@@ -1936,6 +1956,34 @@ Auth.useTok=()=>!!(window.RC_CONFIG&&window.RC_CONFIG.userToken===true);
 Auth.tok=async()=>{if(!Auth.useTok()||!sb)return null;try{const{data}=await sb.auth.getSession();return data&&data.session?data.session.access_token:null}catch(e){return null}};
 Auth.refresh=()=>Auth.ref||(Auth.ref=(async()=>{try{if(!sb)return null;const{data,error}=await sb.auth.refreshSession();return error||!data||!data.session?null:data.session.access_token}catch(e){return null}finally{setTimeout(()=>{Auth.ref=null},0)}})());
 Auth.dropSession=()=>{try{if(sb)sb.auth.signOut({scope:"local"})}catch(e){}};
+/* ---- token management ----
+   The Supabase session (access token + long-lived refresh token) now stays saved after login and refreshes itself.
+   Auth.srv  = a valid server session is held.  Auth.mute = ignore our own sign-out events until this time.
+   Auth.restore() runs on launch/resume: checks the saved session belongs to the logged-in user, drops a mismatched one,
+   silently signs in again when it is missing, and only logs the user out when the SERVER says the password is no longer valid.
+   Network problems never log anyone out. */
+Auth.mute=0;Auth.srv=false;Auth.rtry=0;Auth.rbusy=false;
+Auth.restore=async why=>{if(!SB_ON||S.out||!S.me||Auth.rbusy)return;Auth.rbusy=true;const g=Auth.gen;
+ try{const em=String(S.me).toLowerCase(),u=(S.users||[]).find(x=>x&&String(x.email||"").toLowerCase()===em);
+  if(!u||u.role==="admin"||/@example\.com$/i.test(u.email||""))return;
+  const c=await sbClient();let ss=null;try{const r=await c.auth.getSession();ss=r&&r.data&&r.data.session}catch(e){}
+  if(g!==Auth.gen||S.out)return;
+  if(ss&&String(ss.user&&ss.user.email||"").toLowerCase()!==em){sbQuiet++;try{await c.auth.signOut({scope:"local"})}catch(_){}sbQuiet--;ss=null}
+  if(ss){Auth.srv=true;try{c.auth.startAutoRefresh()}catch(e){}return}
+  if(!u.pw)return;
+  let r;sbQuiet++;try{r=await authRetry(()=>c.auth.signInWithPassword({email:u.email,password:u.pw}))}finally{sbQuiet--}
+  if(g!==Auth.gen||S.out)return;
+  if(!r.error){Auth.srv=true;return}
+  const cd=String(r.error.code||""),m=String(r.error.message||"");
+  if(cd==="invalid_credentials"||/invalid login/i.test(m)){u.pw="";save();Auth.expire("Your password was changed on another device. Please log in again.")}
+ }catch(e){console.warn("RoyalCub: session check skipped ("+(e&&e.message)+")")}finally{Auth.rbusy=false}};
+/* clears sign-in state on this device only (tokens, saved-session record, temp flags). Posts, chats and profile data are kept. */
+Auth.reset=async()=>{Auth.mute=Date.now()+5000;Auth.srv=false;
+ try{if(sb)await sb.auth.signOut({scope:"local"})}catch(e){}
+ try{localStorage.removeItem(SESS_KEY);Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}
+ try{Object.keys(RC_MEM).forEach(k=>delete RC_MEM[k])}catch(e){}
+ try{sessionStorage.removeItem("rc_open_chat")}catch(e){}};
+Auth.fixLogin=async()=>{if(!S.out)return;await Auth.reset();try{toast("Saved login data cleared. Enter your email and password to log in.")}catch(e){}};
 Auth.retryMs=()=>Math.min(300000,15000*Math.pow(2,Auth.bo));
 Auth.due=()=>cOff&&cOffAt&&Date.now()-cOffAt>Auth.retryMs();
 async function apiFetch(url,opt){
@@ -1958,7 +2006,9 @@ Auth.onLogout=()=>{Auth.gen++;Auth.bo=0;Auth.last=0;cHash={};try{cPLast="1970-01
 Auth.expire=msg=>{if(S.out||!S.me)return;try{window.google&&google.accounts.id.disableAutoSelect()}catch(e){}sbOut();S.out=true;S.me=null;S.view="home";au="home";pgReset();save();render();if(msg)toast(msg)};
 Auth.check=async why=>{if(S.out||!S.me)return;
  try{const r=JSON.parse(localStorage.getItem(SESS_KEY)||"null");if(r&&r.at&&Date.now()-r.at>SESS_TTL)return Auth.expire("Your session expired. Please log in again.")}catch(e){}
- if(sb){try{document.hidden?sb.auth.stopAutoRefresh():sb.auth.startAutoRefresh()}catch(e){}}
+ try{sessSave()}catch(e){}
+ if(sb&&why!=="tick"){try{sb.auth.startAutoRefresh();sb.auth.getSession().catch(()=>{})}catch(e){}}
+ if(!Auth.srv&&Date.now()-Auth.rtry>3e5){Auth.rtry=Date.now();Auth.restore(why)}
  if(Date.now()-Auth.last>15000)forceSync(why)};
 Auth.bgReg=()=>{try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>{if(r.sync)r.sync.register("rc-sync").catch(()=>{})})).catch(()=>{})}catch(e){}};
 async function forceSync(why){if(!SB_ON||S.out||!S.me)return false;const g=Auth.gen;
@@ -1973,12 +2023,12 @@ Auth.start=()=>{
  addEventListener("storage",e=>{if(e.key!==SESS_KEY||S.out||!S.me)return;
   if(!e.newValue)Auth.expire("You were logged out in another tab.");
   else{try{const r=JSON.parse(e.newValue);if(r&&r.email&&r.email!==S.me)location.reload()}catch(_){}}});
- document.addEventListener("visibilitychange",()=>{if(!document.hidden)Auth.check("resume");else try{if(sb)sb.auth.stopAutoRefresh()}catch(e){}});
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden)Auth.check("resume")});
  addEventListener("online",()=>Auth.check("online"));
  addEventListener("pageshow",e=>{if(e.persisted)Auth.check("pageshow")});
  setInterval(()=>{if(!document.hidden)Auth.check("tick")},60000);
  try{if(navigator.serviceWorker)navigator.serviceWorker.addEventListener("message",e=>{if(e.data&&e.data.type==="rc-sync")forceSync("bg")})}catch(e){}};
-Auth.launch=async()=>{if(S.out||!S.me)return;await forceSync("launch")};
+Auth.launch=async()=>{if(S.out||!S.me)return;Auth.restore("launch").catch(()=>{});await forceSync("launch")};
 async function cFetch(url,opt){const r=await apiFetch(url,opt);if(!r.ok){if([401,403,404].includes(r.status)){cOff=true;cOffAt=Date.now();Auth.bo=Math.min(Auth.bo+1,5);cState="off";syncUI();console.warn("RoyalCub: shared content is off (HTTP "+r.status+"). Run supabase_setup.sql in your Supabase project.")}throw new Error("HTTP "+r.status)}return r}
 /* ---------- Genuine views: only real accounts, synced between accounts as "view" rows ---------- */
 const realUser=n=>{if(!n||typeof n!=="string")return false;const u=(S.users||[]).find(x=>x&&x.name===n);return !!u&&u.status==="active"&&!isDemoN(n)};
@@ -2082,11 +2132,12 @@ const FI={
  history:FS(FP("M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19zM11 6.6h1.9v4.8l3.7 2.2-.9 1.6-4.7-2.8z")),
  support:FS(FP("M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19zm.1 4.4c-2 0-3.3 1.2-3.4 3h2c.1-.7.6-1.1 1.3-1.1s1.3.5 1.3 1.1c0 .6-.3.9-1 1.4-.9.6-1.4 1.3-1.4 2.4v.4h2v-.3c0-.6.2-.9.9-1.4.9-.7 1.5-1.3 1.5-2.5 0-1.8-1.4-3-3.2-3zM11 15.5h2.2v2.2H11z")),
  terms:FS(FP("M7 2.5h6.9v4.4a2 2 0 0 0 2 2H20v10.6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2zm1.2 9.7v1.6h7.6v-1.6zm0 3.4v1.6h5v-1.6z"),FP("M14.8 2.8 20.2 8.2h-3.3a2.1 2.1 0 0 1-2.1-2.1z")),
+ lock:FS(FP("M7 10V7a5 5 0 0 1 10 0v3h.5A2.5 2.5 0 0 1 20 12.5v7a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 19.5v-7A2.5 2.5 0 0 1 6.5 10zm2 0h6V7a3 3 0 0 0-6 0z")),
  about:FS(FP("M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19zm-1 8h2v6.5h-2zm1-3.7a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z")),
  admin:FS(FP("M12 2.4 4.2 5.5v5.7c0 4.8 3.2 8.7 7.8 10.4 4.6-1.7 7.8-5.6 7.8-10.4V5.5zM10.8 14.7 8.2 12.1l1.3-1.3 1.3 1.3 3.7-3.7 1.3 1.3z")),
  login:FS(FP("M15 3h3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-3z")+FP("M2.5 10.3h6.4V7l5.6 5-5.6 5v-3.3H2.5z")),
  register:FS(FP("M9.5 3a4.2 4.2 0 1 1 0 8.4 4.2 4.2 0 0 1 0-8.4zM2 20.3c0-3.5 3.3-5.6 7.5-5.6s7.5 2.1 7.5 5.6a1.2 1.2 0 0 1-1.2 1.2H3.2A1.2 1.2 0 0 1 2 20.3z")+FP("M18.4 6.8h1.8v2.4h2.4V11h-2.4v2.4h-1.8V11H16V9.2h2.4z")),
- logout:FS(FP("M13 3h-2v10h2V3zm4.83 2.17-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z")),
+ logout:FS(FP("M3 4a1.5 1.5 0 0 1 1.5-1.5H12A1.5 1.5 0 0 1 13.5 4v16a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20z")+FP("M15.5 8.2 21.3 12l-5.8 3.8v-2.4H10.5v-2.8h5z")),
  star:FS(FP("M12 2.6l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 16.7l-5.6 3.2 1.2-6.3L3 9.2l6.3-.8z")),
  edit:IC.edit,
  /* categories */
@@ -2209,8 +2260,8 @@ function loginBtn(on){const b=document.querySelector('form[onsubmit="doLogin(eve
 function doLogin(e){e.preventDefault();if(loginBusy)return;const em=le.value.trim().toLowerCase();let pw=lp.value;
  if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","le");if(!pw)return setErr("Enter your password.","lp");
  setErr("");
- let u=S.users.find(x=>x.email.toLowerCase()===em&&x.pw===pw);
- if(!u&&pw!==pw.trim()&&pw.trim()){u=S.users.find(x=>x.email.toLowerCase()===em&&x.pw===pw.trim());if(u)pw=pw.trim()}
+ let u=S.users.find(x=>String(x.email||"").toLowerCase()===em&&x.pw===pw);
+ if(!u&&pw!==pw.trim()&&pw.trim()){u=S.users.find(x=>String(x.email||"").toLowerCase()===em&&x.pw===pw.trim());if(u)pw=pw.trim()}
  if(!u)return sbLoginFallback(em,pw);
  if(u.status==="banned")return setErr("This account has been banned."+(u.reason?" Reason: "+u.reason:"")+" Contact support if you think this is a mistake.");
  if(u.status==="blocked")return setErr("This account is blocked."+(u.reason?" Reason: "+u.reason:"")+" Contact support to appeal.");enter(u);sbEnsure(u,pw)}
@@ -2246,7 +2297,15 @@ function googleSignIn(c){const em=c.email.toLowerCase();let u=S.users.find(x=>x.
  enter(u,fresh?"Account created with Google. Welcome, "+u.name.split(" ")[0]+"!":linked?"Google account linked. Welcome back!":"Signed in with Google")}
 function sbUserSignIn(u){if(!u||!S.out||sbBusy||rcRec||sbQuiet||!(u.identities||[]).some(i=>i.provider==="google"))return;const m=u.user_metadata||{};googleSignIn({sub:String(m.sub||m.provider_id||u.id),email:u.email||m.email||"",email_verified:true,name:m.full_name||m.name||""})}
 function showRecover(em){rcRec=true;S.out=true;au="recover";fp={step:1,email:em||"",code:"",tries:0};render()}
-async function sbInit(){if(!SB_ON)return;sbGoogleOn();if(/type=recovery/.test(location.hash))rcRec=true;try{const c=await sbClient();c.auth.onAuthStateChange((ev,ss)=>{if(ev==="PASSWORD_RECOVERY"){showRecover(ss&&ss.user&&ss.user.email);return}if(ev==="SIGNED_IN"&&ss&&ss.user)sbUserSignIn(ss.user)});const {data}=await c.auth.getSession();if(rcRec&&data&&data.session)showRecover(data.session.user.email);else if(data&&data.session)sbUserSignIn(data.session.user);if(location.hash.includes("access_token")||location.search.includes("code="))history.replaceState(null,"",location.pathname)}catch(e){console.warn("Supabase init failed",e)}}
+async function sbInit(){if(!SB_ON)return;sbGoogleOn();if(/type=recovery/.test(location.hash))rcRec=true;try{const c=await sbClient();c.auth.onAuthStateChange((ev,ss)=>{if(ev==="PASSWORD_RECOVERY"){showRecover(ss&&ss.user&&ss.user.email);return}if(ev==="SIGNED_IN"&&ss&&ss.user)sbUserSignIn(ss.user);
+  if(ev==="TOKEN_REFRESHED"){Auth.srv=true;Auth.bo=0;try{sessSave()}catch(e){}}
+  if(ev==="SIGNED_OUT"&&!sbQuiet&&!rcRec&&!S.out&&S.me&&Date.now()>Auth.mute){Auth.srv=false;setTimeout(()=>Auth.restore("lost"),0)}});
+  const {data}=await c.auth.getSession();
+  if(rcRec&&data&&data.session)showRecover(data.session.user.email);
+  else if(data&&data.session){const gg=(data.session.user.identities||[]).some(i=>i.provider==="google");
+   if(gg)sbUserSignIn(data.session.user);
+   else if(S.out||!S.me){sbQuiet++;try{await c.auth.signOut({scope:"local"})}catch(_){}sbQuiet--}}
+  if(location.hash.includes("access_token")||location.search.includes("code="))history.replaceState(null,"",location.pathname)}catch(e){console.warn("Supabase init failed",e)}}
 let regBusy=false,regCert="";
 function regKeep(fn){const v={n:rn.value,a:ra.value,e:re.value,p:rph.value,c:rc.value,t:rt.value};fn();render();rn.value=v.n;ra.value=v.a;re.value=v.e;rph.value=v.p;rc.value=v.c;rt.value=v.t}
 function regCertPick(inp){if(!inp){regKeep(()=>{regCert=""});return}const f=inp.files&&inp.files[0];inp.value="";if(!f)return;
@@ -2289,7 +2348,7 @@ async function doRegister(e){e.preventDefault();if(regBusy)return;const nm=rn.va
  regBusy=true;setErr("");const bt=document.querySelector('form[onsubmit="doRegister(event)"] .btn'),bl=bt&&bt.textContent;if(bt){bt.disabled=true;bt.textContent="Creating account…"}
  try{const r=await sbRegister(u);if(!r.ok){setErr(r.err,r.field);return}
   if(S.users.some(x=>x.email.toLowerCase()===em))return setErr("An account with this email already exists. Try logging in.","re");
-  S.users.push(u);regCert="";enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!")}
+  S.users.push(u);regCert="";enter(u,"Account created. Welcome, "+nm.split(" ")[0]+"!");sbEnsure(u,u.pw)}
  finally{regBusy=false;const b=document.querySelector('form[onsubmit="doRegister(event)"] .btn');if(b&&b.disabled){b.disabled=false;if(bl)b.textContent=bl}}}
 async function doReset1(e){e.preventDefault();const em=fe.value.trim().toLowerCase();if(!EMAIL_RE.test(em))return setErr("Enter a valid email address.","fe");
  if(!SB_ON)return setErr("Password reset isn’t available right now. Please contact support.");
@@ -2307,25 +2366,32 @@ async function doRecover(e){e.preventDefault();const pe=pwErr(rnw.value,rncf.val
   rcRec=false;S.out=true;au="home";pgReset();save();render();toast("Password updated. Agree to the Privacy Policy, then log in with your new password.")}
  catch(x){if(bt)bt.disabled=false;setErr("Couldn’t update the password. Please try again.","rnw")}}
 async function sbEnsure(u,pw){if(!SB_ON||!pw||!u||u.role==="admin"||/@example\.com$/i.test(u.email))return;sbQuiet++;
- try{const c=await sbClient();const r=await c.auth.signInWithPassword({email:u.email,password:pw});
+ try{const c=await sbClient();const r=await authRetry(()=>c.auth.signInWithPassword({email:u.email,password:pw}));
   let stale=false;
-  if(r.error&&/invalid login/i.test(r.error.message||"")){const sg=await c.auth.signUp({email:u.email,password:pw,options:{data:{name:u.name,phone:u.phone,age:u.age,cat:u.cat,role:u.role}}});
+  if(!r.error){Auth.srv=true}
+  else if(r.error.code==="invalid_credentials"||/invalid login/i.test(r.error.message||"")){const sg=await c.auth.signUp({email:u.email,password:pw,options:{data:{name:u.name,phone:u.phone,age:u.age,cat:u.cat,role:u.role}}});
    /* the email already exists on the server but this password was refused: it was changed on another device */
-   if((sg.error&&/already (?:registered|exists)/i.test(sg.error.message||""))||(!sg.error&&sg.data&&sg.data.user&&Array.isArray(sg.data.user.identities)&&sg.data.user.identities.length===0))stale=true}
-  await c.auth.signOut({scope:"local"});
+   if((sg.error&&/already (?:registered|exists)/i.test(sg.error.message||""))||(!sg.error&&sg.data&&sg.data.user&&Array.isArray(sg.data.user.identities)&&sg.data.user.identities.length===0))stale=true;
+   else if(!sg.error&&sg.data&&sg.data.session)Auth.srv=true}
   if(stale&&!S.out&&S.me===u.email){u.pw="";save();Auth.expire("Your password was changed on another device. Please log in again.")}}catch(e){console.warn("Supabase account sync skipped:",e.message)}finally{sbQuiet--}}
 async function sbLoginFallback(em,pw){const bad=()=>setErr("Incorrect email or password.","lp"),net=()=>setErr("Couldn’t reach the server. Check your internet connection and try again.");if(!SB_ON)return bad();loginBusy=true;loginBtn(true);sbQuiet++;
  const tmo=(p,ms)=>Promise.race([p,new Promise((_,no)=>setTimeout(()=>no(new Error("timeout")),ms))]);
  try{const c=await tmo(sbClient(),20000);let r=await tmo(authRetry(()=>c.auth.signInWithPassword({email:em,password:pw})),45000);
   if((r.error||!r.data||!r.data.user)&&pw!==pw.trim()&&pw.trim()){const r2=await tmo(authRetry(()=>c.auth.signInWithPassword({email:em,password:pw.trim()})),45000);if(!r2.error&&r2.data&&r2.data.user){r=r2;pw=pw.trim()}}
   const {data,error}=r;
-  if(error||!data||!data.user){const m=String(error&&error.message||""),st=error&&error.status;if(/not confirmed/i.test(m))return setErr("Please confirm your email address from the link we sent, then log in.","le");if(!error||/invalid|credentials/i.test(m)||st===400||st===401)return bad();return net()}
-  if(data.user.created_at&&Date.parse(data.user.created_at)<RESET_AT){try{await c.auth.signOut({scope:"local"})}catch(_){}return bad()}
-  const m=data.user.user_metadata||{};try{await c.auth.signOut({scope:"local"})}catch(_){}
-  let u=S.users.find(x=>x.email.toLowerCase()===em);
+  if(error||!data||!data.user){const m=String(error&&error.message||""),st=error&&error.status,cd=String(error&&error.code||"");
+   if(cd==="email_not_confirmed"||/not confirmed/i.test(m))return setErr("Please confirm your email address from the link we sent, then log in.","le");
+   if(cd==="over_request_rate_limit"||st===429)return setErr("Too many attempts. Please wait a minute and try again.","lp");
+   if(cd==="user_banned")return setErr("This account has been suspended. Contact support.");
+   if(!error||cd==="invalid_credentials"||/invalid login|invalid credentials/i.test(m)||st===400||st===401)return bad();
+   if(!st||st>=500||/fetch|network|timeout|failed to/i.test(m))return net();
+   return setErr("Couldn’t log in right now ("+(m||st)+"). Please try again.","lp")}
+  /* the password was verified by the server: KEEP its session (it refreshes itself) so the login persists */
+  const m=data.user.user_metadata||{};
+  let u=S.users.find(x=>String(x.email||"").toLowerCase()===em);
   if(!u){u={email:em,pw:pw,name:String(m.name||em.split("@")[0]).slice(0,40),phone:m.phone||"",age:String(m.age||""),cat:m.cat||"Client",role:m.role==="worker"?"worker":"client",title:"",status:"active",joined:Date.now()};S.users.push(u)}else u.pw=pw;
-  if(u.status==="banned"||u.status==="blocked")return setErr("This account is "+u.status+". Contact support.");
-  enter(u)}catch(e){net()}finally{sbQuiet--;loginBusy=false;loginBtn(false)}}
+  if(u.status==="banned"||u.status==="blocked"){try{await c.auth.signOut({scope:"local"})}catch(_){}return setErr("This account is "+u.status+". Contact support.")}
+  Auth.srv=true;enter(u)}catch(e){net()}finally{sbQuiet--;loginBusy=false;loginBtn(false)}}
 function authView(){
  if(au==="home")return `<div class="land${pgOk?"":" gate"}"><div class="lhero"><img class="al lg-l" src="${LG.l}" alt="RoyalCub Jobs"><img class="al lg-d" src="${LG.d}" alt="RoyalCub Jobs"><h1>Hire fast. Work smart. Get it done.</h1><p>RoyalCub Jobs connects people who need work done with trusted local professionals, from plumbers and electricians to nurses, drivers and repair shops.</p>${pgOk?`<div class="lcta"><button class="btn" onclick="showAuth('login')">Log in</button><button class="btn alt" onclick="showAuth('register')">Create account</button></div>`:`<section class="pgc" aria-labelledby="pgT"><h2 id="pgT">Terms &amp; Privacy</h2><p class="pgs">A quick summary of our Terms &amp; Conditions and Privacy Policy. Please read it before you continue.</p><ul class="pgl"><li><b>What we do:</b> connect clients and workers. Jobs and payments are agreed directly between you.</li><li><b>Your data:</b> used only to run your account and keep the service safe. We never sell it.</li><li><b>Your conduct:</b> be 16 or older, honest and respectful.</li><li><b>Your rights:</b> access, correct or delete your data any time.</li></ul><p class="tfull"><button type="button" class="link" id="pgMoreB" aria-haspopup="dialog" onclick="pgFull()">Read the full Terms &amp; Conditions</button></p><label class="pgck"><input id="pgCk" type="checkbox" onchange="pgCheck(this)"><span>I have read and agree to the Terms &amp; Conditions and Privacy Policy.</span></label><button id="pgBtn" class="btn" type="button" disabled aria-disabled="true" onclick="pgAgree()">Agree and Proceed</button></section>`}</div>
  <div class="lgrid"><section><h2>For clients</h2><p>Post a vacancy with your budget, location and dates, browse service providers near you, and chat directly to agree the details.</p></section><section><h2>For service providers</h2><p>Create a profile, list the services you offer with your availability and pricing, and get found by clients in your area.</p></section><section><h2>How it works</h2><ol><li>Create a free account as a client or service provider.</li><li>Post a vacancy or offer a service.</li><li>Chat, agree terms and pay each other directly.</li></ol></section></div></div>`;
@@ -2355,6 +2421,7 @@ function authView(){
   <form onsubmit="doLogin(event)" novalidate>${emField("le","Email","email")}
   ${pwField("lp","Password","current-password")}
   <button type="button" class="link" onclick="showAuth('forgot')">Forgot Password?</button>
+  <button type="button" class="link" style="font-weight:600;font-size:13px" onclick="Auth.fixLogin()">Trouble logging in? Clear saved login data</button>
   <div class="err" id="aerr" role="alert"></div><button class="btn">Log in</button></form>
   <div class="or"><span>new here?</span></div>
   <button class="btn alt" onclick="showAuth('register')">Create Account</button>
@@ -2761,6 +2828,39 @@ function svcPage(){const x=S.services.find(z=>z.id===S.sv),bar=`<div class="pvba
 /* Inner page headings: the first letter of the first two words is always a capital */
 function capHead(root){(root||view).querySelectorAll("h2").forEach(h=>{if(h.closest(".ahead,.lhero,.land"))return;let left=2;const w=document.createTreeWalker(h,NodeFilter.SHOW_TEXT);let n;while(left>0&&(n=w.nextNode())){const t=n.nodeValue;if(!t.trim())continue;let c=0;const r=t.replace(/(^|\s)([a-z])/g,(m,a,b)=>{if(c++<left)return a+b.toUpperCase();return m});left-=Math.min(left,(t.match(/(^|\s)\S/g)||[]).length);if(r!==t)n.nodeValue=r}})}
 try{new MutationObserver(()=>capHead(view)).observe(view,{childList:true,subtree:true})}catch(e){}
+/* ---------- change password ---------- */
+document.getElementById("pwD").innerHTML=`<form method="dialog" onsubmit="return false" class="bkf" id="pwF" novalidate>
+ <div class="dh"><h3 id="pwT" style="margin:0">Change Password</h3><button type="button" class="x" aria-label="Close" onclick="pwD.close()">✕</button></div>
+ ${pwField("cpCur","Current Password","current-password",1)}${pwField("cpNew","New Password","new-password",1)}<div class="fine">At least 8 characters, with a letter and a number.</div>${pwField("cpCf","Confirm New Password","new-password",1)}
+ <div class="err" id="cpErr" role="alert"></div>
+ <div class="acts"><button type="button" class="btn" id="cpGo" onclick="submitChangePw()">Change Password</button><button type="button" class="btn alt" onclick="pwD.close()">Cancel</button></div></form>`;
+function openChangePw(){const u=meU();if(!u)return;if(!u.pw){toast("This account signs in without a password.");return}
+ ["cpCur","cpNew","cpCf"].forEach(i=>{const e=document.getElementById(i);e.value="";e.type="password"});document.getElementById("cpCur").value=u.pw;
+ document.querySelectorAll("#pwD .eye").forEach(b=>{b.textContent="Show";b.setAttribute("aria-pressed","false")});cpErr.textContent="";cpGo.disabled=false;pwD.showModal();setTimeout(()=>cpNew.focus(),30)}
+function cpFail(m,id){cpErr.textContent=m;cpGo.disabled=false;const e=document.getElementById(id);if(e)e.focus()}
+async function submitChangePw(){const u=meU();if(!u)return;const cur=cpCur.value,nw=cpNew.value,cf=cpCf.value;cpErr.textContent="";
+ if(!cur)return cpFail("Enter your current password.","cpCur");
+ if(cur!==u.pw)return cpFail("Current password is incorrect.","cpCur");
+ const pe=pwErr(nw,cf);if(pe)return cpFail(pe[0],pe[1]?"cpCf":"cpNew");
+ if(nw===cur)return cpFail("Choose a password different from the current one.","cpNew");
+ cpGo.disabled=true;
+ if(SB_ON&&u.role!=="admin"&&!/@example\.com$/i.test(u.email)){sbQuiet++;
+  try{const c=await sbClient();const r=await authRetry(()=>c.auth.signInWithPassword({email:u.email,password:cur}));
+   if(r.error){sbQuiet--;return cpFail(r.error.code==="invalid_credentials"||/invalid login/i.test(r.error.message||"")?"We couldn’t verify your current password on the server. Use Forgot Password on the login page.":"Couldn’t reach the server. Check your connection and try again.","cpNew")}
+   const up=await c.auth.updateUser({password:nw});
+   if(up.error){sbQuiet--;return cpFail(/different/i.test(up.error.message||"")?"Choose a password you haven’t used before.":"Couldn’t update the password. Please try again.","cpNew")}}
+  catch(e){sbQuiet--;return cpFail("Couldn’t reach the server. Check your connection and try again.","cpNew")}
+  sbQuiet--}
+ u.pw=nw;try{log("password","changed")}catch(e){}save();pwD.close();pwDone()}
+function pwDone(){let d=document.getElementById("pwOk");if(!d){d=document.createElement("dialog");d.id="pwOk";d.setAttribute("role","status");d.setAttribute("aria-label","Password changed");document.body.appendChild(d)}
+ d.innerHTML=`<svg class="okx" viewBox="0 0 52 52" aria-hidden="true"><circle class="okc" cx="26" cy="26" r="24"/><path class="okp" d="M14 27l8 8 16-17"/></svg><h3>Password Changed</h3><p>Your password has been changed successfully.</p><button type="button" class="btn" style="margin-top:16px;width:100%" onclick="document.getElementById('pwOk').close()">Done</button>`;
+ if(!d.open)d.showModal();clearTimeout(d._t);d._t=setTimeout(()=>{if(d.open)d.close()},3500)}
+/* Empty states: every "nothing here" block gets a sad face and a clear "No Content Available" heading */
+const SAD='<svg class="sadi" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="32" cy="32" r="26"/><circle cx="23" cy="26" r="2.6" fill="currentColor" stroke="none"/><circle cx="41" cy="26" r="2.6" fill="currentColor" stroke="none"/><path d="M22 46c2.5-5 7-7.5 10-7.5s7.5 2.5 10 7.5"/><path d="M47 31c1.8 2.6 2.6 4.4 2.6 5.8a2.6 2.6 0 0 1-5.2 0c0-1.4.8-3.2 2.6-5.8z" fill="#5aa9ff" stroke="none"/></svg>';
+function sadify(root){(root||document).querySelectorAll(".empty:not(.sad),.bnone:not(.sad),.lpe:not(.sad),p.cnt:not(.sad)").forEach(e=>{
+ if(e.matches("p.cnt")&&!/^\s*(No |You haven)/.test(e.textContent))return;
+ const t=e.innerHTML;e.classList.add("sad");e.setAttribute("role","status");e.innerHTML=SAD+'<b class="sadt">No Content Available</b><span class="sadm">'+t+'</span>'})}
+try{new MutationObserver(()=>sadify(document)).observe(document.body,{childList:true,subtree:true});sadify(document)}catch(e){}
 /* ---------- About Us ---------- */
 function aboutPage(){const F=(i,t,d)=>`<li class="abf"><i aria-hidden="true">${i}</i><div><b>${t}</b><p>${d}</p></div></li>`,
  L=a=>`<ul class="abl">${a.map(x=>`<li>${x}</li>`).join("")}</ul>`;
@@ -3111,7 +3211,7 @@ function chat(T){const V=T||view,t=S.threads.find(x=>x.id===S.thread);
  V.innerHTML=`<div class="row chatrow"><h2>Messages</h2>${SB_ON&&typeof RT!=="undefined"&&RT.ok===false?`<span class="cnt" role="status">Chat server not set up yet</span>`:""}${unread()?`<span class="ucirc" role="img" aria-label="${unread()} unread message${unread()===1?"":"s"}">${unread()>99?"99+":unread()}</span>`:""}</div>${pushBanner()}<div class="chat ${t?"open":""}">
  <div class="threads">${S.threads.length?`<div class="tsrch iw"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input id="tq" type="search" value="${esc(Chat.q||"")}" placeholder="Search by name or designation" aria-label="Search chats by name or designation" autocomplete="off" oninput="chatSearch(this.value)" onfocus="Chat.qf=1" onblur="Chat.qf=0"></div>`:""}<div class="tlist" id="tlist">${thRows(t)}</div></div>
  <section class="pane" aria-label="Conversation" data-t="${t?t.id:''}">${t?`${!Net.on?`<div class="cbar" role="status">You’re offline. Messages will send automatically when you reconnect.</div>`:""}<div class="ph"><button class="back" aria-label="Back to conversations" onclick="S.thread=null;Chat.stick=true;render()">‹</button><span class="avw"><div class="av" style="${abg(t.n)}">${ait(t.n)}</div>${pres(t.on)}</span><div class="phn"><b>${esc(t.n)}</b><small class="${t.typing||t.on?"on":""}">${t.typing?"typing…":t.on?"Online":SB_ON?"Offline":""}</small></div><div class="cmenu"><button type="button" class="btn alt rep dots" aria-haspopup="menu" aria-expanded="false" aria-label="Chat options" onclick="toggleCM(event)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button><div class="cml hide" role="menu"><button type="button" role="menuitem" data-n="${esc(t.n)}" onclick="reportUser(this.dataset.n)">Report</button><button type="button" role="menuitem" class="dng" onclick="askDelChat()">Delete</button></div></div></div>
- <div class="msgs" id="ms" aria-live="polite">${t.m.map(m=>`<div class="m ${m.me?"me":""}" data-mid="${esc(m.id)}">${qCard(m,t)}${fmtMsg(m.t,m)}${actBar(m)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+(m.up&&m.st==="sending"?"⏳ Uploading…":({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]):""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span>${m.err?`<small class="merr">${esc(m.err)}</small>`:""}<button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}<button type="button" class="mdots" aria-haspopup="menu" aria-label="Message options" onclick="msgMenu(this,event)">⋮</button></span></div>`).join("")}</div>${Chat.rep?`<div class="mprev repbar"><span><b>Replying to ${esc(Chat.rep.who)}</b><small>${esc(Chat.rep.snip)}</small></span><button type="button" aria-label="Cancel reply" onclick="clearRep()">✕</button></div>`:""}${Chat.pend?`<div class="mprev"><img src="${Chat.pend}" alt="Photo to send"><span>Photo ready — tap Send (a caption is optional)</span><button type="button" aria-label="Remove photo" onclick="clearImg()">✕</button></div>`:""}
+ <div class="msgs" id="ms" aria-live="polite">${t.m.length?t.m.map(m=>`<div class="m ${m.me?"me":""}" data-mid="${esc(m.id)}">${qCard(m,t)}${fmtMsg(m.t,m)}${actBar(m)}<span class="mt">${new Date(m.ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}${m.me?" "+(m.up&&m.st==="sending"?"⏳ Uploading…":({sending:"⏳ Sending",sent:"✓ Sent",delivered:"✓✓ Delivered",read:"✓✓ Read",failed:""})[m.st]):""}${m.st==="failed"?`<span style="color:#c0261c;font-weight:700">Not sent</span>${m.err?`<small class="merr">${esc(m.err)}</small>`:""}<button class="rt" onclick="Chat.retry('${m.id}')">Retry</button>`:""}<button type="button" class="mdots" aria-haspopup="menu" aria-label="Message options" onclick="msgMenu(this,event)">⋮</button></span></div>`).join(""):`<div class="empty">No messages yet. Say hello below.</div>`}</div>${Chat.rep?`<div class="mprev repbar"><span><b>Replying to ${esc(Chat.rep.who)}</b><small>${esc(Chat.rep.snip)}</small></span><button type="button" aria-label="Cancel reply" onclick="clearRep()">✕</button></div>`:""}${Chat.pend?`<div class="mprev"><img src="${Chat.pend}" alt="Photo to send"><span>Photo ready — tap Send (a caption is optional)</span><button type="button" aria-label="Remove photo" onclick="clearImg()">✕</button></div>`:""}
  <form class="send" style="max-width:none" onsubmit="sendMsg(event)"><button type="button" class="btn alt att" aria-label="Attach a photo" onclick="document.getElementById('mimg').click()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg></button><input id="mimg" type="file" accept="image/*" hidden onchange="pickImg(this)"><input id="mi" autocomplete="off" autocapitalize="sentences" enterkeyhint="send" maxlength="1000" aria-label="Message" placeholder="${Chat.pend?"Add a caption (optional)":"Write a message"}"><button class="btn" onpointerdown="event.preventDefault()">Send</button></form>`:`<div class="empty" style="margin:auto">Pick a conversation to start chatting.</div>`}</section></div>`;
  if(Chat.qf){const q=document.getElementById("tq");if(q){q.focus();const n=q.value.length;try{q.setSelectionRange(n,n)}catch(e){}}}
  const m=V.querySelector("#ms");if(m){if(Chat.stick!==false||Chat.pos==null)m.scrollTop=m.scrollHeight;else m.scrollTop=Math.min(Chat.pos,m.scrollHeight)}}
@@ -3376,14 +3476,18 @@ function settings(){
    ${row(FI.edit,"Edit profile","Name, age, email and phone","editP=true;go('profile')")}
    ${row(FI.bell,"Notifications",unreadN()?unreadN()+" unread":"You’re all caught up","go('notifications')")}
    ${row(FI.star,"Subscription plan",(PLANS.find(q=>q.id===S.plan)||PLANS[0]).n+" plan · compare plans","openPlans()")}
-   ${row(FI.support,"Help &amp; support","Contact us or report an issue","go('support')")}</section>
+   ${row(FI.lock,"Change Password","Update the password you log in with","openChangePw()")}</section>
+  <section class="scard"><h4>More</h4>
+   ${row(FI.about,"About Us","Our mission, features and benefits","go('about')")}
+   ${row(FI.terms,"Terms &amp; Conditions","How the platform works and your rights","go('terms')")}
+   ${row(FI.support,"Help &amp; Support","Contact us or report an issue","go('support')")}</section>
   <section class="scard"><h4>Appearance</h4><div class="themes" role="group" aria-label="Theme">${[["dark","🌙","Dark"],["light","☀️","Light"]].map(([k,e,l])=>`<button class="tile" aria-pressed="${th===k}" onclick="S.theme='${k}';applyTheme();save();render()"><span aria-hidden="true">${e}</span>${l}</button>`).join("")}</div></section>
   <section class="scard"><h4>I am a</h4><label class="rsel"><select id="roleSel" aria-label="Account type" onchange="S.role=this.value;save();render()"><option value="client" ${cl?"selected":""}>Client</option><option value="worker" ${cl?"":"selected"}>Service provider</option></select></label></section>
  </div><div class="scol">
   <section class="scard"><h4>Privacy</h4>${tg("vis","Show my profile","Let other users find and view it")}${tg("online","Show when I’m online","Display an online dot on your avatar")}${tg("msgs","Allow messages from anyone","Turn off to limit who can message you")}</section>
   <section class="scard"><details class="hdrop"><summary><h4>Help</h4></summary><details><summary>How do I post a job?</summary><p>Open Add Post, choose Post Vacancies, fill in the details and tap Publish.</p></details><details><summary>How do I apply for a job?</summary><p>Tap Apply now on a vacancy, enter your price and start date, and say why you’re a good fit.</p></details><details><summary>How do I book a worker?</summary><p>Tap Book now on a worker’s card, pick a date and price, then send the request. Your chat starts from there.</p></details><button class="btn" onclick="go('support')">Connect Support</button></details></section>
   ${row(FI.logout,"Log out","Sign out of this device","outD.showModal()","slog danger")}
-  ${row('<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',"Delete account permanently","Remove your account and all your data","delAccD.showModal()","slog danger")}
+  ${row('<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',"Delete Permanently","Remove your account and all your data","delAccD.showModal()","slog danger")}
  </div></div></div>`}
 
 function profile(){const p=S.profile,v=x=>x?esc(x):"Not added",mj=[...S.jobs,...S.services].filter(j=>j.by===S.name);
@@ -3422,7 +3526,7 @@ function saveProfile(e){e.preventDefault();const o=S.profile.name,n=pn.value.tri
 /* ---------- fixes: hamburger drawer, back arrow, location dropdown ---------- */
 const navStack=[];
 function menuItems(){const un=unreadN(),ch=unread();const it=(v,ic,l,b,c)=>`<button class="dwi" style="--c:${c};--ct:${c}26" ${S.view===v?'aria-current="page"':''} onclick="go('${v}')"><i aria-hidden="true">${ic}</i>${l}${b?`<span class="dwb">${b}</span>`:""}</button>`;
- return it("home",FI.home,"Home",0,"#a31d78")+it("add",FI.add,"Add Post",0,"#1d8a4e")+it("history",FI.history,"History",0,"#7a4f8a")+it("settings",FI.settings,"Settings",0,"#5c6bc0")+it("support",FI.support,"Help &amp; support",0,"#12a6b8")+it("about",FI.about,"About Us",0,"#e08a1e")+it("terms",FI.terms,"Terms &amp; Conditions",0,"#3b5b99")+(isAdmin()?it("admin",FI.admin,"Admin",0,"#546e7a"):"")}
+ return it("home",FI.home,"Home",0,"#a31d78")+it("add",FI.add,"Add Post",0,"#1d8a4e")+it("history",FI.history,"History",0,"#7a4f8a")+it("settings",FI.settings,"Settings",0,"#5c6bc0")+(isAdmin()?it("admin",FI.admin,"Admin",0,"#546e7a"):"")}
 function renderMenu(){const d=document.getElementById("drawer");if(!d)return;
  if(S.out){d.innerHTML=`<div class="dwtop"><div class="dwp" style="padding-right:56px"><span class="dwn"><b>Welcome</b><small>Log in to hire help or find work</small></span></div><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div><button class="dwi" style="--c:#1d8a4e;--ct:#1d8a4e26" onclick="closeMenu(true);showAuth('login')"><i aria-hidden="true">${FI.login}</i>Log in</button><button class="dwi" style="--c:#a31d78;--ct:#a31d7826" onclick="closeMenu(true);showAuth('register')"><i aria-hidden="true">${FI.register}</i>Create account</button>`;return}
  d.innerHTML=`<div class="dwtop"><button class="dwp" ${S.view==="profile"?'aria-current="page"':''} onclick="editP=false;go('profile')" aria-label="Open my profile"><span class="av" style="${abg(S.name)}">${ait(S.name)}</span><span class="dwn"><b>${esc(S.name)}</b><span class="rolep">${S.role==="client"?"Client":"Service Provider"}</span><small>View profile</small></span><span class="dwgo" aria-hidden="true">${CHR}</span></button><button class="dwx" aria-label="Close menu" onclick="closeMenu()">✕</button></div>${menuItems()}<div class="dwsp"></div><button class="dwi danger" style="--c:#ff3b30;--ct:#ff3b3026" onclick="closeMenu(true);outD.showModal()"><i aria-hidden="true">${FI.logout}</i>Log out</button>`}
