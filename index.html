@@ -480,7 +480,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .svcm .sm-rate b{font-size:20px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;color:var(--ink)}.svcm .sm-rate small{color:var(--mute);font-weight:600;font-size:13px}
 .svcm:focus-visible{outline:2px solid var(--plum);outline-offset:2px}
 .svgrid{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
-@media (min-width:900px){.svgrid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
+@media (min-width:900px){.svgrid{grid-template-columns:minmax(0,1.9fr) minmax(0,.85fr);align-items:start}}
 .svl,.svr2{background:var(--bg);border:1px solid var(--line);border-radius:22px;padding:20px;display:grid;gap:12px;align-content:start;min-width:0}
 .svt{margin:0;font-size:22px;line-height:1.25}.svl .phead{padding:0;border:0}
 .svrate{font-weight:800;color:var(--plum)}
@@ -494,6 +494,30 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .svgrid{align-items:stretch!important}
 .svsel{position:relative}.svsel select{appearance:none;-webkit-appearance:none;padding-right:40px}
 .svsel::after{content:"";position:absolute;right:14px;top:50%;width:9px;height:9px;border-right:2.5px solid var(--ink);border-bottom:2.5px solid var(--ink);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.svcm .sm-rate b{color:#3b82f6!important}
+.svcm .smbk{background:#16a34a!important;color:#fff!important;border:0!important;box-shadow:none!important}.svcm .smbk:hover{background:#15803d!important}
+.svtop{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.svwho{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:wrap;background:none;border:0;padding:0;text-align:left;color:inherit;cursor:pointer}
+.svwho b{font-size:16px}.svwho .svdes{color:var(--mute);font-size:13.5px}
+.svrows{display:grid;gap:8px}.svrow{display:flex;align-items:center;gap:10px;font-size:15px;min-width:0}.svrow svg{width:18px;height:18px;flex:none;margin:0!important;vertical-align:0!important}
+.svprice{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.svprice b{font-size:34px;line-height:1.1;font-weight:800;letter-spacing:-.02em;color:#3b82f6}.svprice small{color:var(--mute);font-size:15px;font-weight:600}
+.svact{align-items:stretch!important;flex-wrap:nowrap!important}
+.svmsg{flex:none;width:52px;min-height:52px;padding:0!important;display:grid;place-items:center;border-radius:16px}.svmsg{color:var(--plum)}.svmsg svg{width:22px;height:22px;margin:0!important;fill:currentColor;color:inherit}
+.svbook{flex:1 1 auto;min-height:52px;font-size:16px;font-weight:800;border-radius:16px;background:#16a34a!important;color:#fff!important;border:0!important;box-shadow:none!important}.svbook:hover{background:#15803d!important}
+#bookD .gbtn{background:#16a34a!important;color:#fff!important;border:1.5px solid #16a34a!important;box-shadow:none!important;font-weight:700}#bookD .gbtn:hover{background:#15803d!important;border-color:#15803d!important}
+#bookD .gbtn.out{background:transparent!important;color:#16a34a!important}#bookD .gbtn.out:hover{background:color-mix(in srgb,#16a34a 14%,transparent)!important}
+#bookD .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px}#bookD .acts .btn{width:100%}
+.neg>label select{width:100%;min-height:46px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.sugl{display:grid;gap:6px;margin-top:8px}.sugl small{color:var(--mute);font-weight:600}
+.offprev{display:grid;gap:6px}.offprev small{color:var(--mute);font-weight:700}.offprev .note{margin:0;padding:12px 14px;border-radius:14px;background:var(--soft);border:1px dashed var(--line)}
+.acard:not(.reg) .ahead .al{height:40px}
+.pgl,.pgck,.pgs,.pgc .link{font-size:14px!important}
+/* service details: left card static, only the right panel scrolls */
+.svgrid{height:calc(100dvh - 190px);min-height:380px;overflow:hidden}
+.svl{align-self:start;max-height:100%;overflow-y:auto;overscroll-behavior:contain}
+.svr2{height:100%;overflow-y:auto;overscroll-behavior:contain;align-content:start}
+@media (min-width:900px){.svl{align-self:stretch}}
+@media (max-width:899px){.svgrid{display:flex!important;flex-direction:column;height:auto;min-height:0;overflow:visible}.svl{flex:none;max-height:none;overflow:visible}.svr2{flex:none;height:auto;max-height:340px;min-height:150px}}
 @media (max-height:700px) and (min-width:600px){.auth{place-items:start center}}
 .out .main,.out .sheet{max-width:none;width:100%;margin-left:0;margin-right:0}
 .out .app{display:block}
@@ -2287,7 +2311,7 @@ function authView(){
  <div class="two"><label><span>Name<i class="rstar" aria-hidden="true"> *</i></span><input id="rn" required maxlength="40" autocomplete="name"></label><label><span>Age<i class="rstar" aria-hidden="true"> *</i></span><input id="ra" type="number" inputmode="numeric" min="16" max="99" required></label></div>
  <label><span>Email ID<i class="rstar" aria-hidden="true"> *</i></span><input id="re" type="email" required autocomplete="email"></label>
  <label><span>Phone Number<i class="rstar" aria-hidden="true"> *</i></span><input id="rph" type="tel" required autocomplete="tel" inputmode="tel"></label>
- <label><span>Category<i class="rstar" aria-hidden="true"> *</i></span><select id="rc" required><option value="">Choose a category</option><optgroup label="User"><option value="Client">User — I want to hire</option></optgroup><optgroup label="Service provider">${CATS.slice(1).map(c=>`<option value="${c}">${c}</option>`).join("")}</optgroup></select></label>
+ <label><span>Category<i class="rstar" aria-hidden="true"> *</i></span><select id="rc" required><option value="">Choose a category</option><option value="Client">User</option><optgroup label="Service provider">${CATS.slice(1).map(c=>`<option value="${c}">${c}</option>`).join("")}</optgroup></select></label>
  <label><span>Company Name</span><input id="rt" maxlength="40" placeholder="e.g. Sharma Constructions"></label>
  <div class="rcert"><span class="rcl">Experience Certificate</span><input id="rcf2" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="regCertPick(this)"><button type="button" class="btn alt rcb" onclick="document.getElementById('rcf2').click()">${regCert?"Change image":"Upload image"}</button><div class="rcp" id="rcp">${regCert?`<img src="${regCert}" alt="Experience certificate preview"><button type="button" class="link" onclick="regCertPick(null)">Remove</button>`:""}</div></div>
  ${pwField("rpw","Password","new-password",1)}<div class="fine">At least 8 characters, with a letter and a number.</div>
@@ -2703,36 +2727,41 @@ function svRight(x){if(!x)return"";if(S.svt==="bookings"){const mine=x.by===S.na
 function svcPage(){const x=S.services.find(z=>z.id===S.sv),bar=`<div class="pvbar"><button type="button" class="pvback" onclick="goBack()" aria-label="Back">${ARW}</button><h2>Service details</h2></div>`;
  if(!x){view.innerHTML=bar+`<p class="bnone">This post is no longer available.</p>`;return}
  const mine=x.by===S.name,n=x.v.length,own=x.b.filter(b=>b.by===S.name),tab=S.svt==="bookings"?"bookings":"reviews";
- view.innerHTML=bar+`<div class="svgrid"><section class="svl" aria-label="Details"><div class="phead">${who(x.by,byLine(x.by))}</div><div><span class="tag">${esc(x.c)}</span></div><h3 class="svt">${esc(x.t)}</h3>
-  <div class="meta" style="margin:0"><span>${LOC}${esc(x.loc)}</span><span class="svrate">${mPrice(x.c)}${rateTx(x)}<small class="per">per ${uOf(x)}</small></span><span>${mClock(x.c)}${esc(availTx(x))}</span>${x.start?`<span class="pill Completed">${mDate(x.c)}Available ${esc(x.start.toLowerCase())}</span>`:""}${attrSpans(x)}${rtk(x)==="hour"&&x.hrs>1?`<span class="pill Requested">Min. ${x.hrs} hours</span>`:""}</div>
+ view.innerHTML=bar+`<div class="svgrid"><section class="svl" aria-label="Details"><div class="svtop"><button type="button" class="who svwho" data-n="${esc(x.by)}" onclick="openProfile(this.dataset.n)" aria-label="View profile of ${esc(x.by)}"><div class="av sm" style="${abg(x.by)}">${ait(x.by)}</div><b>${esc(x.by)}</b><span class="svdes">${byLine(x.by)}</span></button><span class="tag">${esc(x.c)}</span></div>
+  <h3 class="svt">${esc(x.t)}</h3>
+  <div class="svrows"><div class="svrow">${LOC}<span>${esc(x.loc)}</span></div><div class="svrow">${mClock(x.c)}<span>${esc(availTx(x))}${rtk(x)==="hour"&&x.hrs>1?` · Min. ${x.hrs} hours`:""}</span></div>${expTx(x)?`<div class="svrow">${DI.medal}<span>${esc(expTx(x))}</span></div>`:""}${x.qual?`<div class="svrow">${DI.cap}<span>${esc(x.qual)}</span></div>`:""}${x.start?`<div class="svrow">${mDate(x.c)}<span>Available ${esc(x.start.toLowerCase())}</span></div>`:""}</div>
+  <div class="svprice"><b>${rateTx(x)}</b><small>per ${uOf(x)}</small></div>
   <p class="pdesc">${esc(x.d)}</p>${mine?`<div class="vw" style="margin:0">${DI.eye}${n} view${n===1?"":"s"}${n?`<small>Viewed by ${x.v.map(esc).join(", ")}</small>`:""}</div>`:""}
-  <div class="svact">${mine?`<button class="btn pitchb" onclick="editPost('service',${x.id})">Edit</button><button class="btn alt dng" onclick="delPost('service',${x.id})">Delete</button><span class="hint">This is your service. Bookings and offers appear on the right.</span>`:`<button class="btn pitchb booknow" onclick="book(${x.id})">Book now</button><button class="btn alt ico" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)">${IC.chat}Message</button>`}</div></section>
+  <div class="svact">${mine?`<button class="btn pitchb" onclick="editPost('service',${x.id})">Edit</button><button class="btn alt dng" onclick="delPost('service',${x.id})">Delete</button><span class="hint">This is your service. Bookings and offers appear on the right.</span>`:`<button type="button" class="btn alt svmsg" data-n="${esc(x.by)}" onclick="msgTo(this.dataset.n)" aria-label="Message ${esc(x.by)}" title="Message">${IC.chat}</button><button type="button" class="btn svbook" onclick="book(${x.id})">Book Now</button>`}</div></section>
   <section class="svr2" aria-label="Reviews and bookings"><div class="svsel"><select aria-label="Show reviews or bookings" onchange="setSvTab(this.value)"><option value="reviews" ${tab==="reviews"?"selected":""}>Reviews</option><option value="bookings" ${tab==="bookings"?"selected":""}>Bookings (${mine?x.b.length:own.length})</option></select></div><div id="svr" class="svbody">${svRight(x)}</div></section></div>`}
+/* Inner page headings: the first letter of the first two words is always a capital */
+function capHead(root){(root||view).querySelectorAll("h2").forEach(h=>{if(h.closest(".ahead,.lhero,.land"))return;let left=2;const w=document.createTreeWalker(h,NodeFilter.SHOW_TEXT);let n;while(left>0&&(n=w.nextNode())){const t=n.nodeValue;if(!t.trim())continue;let c=0;const r=t.replace(/(^|\s)([a-z])/g,(m,a,b)=>{if(c++<left)return a+b.toUpperCase();return m});left-=Math.min(left,(t.match(/(^|\s)\S/g)||[]).length);if(r!==t)n.nodeValue=r}})}
+try{new MutationObserver(()=>capHead(view)).observe(view,{childList:true,subtree:true})}catch(e){}
 const ARW='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg>';
 let bj=null,bmode="listed",bedit=null;
 const mid5=x=>Math.round((x.min+x.max)/2/5)*5;
 function book(id,bid){bj=S.services.find(z=>z.id===id);if(!bj)return;bedit=bid?bj.b.find(b=>b.id===bid)||null:null;bmode=bedit?bedit.mode:"listed";
  bookD.innerHTML=`<form method="dialog" onsubmit="return false" class="bkf">
- <div class="dh"><h3 style="margin:0">Book this professional</h3><button type="button" class="x" aria-label="Close" onclick="bookD.close()">✕</button></div>
+ <div class="dh"><h3 style="margin:0">Book This Professional</h3><button type="button" class="x" aria-label="Close" onclick="bookD.close()">✕</button></div>
  <div class="bkpro"><div class="av sm" style="${abg(bj.by)}" aria-hidden="true">${ait(bj.by)}</div><div><b>${esc(bj.by)}</b><small>${esc(bj.t)}</small></div><span class="pill Completed">${rateTx(bj)}/${uS(bj)}</span></div>
- <div class="two"><label>Date<input id="bd" type="date" required></label><label>${({hour:"Hours needed",minute:"Minutes needed",day:"Days needed",week:"Weeks needed",month:"Months needed",year:"Years needed",project:"Projects needed"})[rtk(bj)]}<input id="bh" type="number" inputmode="numeric" min="${qMin(bj)}" max="${qMax(bj)}" value="${bedit?bedit.hours:(rtk(bj)==="hour"?Math.max(2,qMin(bj)):1)}" oninput="bookEst()"></label></div>
- <div class="two"><label>Time<input id="bt" type="time" required value="${bedit&&bedit.time?bedit.time:"09:00"}"></label><label>Location<input id="bl" required maxlength="80" autocomplete="off" placeholder="Where should they come?" value="${bedit&&bedit.loc?esc(bedit.loc):""}"></label></div>
- <div class="neg"><b>Price</b>
-  <div class="seg" role="group" aria-label="Pricing option"><button type="button" aria-pressed="${bmode==="listed"}" onclick="setBM('listed')">Listed rate</button><button type="button" aria-pressed="${bmode==="offer"}" onclick="setBM('offer')">Negotiate</button></div>
-  <div id="offBox" class="${bmode==="offer"?"":"hide"}"><label>Your offer per ${uOf(bj)} (₹)<input id="bo" type="number" min="1" max="99999" inputmode="numeric" value="${bedit&&bedit.offer?bedit.offer:mid5(bj)}" oninput="bookEst()"></label>
-   <div class="chips wrap" role="group" aria-label="Quick offers"><button type="button" class="chip" onclick="setO(${bj.min})">Min ₹${bj.min}</button><button type="button" class="chip" onclick="setO(${mid5(bj)})">Mid ₹${mid5(bj)}</button><button type="button" class="chip" onclick="setO(${bj.max})">Max ₹${bj.max}</button></div></div>
+ <div class="two"><label><span>Date<i class="rstar" aria-hidden="true"> *</i></span><input id="bd" type="date" required></label><label><span>${({hour:"Hours Needed",minute:"Minutes Needed",day:"Days Needed",week:"Weeks Needed",month:"Months Needed",year:"Years Needed",project:"Projects Needed"})[rtk(bj)]}<i class="rstar" aria-hidden="true"> *</i></span><input id="bh" required type="number" inputmode="numeric" min="${qMin(bj)}" max="${qMax(bj)}" value="${bedit?bedit.hours:(rtk(bj)==="hour"?Math.max(2,qMin(bj)):1)}" oninput="bookEst()"></label></div>
+ <div class="two"><label><span>Time<i class="rstar" aria-hidden="true"> *</i></span><input id="bt" type="time" required value="${bedit&&bedit.time?bedit.time:"09:00"}"></label><label><span>Location<i class="rstar" aria-hidden="true"> *</i></span><input id="bl" required maxlength="80" autocomplete="off" placeholder="Where should they come?" value="${bedit&&bedit.loc?esc(bedit.loc):""}"></label></div>
+ <div class="neg"><label><span>Price Type<i class="rstar" aria-hidden="true"> *</i></span><select id="bpt" required onchange="setBM(this.value)" aria-label="Price type"><option value="listed" ${bmode==="listed"?"selected":""}>Listed Rate</option><option value="offer" ${bmode==="offer"?"selected":""}>Negotiable</option></select></label>
+  <div id="offBox" class="${bmode==="offer"?"":"hide"}"><label><span>Offer Per ${uOf(bj).replace(/^./,c=>c.toUpperCase())} (₹)<i class="rstar" aria-hidden="true"> *</i></span><input id="bo" type="number" min="1" max="99999" inputmode="numeric" required placeholder="Enter your offer" value="${bedit&&bedit.offer?bedit.offer:lowOffers(bj)[0]}" oninput="bookEst()"></label>
+   <div class="sugl"><small>Suggested Offers</small><div class="chips wrap" role="group" aria-label="Suggested lower offers">${lowOffers(bj).map(v=>`<button type="button" class="chip" onclick="setO(${v})">₹${v}</button>`).join("")}</div></div></div>
   <div class="fit" id="bookFit" aria-live="polite"></div></div>
- <label>Note (optional)<textarea id="bkN" rows="2" placeholder="Address, what needs doing, anything they should bring.">${bedit?esc(bedit.note||""):""}</textarea></label>
- <div class="note" id="bookE" aria-live="polite"></div>
- <div class="acts"><button type="button" class="btn" id="bkGo" onclick="sendBook()"></button><button type="button" class="btn alt" onclick="bookD.close()">Cancel</button></div></form>`;
+ <label><span>Description</span><textarea id="bkN" rows="2" placeholder="Address, what needs doing, anything they should bring.">${bedit?esc(bedit.note||""):""}</textarea></label>
+ <div class="offprev"><small>Offer Preview</small><div class="note" id="bookE" aria-live="polite"></div></div>
+ <div class="acts"><button type="button" class="btn gbtn" id="bkGo" onclick="sendBook()"></button><button type="button" class="btn gbtn out" onclick="bookD.close()">Cancel</button></div></form>`;
  bd.min=new Date().toISOString().slice(0,10);bd.value=bedit&&bedit.iso?bedit.iso:"";bookEst();bookD.showModal()}
-function setBM(m){bmode=m;document.querySelectorAll("#bookD .seg button").forEach((b,i)=>b.setAttribute("aria-pressed",(i===0)===(m==="listed")));document.getElementById("offBox").classList.toggle("hide",m!=="offer");bookEst()}
+const lowOffers=x=>{const v=[.9,.8,.7].map(k=>Math.max(1,Math.round(x.min*k/5)*5||Math.round(x.min*k)||1));return[...new Set(v)].map(n=>n>=x.min?Math.max(1,x.min-1):n)};
+function setBM(m){bmode=m==="offer"?"offer":"listed";document.getElementById("offBox").classList.toggle("hide",m!=="offer");bookEst()}
 function setO(v){bo.value=v;bookEst()}
 function bookEst(){const h=Math.max(1,+bh.value||1),o=+bo.value,x=bj,mid=(x.min+x.max)/2;let t,f="";
  if(bmode==="offer"){t=o>0?`Your offer: ₹${o}/${uS(x)} × ${qtyTx(x,h)} = <b>₹${o*h}</b>`:"Enter your offer per "+uOf(x)+".";
   f=!(o>0)?"":o>=x.max?"At or above the top of their range, so it will very likely be accepted.":o>=mid?"Within their range, so it will likely be accepted or lightly countered.":o>=x.min?"In the lower half of their range. Expect a counter-offer.":`Below their ₹${x.min}/${uS(x)} minimum. They will probably counter at ₹${x.min}.`}
  else t=`Estimated cost: <b>${estTx(x,h)}</b> for ${qtyTx(x,h)}`;
- bookE.innerHTML=t;bookFit.textContent=f;bkGo.textContent=bedit?"Send new offer":bmode==="offer"?"Send offer":"Book now"}
+ bookE.innerHTML=t;bookFit.textContent=f;bkGo.textContent=bedit?"Send New Offer":bmode==="offer"?"Send an Offer":"Book Now"}
 function bkNotifyUI(x){if(S.view==="svc"&&S.sv===x.id)svcPage();else if(postD.open&&ck==="service"&&cp===x.id)openService(x.id);else if(S.view==="history")historyView();nav()}
 const tm12=t=>{const[h,m]=String(t||"").split(":").map(Number);return isNaN(h)?"":`${h%12||12}:${String(m||0).padStart(2,"0")} ${h<12?"AM":"PM"}`};
 function bkMsg(x,b,upd){const c=v=>String(v||"").replace(/¦/g,"|").trim(),u=uOf(x),base=`${rateTx(x)}/${u}`;
