@@ -1343,6 +1343,7 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .bnone{color:var(--mute);text-align:center;margin:10px 0}
 
 .adslot{display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;text-align:center;min-height:150px;padding:18px;margin:0 0 14px;border-radius:20px;border:2px dashed var(--plum);background:linear-gradient(135deg,var(--g1),var(--g2));color:var(--navytx)}
+.feedad{margin:0 0 14px;min-height:0;overflow:hidden;border-radius:20px}.feedad ins.adsbygoogle[data-ad-status="unfilled"]{display:none!important}
 .adslot small{font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--plum)}.adslot b{font-size:20px}.adslot span{color:var(--mute);font-size:14px}
 .bfeedh{margin-bottom:12px}
 #newPostD{width:min(760px,calc(100vw - 24px));max-height:92vh;overflow:auto}.bform{display:flex;flex-direction:column;gap:12px}.bform label:not(.btn){display:flex;flex-direction:column;gap:6px;font-weight:600}.bform .acts{display:flex;gap:10px}.bform .acts .btn{flex:1}
@@ -2604,18 +2605,25 @@ function postPage(){const x=S.posts.find(z=>String(z.id)===String(S.pv));
  view.innerHTML=`<div class="pvbar"><button type="button" class="pvback" onclick="goBack()" aria-label="Back to feed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg></button><h2>Post</h2></div>${x?bCard(x,true):`<p class="bnone">This post is no longer available.</p>`}`}
 const bPosts=()=>{pruneBoard();return S.posts.filter(x=>x&&live(x.by)).sort((a,b)=>b.ts-a.ts)};
 const bNotice=`<p class="bnote" role="note">ⓘ All posts disappear automatically within 1 month.</p>`;
-function feedHTML(){const P=bPosts();return `<section class="feedsec" id="feedsec" aria-label="Feed">${pushBanner()}<aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>${bNotice}<div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button>${likesBtn()}</div><div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing in the feed yet. Be the first to post!</p>`}</div></section>`}
+function feedHTML(){const P=bPosts();return `<section class="feedsec" id="feedsec" aria-label="Feed">${pushBanner()}<aside class="feedad" id="feedAd" aria-label="Advertisement"></aside>${bNotice}<div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button>${likesBtn()}</div><div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing in the feed yet. Be the first to post!</p>`}</div></section>`}
 function bMenu(e,b){e.stopPropagation();const m=b.nextElementSibling,was=m.classList.contains("hide");document.querySelectorAll(".bmenu").forEach(x=>x.classList.add("hide"));document.querySelectorAll(".bdots").forEach(x=>x.setAttribute("aria-expanded","false"));if(was){m.classList.remove("hide");b.setAttribute("aria-expanded","true")}}
 document.addEventListener("click",()=>{document.querySelectorAll(".bmenu:not(.hide)").forEach(x=>{x.classList.add("hide");const d=x.previousElementSibling;if(d)d.setAttribute("aria-expanded","false")})});
 function bReport(id){const p=S.posts.find(x=>String(x.id)===String(id));if(!p)return;document.querySelectorAll(".bmenu").forEach(x=>x.classList.add("hide"));toast("Thanks. Tell us what’s wrong with this post.");reportUser(p.by)}
 const isWeb=()=>matchMedia("(min-width:960px)").matches;try{matchMedia("(min-width:960px)").addEventListener("change",()=>{if(!S.out&&S.view==="home")render()})}catch(e){}
 function setHM(v){S.hm=v==="feed"?"feed":"posts";save();render()}
+/* Feed banner (AdSense). adsbygoogle.js is loaded once in <head>. innerHTML never runs scripts, so the <ins> is built in code and
+   pushed once; on later re-renders the same element (and its ad) is moved into the new page instead of requesting another ad. */
+let feedAdEl=null;
+function mountFeedAd(){const h=document.getElementById("feedAd");if(!h)return;
+ if(feedAdEl){h.appendChild(feedAdEl);return}
+ const a=document.createElement("ins");a.className="adsbygoogle";a.style.display="block";a.setAttribute("data-ad-client","ca-pub-9481705889151315");a.setAttribute("data-ad-slot","3097990831");a.setAttribute("data-ad-format","auto");a.setAttribute("data-full-width-responsive","true");
+ h.appendChild(a);feedAdEl=a;try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
 function board(){const P=bPosts();
  view.innerHTML=`<div class="row"><h2>Feed</h2><span>${String(P.length).padStart(2,"0")}</span></div>
- ${pushBanner()}<aside class="adslot" aria-label="Advertisement"><small>Sponsored</small><b>Your advertisement could be here</b><span>Reach thousands of job seekers and employers on RoyalCub Jobs.</span></aside>
+ ${pushBanner()}<aside class="feedad" id="feedAd" aria-label="Advertisement"></aside>
  ${bNotice}
  <div class="bfeedh"><button class="btn" type="button" onclick="bNew()">＋ Add Post</button>${likesBtn()}</div>
- <div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing here yet. Start the conversation!</p>`}</div>`}
+ <div class="bfeed">${P.map(bTile).join("")||`<p class="bnone">Nothing here yet. Start the conversation!</p>`}</div>`;mountFeedAd()}
 function bNew(){let d=document.getElementById("newPostD");if(!d){d=document.createElement("dialog");d.id="newPostD";d.setAttribute("aria-labelledby","npT");document.body.appendChild(d)}bDlgUI();if(!d.open)d.showModal()}
 function bClose(){const d=document.getElementById("newPostD");if(d&&d.open)d.close()}
 function bDlgUI(){const d=document.getElementById("newPostD");if(!d)return;
