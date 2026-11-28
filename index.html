@@ -517,7 +517,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .svwho{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:wrap;background:none;border:0;padding:0;text-align:left;color:inherit;cursor:pointer}
 .svwho b{font-size:16px}.svwho .svdes{color:var(--mute);font-size:13.5px}
 .svrows{display:grid;gap:8px}.svrow{display:flex;align-items:center;gap:10px;font-size:15px;min-width:0}.svrow svg{width:18px;height:18px;flex:none;margin:0!important;vertical-align:0!important}
-.svprice{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.svprice b{font-size:34px;line-height:1.1;font-weight:800;letter-spacing:-.02em;color:#3b82f6}.svprice small{color:var(--mute);font-size:15px;font-weight:600}
+.svprice{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.svprice b{font-size:34px;line-height:1.1;font-weight:800;letter-spacing:-.02em;color:#ec4899!important}.svprice small{color:var(--mute);font-size:15px;font-weight:600}
 .svact{align-items:stretch!important;flex-wrap:nowrap!important}
 .svmsg{flex:none;width:52px;min-height:52px;padding:0!important;display:grid;place-items:center;border-radius:16px}.svmsg{color:var(--plum)}.svmsg svg{width:22px;height:22px;margin:0!important;fill:currentColor;color:inherit}
 .svbook{flex:1 1 auto;min-height:52px;font-size:16px;font-weight:800;border-radius:16px;background:#16a34a!important;color:#fff!important;border:0!important;box-shadow:none!important}.svbook:hover{background:#15803d!important}
@@ -601,7 +601,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 .phn{flex:1;min-width:0;display:grid;gap:1px;line-height:1.25}.phn b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .phn small{color:var(--mute);font-weight:600;font-size:12px}.phn small.on{color:var(--ok)}
 .ph .rep{flex:none;padding:8px 14px;min-height:40px;margin-left:auto}
-@media (max-width:959px){.pane{height:clamp(320px,calc(100vh - 360px),680px);height:clamp(320px,calc(100dvh - 360px),680px)}}
+@media (max-width:959px){.pane{height:clamp(320px,calc(100vh - 250px),900px);height:clamp(320px,calc(100dvh - 250px),900px)}}
 /* ===== history & support fill the width ===== */
 .set{max-width:none}
 .set.hgrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}.hgrid .empty{grid-column:1/-1}
@@ -619,7 +619,7 @@ dialog{max-height:90vh;max-height:90dvh;overscroll-behavior:contain}
 #editD{width:min(640px,94vw)}#delD,#planD{width:min(440px,94vw)}#planD{width:min(900px,94vw)}
 #delD .acts{margin-top:14px}
 #planD .plans{margin:14px 0 8px}
-@media (min-width:960px){.pane{height:clamp(360px,calc(100vh - 300px),700px);height:clamp(360px,calc(100dvh - 300px),700px)}}
+@media (min-width:960px){.pane{height:clamp(360px,calc(100vh - 175px),1100px);height:clamp(360px,calc(100dvh - 175px),1100px)}}
 .sup .row{margin:0 0 12px}.sup section .row{margin-top:0}
 /* ---- v5 UI fixes ---- */
 .sbar{position:sticky;top:0;z-index:15;display:grid;gap:8px;margin:0 -4px 14px;padding:8px 4px 10px;background:var(--bg)}
@@ -2681,10 +2681,10 @@ async function bShare(id){const p=S.posts.find(x=>String(x.id)===String(id));if(
  try{if(navigator.share){await navigator.share({title:"RoyalCub Jobs Feed",text:txt,url});return}}catch(e){if(e&&e.name==="AbortError")return}
  try{await navigator.clipboard.writeText(txt+" "+url);toast("Link copied to clipboard")}catch(e){toast("Couldn’t share from this browser")}}
 function pruneStories(){const n=Date.now(),L=S.stories||[];L.forEach(x=>{if(!x.ts)x.ts=n});const k=L.filter(x=>n-x.ts<864e5);if(k.length===L.length)return false;S.stories=k;try{save()}catch(e){}return true}
-function render(){pruneStories();pruneBoard();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("tncv",!S.out&&!needTnc()&&S.view==="terms");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("fullv",!S.out&&(S.view==="profile"||S.view==="settings"));document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("tnc2",!S.out&&needTnc()&&onbStep===2);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;nav();vv();
+function render(){pruneStories();pruneBoard();syncCats();if(S.view==="admin"&&!isAdmin())S.view="home";document.body.classList.toggle("adm",!S.out&&S.view==="admin");document.body.classList.toggle("tncv",!S.out&&!needTnc()&&S.view==="terms");document.body.classList.toggle("addv",!S.out&&S.view==="add");document.body.classList.toggle("fullv",!S.out&&(S.view==="profile"||S.view==="settings"));document.body.classList.toggle("out",S.out);document.body.classList.toggle("onb",!S.out&&needTnc());document.body.classList.toggle("tnc2",!S.out&&needTnc()&&onbStep===2);document.body.classList.toggle("chatopen",!S.out&&S.view==="chat"&&!!S.thread);const keepY=(!S.out&&lastV===S.view&&!navJump)?scrollY:null;const fk=(!S.out&&S.view==="add"&&lastV==="add"&&!navJump)?snapForm():null;navJump=false;if(keepY!==null){try{view.style.minHeight=view.offsetHeight+"px"}catch(e){}}nav();vv();
  if(S.out){view.innerHTML=authView();lastV="";initGoogle();return}
   if(needTnc()){view.innerHTML=onbView();lastV="";return}
- const VIEWS={home,add,board,about:aboutPage,svc:svcPage,post:postPage,likes:likedPage,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null&&Math.abs(scrollY-keepY)>2)scrollTo(0,keepY);save()}
+ const VIEWS={home,add,board,about:aboutPage,svc:svcPage,post:postPage,likes:likedPage,chat,settings,profile,history:historyView,support,terms,admin,notifications:notifView};(VIEWS[S.view]||home)();if(fk)restoreForm(fk);fillLocs();lastV=S.view;if(keepY!==null){if(Math.abs(scrollY-keepY)>2)scrollTo({top:keepY,behavior:"instant"});requestAnimationFrame(()=>{if(Math.abs(scrollY-keepY)>2)scrollTo({top:keepY,behavior:"instant"});view.style.minHeight=""})}save()}
 
 function roleOf(n){const u=S.users.find(x=>x.name===n);if(u){if(u.title)return u.title;if(u.role==="worker"&&ROLE[u.cat])return ROLE[u.cat]}
  if(TITLES[n])return TITLES[n];const sv2=S.services.find(x=>x.by===n);return sv2?ROLE[sv2.c]:"Client"}
