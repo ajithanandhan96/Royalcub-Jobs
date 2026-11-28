@@ -1427,7 +1427,7 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .btm{min-height:84px}
 .btm-ph{display:grid;place-items:center;position:relative}
 /* ---- post detail: 50/50 split (left: profile + text + actions, right: image), comments below ---- */
-.bdet{max-width:960px}
+.bdet{max-width:none;width:100%}
 .bds{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:stretch}
 .bds.noimg{grid-template-columns:minmax(0,1fr)}
 .bdl{min-width:0;display:flex;flex-direction:column}
@@ -1440,7 +1440,7 @@ input[type=time]::-webkit-calendar-picker-indicator,input[type=date]::-webkit-ca
 .bdet .bpt{margin:10px 0 0;font-size:15.5px;line-height:1.6}
 .bdet .bpa{margin-top:auto;padding-top:8px}
 .bdl .bdt+.bpa{margin-top:14px}
-.bdr{position:relative;min-height:220px;border-radius:16px;overflow:hidden;background:var(--soft)}
+.bdr{position:relative;min-height:clamp(240px,38vh,440px);border-radius:16px;overflow:hidden;background:var(--soft)}
 .bdi{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;margin:0;display:block;cursor:zoom-in}
 .bdc{margin-top:16px;border-top:1px solid var(--line)}.bdc h4{margin:12px 0 0;font-size:15px}
 .bdc .bcf{margin:10px 0 6px;width:100%;max-width:none}.bdc .bcf input{flex:1;min-width:0}
